@@ -3,9 +3,13 @@ Tagged releases of debian docker images for reproducible build environments.
 
 ## Usage
 `git clone git@Debian:0mniteck/debian.git`
+
 `git submodule update --init --recursive`
+
 `git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git`
+
 `git status && git add -A && git status`
+
 `git commit -a -S -m "Successful Build..." && git push --set-upstream origin builder`
 
 ## Currently Tagged Images/Snapshots
