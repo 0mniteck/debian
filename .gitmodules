@@ -1,0 +1,12 @@
+[submodule "debian"]
+	path = debian
+	url = git@Debian:0mniteck/debian.git
+	branch = debian
+[submodule "debian-slim"]
+	path = debian-slim
+	url = git@Debian:0mniteck/debian.git
+	branch = debian-slim
+[submodule "debian-extra"]
+	path = debian-extra
+	url = git@Debian:0mniteck/debian.git
+	branch = debian-extra
