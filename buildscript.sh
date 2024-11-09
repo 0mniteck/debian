@@ -34,7 +34,7 @@ docker buildx build --load \
 --build-arg SOURCE=$source .
 rm -f $module.manifest.spdx.json
 mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-$module -o spdx-json=$module.manifest.spdx.json && rm -f -r "$HOME/syft" 
-docker tag omniteck-debian-slim:latest 0mniteck/$module:$rel_date
+docker tag omniteck-$module:latest 0mniteck/$module:$rel_date
 docker push 0mniteck/$module:$rel_date > push.log
 echo "$(cat push.log | grep digest)" > push.log && cat push.log
 git status && git add -A && git status
