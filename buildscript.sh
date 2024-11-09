@@ -1,7 +1,7 @@
 #!/bin/bash
 
-rel_date=$2
-date_rel=$3
+rel_date=11-9-2024
+date_rel=2024-11-9
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
 git submodule update --init $1 --recursive
