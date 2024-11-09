@@ -21,7 +21,7 @@ rm -f *.spdx.json
 mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-debian-slim -o spdx-json=debian-slim.manifest.spdx.json && rm -f -r "$HOME/syft" 
 docker tag omniteck-debian-slim:latest 0mniteck/debian-slim:10-30-2024 && docker push 0mniteck/debian-slim:10-30-2024
 git status && git add -A && git status
-git commit -a -S -m "Successful Build of debian-slim:10-30-2024" && git push --set-upstream origin docker-slim
+git commit -a -S -m "Successful Build of debian-slim:10-30-2024" && git push --set-upstream origin debian-slim
 popd
 
 pushd debian/
@@ -30,7 +30,7 @@ rm -f *.spdx.json
 mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-debian -o spdx-json=debian.manifest.spdx.json && rm -f -r "$HOME/syft" 
 docker tag omniteck-debian:latest 0mniteck/debian:10-30-2024 && docker push 0mniteck/debian:10-30-2024
 git status && git add -A && git status
-git commit -a -S -m "Successful Build of debian:10-30-2024" && git push --set-upstream origin docker
+git commit -a -S -m "Successful Build of debian:10-30-2024" && git push --set-upstream origin debian
 popd
 
 pushd debian-extra/
@@ -39,7 +39,7 @@ rm -f *.spdx.json
 mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-debian-extra -o spdx-json=debian-extra.manifest.spdx.json && rm -f -r "$HOME/syft" 
 docker tag omniteck-debian-extra:latest 0mniteck/debian-extra:10-30-2024 && docker push 0mniteck/debian-extra:10-30-2024
 git status && git add -A && git status
-git commit -a -S -m "Successful Build of debian-extra:10-30-2024" && git push --set-upstream origin docker-extra
+git commit -a -S -m "Successful Build of debian-extra:10-30-2024" && git push --set-upstream origin debian-extra
 popd
 
 git submodule update --recursive
