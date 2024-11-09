@@ -16,6 +16,7 @@ docker buildx create --name debian-builder --bootstrap --use
 docker login
 
 pushd debian-slim/
+git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
 docker buildx build --load --tag omniteck-debian-slim .
 rm -f *.spdx.json
 mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-debian-slim -o spdx-json=debian-slim.manifest.spdx.json && rm -f -r "$HOME/syft" 
@@ -25,6 +26,7 @@ git commit -a -S -m "Successful Build of debian-slim:10-30-2024" && git push --s
 popd
 
 pushd debian/
+git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
 docker buildx build --load --tag omniteck-debian .
 rm -f *.spdx.json
 mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-debian -o spdx-json=debian.manifest.spdx.json && rm -f -r "$HOME/syft" 
@@ -34,6 +36,7 @@ git commit -a -S -m "Successful Build of debian:10-30-2024" && git push --set-up
 popd
 
 pushd debian-extra/
+git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
 docker buildx build --load --tag omniteck-debian-extra .
 rm -f *.spdx.json
 mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-debian-extra -o spdx-json=debian-extra.manifest.spdx.json && rm -f -r "$HOME/syft" 
