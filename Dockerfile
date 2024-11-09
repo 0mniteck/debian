@@ -1,4 +1,4 @@
-ARG SOURCE
+ARG SOURCE=debian-slim:bookworm
 FROM $SOURCE AS omniteck-debian-slim
 LABEL org.opencontainers.image.authors="shant@omniteck.com"
 LABEL org.opencontainers.image.description="Tagged releases of debian docker images for reproducible build environments."
