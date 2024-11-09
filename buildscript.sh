@@ -1,8 +1,8 @@
 #!/bin/bash
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
-git submodule update --init --recursive
-# git submodule update --init --remote --recursive
+# git submodule update --init --recursive
+git submodule update --init --remote --recursive
 sudo apt install -y snapd
 sudo snap install syft --classic
 rm -f -r /var/snap/docker/*
