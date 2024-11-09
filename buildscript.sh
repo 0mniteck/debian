@@ -6,6 +6,8 @@ date_rel="2024-11-9"
 debian_security="20241109T084744Z"
 debian="20241109T082826Z"
 
+source="debian:bookworm-20241016-slim@sha256:936ea04e67a02e5e83056bfa8c7331e1c9ae89d4a324bbc1654d9497b815ae56"
+
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
 git submodule update --init $1 --recursive
 sudo apt install -y snapd
@@ -28,7 +30,8 @@ docker buildx build --load \
 --tag omniteck-$module \
 --build-arg REL_DATE=$rel_date \
 --build-arg DEBIAN=$debian \
---build-arg DEBIAN_SECURITY=$debian_security .
+--build-arg DEBIAN_SECURITY=$debian_security \
+--build-arg SOURCE=$source .
 rm -f $module.manifest.spdx.json
 mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-$module -o spdx-json=$module.manifest.spdx.json && rm -f -r "$HOME/syft" 
 docker tag omniteck-debian-slim:latest 0mniteck/$module:$rel_date
