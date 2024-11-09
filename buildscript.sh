@@ -45,7 +45,7 @@ git status && git add -A && git status
 git commit -a -S -m "Successful Build of debian-extra:10-30-2024" && git push --set-upstream origin debian-extra
 popd
 
-git submodule update --recursive
+# git submodule update --recursive
 git status && git add -A && git status
 git commit -a -S -m "Successful Build of Release 2024-10-30" && git push --set-upstream origin builder
 git tag -a 2024-10-30 -S -m "First tagged release" && git push origin 2024-10-30
