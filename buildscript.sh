@@ -21,11 +21,13 @@ for module in debian-slim debian debian-extra
 do
 pushd $module/
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
-docker buildx build --load --tag omniteck-$module .
+docker buildx build --load --tag omniteck-$module --build-arg .
 rm -f $module.manifest.spdx.json
 mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-$module -o spdx-json=$module.manifest.spdx.json && rm -f -r "$HOME/syft" 
 docker tag omniteck-debian-slim:latest 0mniteck/$module:$rel_date
-docker push 0mniteck/$module:$rel_date > 
+docker push 0mniteck/$module:$rel_date > push.log
+echo "$(cat push.log | grep digest)" > push.log
+cat push.log
 git status && git add -A && git status
 git commit -a -S -m "Successful Build of $module:$rel_date" && git push --set-upstream origin HEAD:$module
 popd
