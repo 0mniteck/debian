@@ -1,8 +1,11 @@
 #!/bin/bash
 
+rel_date=11-9-2024
+date_rel=2024-11-9
+
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
-# git submodule update --init --recursive
-git submodule update --init --remote --recursive
+git submodule update --init --recursive
+# git submodule update --init --remote --recursive
 sudo apt install -y snapd
 sudo snap install syft --classic
 rm -f -r /var/snap/docker/*
@@ -15,40 +18,23 @@ sleep 10
 docker buildx create --name debian-builder --bootstrap --use
 docker login
 
-pushd debian-slim/
+for module in debian-slim debian debian-extra
+do
+pushd $module/
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
-docker buildx build --load --tag omniteck-debian-slim .
-rm -f *.spdx.json
-mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-debian-slim -o spdx-json=debian-slim.manifest.spdx.json && rm -f -r "$HOME/syft" 
-docker tag omniteck-debian-slim:latest 0mniteck/debian-slim:10-30-2024 && docker push 0mniteck/debian-slim:10-30-2024
+docker buildx build --load --tag omniteck-$module .
+rm -f $module.manifest.spdx.json
+mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-$module -o spdx-json=$module.manifest.spdx.json && rm -f -r "$HOME/syft" 
+docker tag omniteck-debian-slim:latest 0mniteck/$module:$rel_date
+docker push 0mniteck/$module:$rel_date > 
 git status && git add -A && git status
-git commit -a -S -m "Successful Build of debian-slim:10-30-2024" && git push --set-upstream origin HEAD:debian-slim
+git commit -a -S -m "Successful Build of $module:$rel_date" && git push --set-upstream origin HEAD:$module
 popd
+done
 
-pushd debian/
-git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
-docker buildx build --load --tag omniteck-debian .
-rm -f *.spdx.json
-mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-debian -o spdx-json=debian.manifest.spdx.json && rm -f -r "$HOME/syft" 
-docker tag omniteck-debian:latest 0mniteck/debian:10-30-2024 && docker push 0mniteck/debian:10-30-2024
 git status && git add -A && git status
-git commit -a -S -m "Successful Build of debian:10-30-2024" && git push --set-upstream origin HEAD:debian
-popd
-
-pushd debian-extra/
-git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
-docker buildx build --load --tag omniteck-debian-extra .
-rm -f *.spdx.json
-mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-debian-extra -o spdx-json=debian-extra.manifest.spdx.json && rm -f -r "$HOME/syft" 
-docker tag omniteck-debian-extra:latest 0mniteck/debian-extra:10-30-2024 && docker push 0mniteck/debian-extra:10-30-2024
-git status && git add -A && git status
-git commit -a -S -m "Successful Build of debian-extra:10-30-2024" && git push --set-upstream origin HEAD:debian-extra
-popd
-
-# git submodule update --recursive
-git status && git add -A && git status
-git commit -a -S -m "Successful Build of Release 2024-10-30" && git push --set-upstream origin builder
-git tag -a 2024-10-30 -s -m "First tagged release" && git push origin 2024-10-30
+git commit -a -S -m "Successful Build of Release $date_rel" && git push --set-upstream origin builder
+git tag -a $date_rel -s -m "Tagged Release $date_rel" && git push origin $date_rel
 docker logout
 
 snap disable docker
