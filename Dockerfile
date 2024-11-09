@@ -1,4 +1,4 @@
-FROM debian:bookworm-20241016-slim@sha256:936ea04e67a02e5e83056bfa8c7331e1c9ae89d4a324bbc1654d9497b815ae56 AS debian-slim-10-30-2024
+FROM debian:bookworm-20241016-slim@sha256:936ea04e67a02e5e83056bfa8c7331e1c9ae89d4a324bbc1654d9497b815ae56 AS omniteck-debian-slim
 LABEL org.opencontainers.image.authors="shant@omniteck.com"
 LABEL org.opencontainers.image.description="Tagged releases of debian docker images for reproducible build environments."
 RUN sed -i 's,http://deb.debian.org/debian-security,http://snapshot.debian.org/archive/debian-security/20241024T023334Z,g' /etc/apt/sources.list.d/debian.sources
