@@ -4,7 +4,7 @@ rel_date=11-9-2024
 date_rel=2024-11-9
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
-git submodule update --init --remote --recursive
+git submodule update --init $1 --recursive
 sudo apt install -y snapd
 sudo snap install syft --classic
 rm -f -r /var/snap/docker/*
