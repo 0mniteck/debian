@@ -21,6 +21,12 @@ sha256:936ea04e67a02e5e83056bfa8c7331e1c9ae89d4a324bbc1654d9497b815ae56`
 
 `http://snapshot.debian.org/archive/debian-security/20241024T023334Z`
 
+## Usage
+
+`--remote` updates the submodules
+
+`./buildscript.sh --remote`
+
 ## Included Packages
 debian-slim: `build-essential lsb-release wget`
 ### ↓
