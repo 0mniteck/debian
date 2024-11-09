@@ -1,7 +1,10 @@
 #!/bin/bash
 
-rel_date=11-9-2024
-date_rel=2024-11-9
+rel_date="11-9-2024"
+date_rel="2024-11-9"
+
+debian_security="20241109T084744Z"
+debian="20241109T082826Z"
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
 git submodule update --init $1 --recursive
@@ -21,7 +24,11 @@ for module in debian-slim debian debian-extra
 do
 pushd $module/
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
-docker buildx build --load --tag omniteck-$module --build-arg REL_DATE=$rel_date .
+docker buildx build --load \
+--tag omniteck-$module \
+--build-arg REL_DATE=$rel_date \
+--build-arg DEBIAN=$debian \
+--build-arg DEBIAN_SECURITY=$debian_security .
 rm -f $module.manifest.spdx.json
 mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-$module -o spdx-json=$module.manifest.spdx.json && rm -f -r "$HOME/syft" 
 docker tag omniteck-debian-slim:latest 0mniteck/$module:$rel_date
