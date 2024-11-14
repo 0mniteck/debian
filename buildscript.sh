@@ -17,8 +17,7 @@ rm -f -r /var/snap/docker*
 snap remove docker --purge
 mkdir /var/snap/docker
 chown root:root /var/snap/docker
-snap install docker --revision=2936 && ufw disable
-sleep 10
+snap install docker --revision=2936 && ufw disable && sleep 5
 docker buildx create --name debian-builder --bootstrap --use
 docker login
 
@@ -50,7 +49,7 @@ docker logout
 
 snap disable docker
 rm -f -r /var/snap/docker*
-sleep 10
+sleep 5
 snap remove docker --purge
 snap remove docker --purge
 ufw -f enable
