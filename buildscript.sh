@@ -33,7 +33,8 @@ docker buildx build --load \
 --build-arg DEBIAN_SECURITY=$debian_security \
 --build-arg SOURCE=$source .
 rm -f $module.manifest.spdx.json
-mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-$module -o spdx-json=$module.manifest.spdx.json && rm -f -r "$HOME/syft" 
+mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-$module -o spdx-json=$module.manifest.spdx.json && rm -f -r "$HOME/syft"
+grype sbom:Builds/$module.manifest.spdx.json -o json > $module.grype.json
 docker tag omniteck-$module:latest 0mniteck/$module:$rel_date
 docker push 0mniteck/$module:$rel_date > push.log
 echo "$(cat push.log | grep digest)" > push.log && cat push.log
