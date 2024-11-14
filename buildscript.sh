@@ -1,17 +1,18 @@
 #!/bin/bash
 
-rel_date="11-9-2024"
-date_rel="2024-11-9"
+rel_date="11-11-2024"
+date_rel="2024-11-11"
 
-debian_security="20241109T084744Z"
-debian="20241109T082826Z"
+debian_security="20241111T212343Z"
+debian="20241111T203302Z"
 
-source="debian:bookworm-20241016-slim@sha256:936ea04e67a02e5e83056bfa8c7331e1c9ae89d4a324bbc1654d9497b815ae56"
+source="debian:bookworm-20241111-slim@sha256:046de794712cf47a9ea8995d8f8d77f61230d8da7655b6dbfa1eb1b86feabbf5"
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
 git submodule update --init $1 --recursive
 sudo apt install -y snapd
 sudo snap install syft --classic
+sudo snap install grype --classic
 rm -f -r /var/snap/docker/*
 rm -f -r /var/snap/docker
 snap remove docker --purge
@@ -54,3 +55,5 @@ sleep 10
 snap remove docker --purge
 snap remove docker --purge
 ufw -f enable
+snap remove syft --purge
+snap remove grype --purge
