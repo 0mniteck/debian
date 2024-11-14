@@ -13,8 +13,7 @@ git submodule update --init $1 --recursive
 sudo apt install -y snapd
 sudo snap install syft --classic
 sudo snap install grype --classic
-rm -f -r /var/snap/docker/*
-rm -f -r /var/snap/docker
+rm -f -r /var/snap/docker*
 snap remove docker --purge
 mkdir /var/snap/docker
 chown root:root /var/snap/docker
@@ -49,8 +48,7 @@ git tag -a $date_rel -s -m "Tagged Release $date_rel" && git push origin $date_r
 docker logout
 
 snap disable docker
-rm -f -r /var/snap/docker/*
-rm -f -r /var/snap/docker
+rm -f -r /var/snap/docker*
 sleep 10
 snap remove docker --purge
 snap remove docker --purge
