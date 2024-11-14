@@ -1,6 +1,8 @@
 ARG SOURCE=debian-slim:bookworm
 FROM $SOURCE AS omniteck-debian-slim
 LABEL org.opencontainers.image.authors="shant@omniteck.com"
+LABEL org.opencontainers.image.vendor="OMNITECK"
+LABEL org.opencontainers.image.licenses="GPL-3.0"
 LABEL org.opencontainers.image.description="Tagged releases of debian docker images for reproducible build environments."
 ARG DEBIAN_SECURITY
 ARG DEBIAN
