@@ -53,5 +53,5 @@ sleep 5
 snap remove docker --purge
 snap remove docker --purge
 ufw -f enable
-snap remove syft --purge
+snap remove syft --purge && rm -f -r $HOME/.cache/syft/
 snap remove grype --purge && rm -f -r $HOME/.cache/grype/ && rm -f -r /tmp/grype-scratch*
