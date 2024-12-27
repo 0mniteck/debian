@@ -8,6 +8,9 @@ debian="20241223T205427Z"
 
 source="debian:bookworm-20241223-slim@sha256:d365f4920711a9074c4bcd178e8f457ee59250426441ab2a5f8106ed8fe948eb"
 
+GRYPE_DB_CACHE_DIR="$HOME"
+TMPDIR="$HOME"
+
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
 git submodule update --init $1 --recursive
 sudo apt install -y snapd
