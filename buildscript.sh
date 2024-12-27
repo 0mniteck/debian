@@ -1,12 +1,12 @@
 #!/bin/bash
 
-rel_date="12-2-2024"
-date_rel="2024-12-2"
+rel_date="12-23-2024"
+date_rel="2024-12-23"
 
-debian_security="20241202T225754Z"
-debian="20241202T203942Z"
+debian_security="20241223T165327Z"
+debian="20241223T205427Z"
 
-source="debian:bookworm-20241202-slim@sha256:e7e7d7fa8fd16e9004b3ffea68e030a8ede97a747b3ebd77f9ea597bb6e7fc00"
+source="debian:bookworm-20241223-slim@sha256:d365f4920711a9074c4bcd178e8f457ee59250426441ab2a5f8106ed8fe948eb"
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
 git submodule update --init $1 --recursive
