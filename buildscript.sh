@@ -19,7 +19,8 @@ rm -f -r /var/snap/docker*
 snap remove docker --purge
 mkdir /var/snap/docker
 chown root:root /var/snap/docker
-snap install docker --revision=2964 && snap disable ufw && sleep 5
+snap install docker --revision=2964
+# snap disable ufw && sleep 5
 docker buildx create --name debian-builder --bootstrap --use
 docker login
 
@@ -54,6 +55,6 @@ rm -f -r /var/snap/docker*
 sleep 5
 snap remove docker --purge
 snap remove docker --purge
-snap enable ufw
+# snap enable ufw
 snap remove syft --purge && rm -f -r $HOME/.cache/syft
 snap remove grype --purge && rm -f -r $HOME/.cache/grype && rm -f -r /tmp/grype-scratch*
