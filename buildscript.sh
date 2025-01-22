@@ -54,5 +54,7 @@ rm -f -r /var/snap/docker*
 sleep 5
 snap remove docker --purge
 snap remove docker --purge
+networkctl delete docker0
 snap remove syft --purge && rm -f -r $HOME/.cache/syft
-snap remove grype --purge && rm -f -r $HOME/.cache/grype && rm -f -r /tmp/grype-scratch*
+snap remove grype --purge
+rm /root/getter* -f -r && rm /root/grype-scratch* -f -r && rm /root/5 -f -r && rm -f -r $HOME/.cache/grype && rm -f -r /tmp/grype-scratch*
