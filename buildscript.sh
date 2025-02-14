@@ -19,7 +19,7 @@ rm -f -r /var/snap/docker*
 snap remove docker --purge
 mkdir /var/snap/docker
 chown root:root /var/snap/docker
-snap install docker --revision=2964
+snap install docker --revision=2974
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
 docker login
 
