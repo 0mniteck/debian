@@ -3,32 +3,32 @@ Tagged releases of debian docker images for reproducible build environments.
 
 ## Currently Tagged Images/Snapshots
 
+2/3/25:
+
+`debian:bookworm-20250203-slim
+sha256:435e86e9f078a90c245ec35c494c44b4e9e8f53d0f8462ec3ad99f0ec6054f3d`
+
+`https://snapshot.debian.org/archive/debian/20250203T205752Z`
+
+`https://snapshot.debian.org/archive/debian-security/20250203T184032Z`
+
 1/13/25:
 
 `debian:bookworm-20250113-slim
 sha256:34cd1c3529899fd810cb571dff498834235748a95d1c36008f022e93f5653128`
 
-`http://snapshot.debian.org/archive/debian/20250112T145927Z`
+`https://snapshot.debian.org/archive/debian/20250112T145927Z`
 
-`http://snapshot.debian.org/archive/debian-security/20250112T130311Z`
+`https://snapshot.debian.org/archive/debian-security/20250112T130311Z`
 
 12/23/24:
 
 `debian:bookworm-20241223-slim
 sha256:d365f4920711a9074c4bcd178e8f457ee59250426441ab2a5f8106ed8fe948eb`
 
-`http://snapshot.debian.org/archive/debian/20241223T205427Z`
+`https://snapshot.debian.org/archive/debian/20241223T205427Z`
 
-`http://snapshot.debian.org/archive/debian-security/20241223T165327Z`
-
-12/2/24:
-
-`debian:bookworm-20241202-slim
-sha256:e7e7d7fa8fd16e9004b3ffea68e030a8ede97a747b3ebd77f9ea597bb6e7fc00`
-
-`http://snapshot.debian.org/archive/debian/20241202T203942Z`
-
-`http://snapshot.debian.org/archive/debian-security/20241202T225754Z`
+`https://snapshot.debian.org/archive/debian-security/20241223T165327Z`
 
 ## Usage
 
@@ -45,29 +45,38 @@ debian-extra: `adb acpica-tools autoconf automake ccache cpio cscope e2tools exp
 
 ## Old Tags
 
+12/2/24:
+
+`debian:bookworm-20241202-slim
+sha256:e7e7d7fa8fd16e9004b3ffea68e030a8ede97a747b3ebd77f9ea597bb6e7fc00`
+
+`https://snapshot.debian.org/archive/debian/20241202T203942Z`
+
+`https://snapshot.debian.org/archive/debian-security/20241202T225754Z`
+
 11/11/24:
 
 `debian:bookworm-20241111-slim
 sha256:046de794712cf47a9ea8995d8f8d77f61230d8da7655b6dbfa1eb1b86feabbf5d`
 
-`http://snapshot.debian.org/archive/debian/20241111T203302Z`
+`https://snapshot.debian.org/archive/debian/20241111T203302Z`
 
-`http://snapshot.debian.org/archive/debian-security/20241111T212343Z`
+`https://snapshot.debian.org/archive/debian-security/20241111T212343Z`
 
 11/09/24:
 
 `debian:bookworm-20241016-slim
 sha256:936ea04e67a02e5e83056bfa8c7331e1c9ae89d4a324bbc1654d9497b815ae56`
 
-`http://snapshot.debian.org/archive/debian/20241109T082826Z`
+`https://snapshot.debian.org/archive/debian/20241109T082826Z`
 
-`http://snapshot.debian.org/archive/debian-security/20241109T084744Z`
+`https://snapshot.debian.org/archive/debian-security/20241109T084744Z`
 
 10/30/24:
 
 `debian:bookworm-20241016-slim
 sha256:936ea04e67a02e5e83056bfa8c7331e1c9ae89d4a324bbc1654d9497b815ae56`
 
-`http://snapshot.debian.org/archive/debian/20241024T023111Z`
+`https://snapshot.debian.org/archive/debian/20241024T023111Z`
 
-`http://snapshot.debian.org/archive/debian-security/20241024T023334Z`
+`https://snapshot.debian.org/archive/debian-security/20241024T023334Z`
