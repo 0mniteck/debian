@@ -3,14 +3,14 @@ Tagged releases of debian docker images for reproducible build environments.
 
 ## Currently Tagged Images/Snapshots
 
-2/3/25:
+2/24/25:
 
-`debian:bookworm-20250203-slim
-sha256:435e86e9f078a90c245ec35c494c44b4e9e8f53d0f8462ec3ad99f0ec6054f3d`
+`debian:bookworm-20250224-slim
+sha256:d03c875b13ee95b71bf0977cb17e409655d8dbe5ccbbb7ffedaceb69c8027279`
 
-`https://snapshot.debian.org/archive/debian/20250203T205752Z`
+`https://snapshot.debian.org/archive/debian/20250224T204949Z`
 
-`https://snapshot.debian.org/archive/debian-security/20250203T184032Z`
+`https://snapshot.debian.org/archive/debian-security/20250224T221440Z`
 
 1/13/25:
 
