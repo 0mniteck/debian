@@ -1,11 +1,11 @@
 #!/bin/bash
 
-rel_date="02-03-2025"
-date_rel="2025-02-03"
+rel_date="02-24-2025"
+date_rel="2025-02-24"
 
-debian_security="20250203T184032Z"
-debian="20250203T205752Z"
-source="debian:bookworm-20250203-slim@sha256:435e86e9f078a90c245ec35c494c44b4e9e8f53d0f8462ec3ad99f0ec6054f3d"
+debian_security="20250224T221440Z"
+debian="20250224T204949Z"
+source="debian:bookworm-20250224-slim@sha256:d03c875b13ee95b71bf0977cb17e409655d8dbe5ccbbb7ffedaceb69c8027279"
 
 export GRYPE_DB_CACHE_DIR="$HOME"
 export TMPDIR="$HOME"
