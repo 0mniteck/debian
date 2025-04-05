@@ -3,6 +3,15 @@ Tagged releases of debian docker images for reproducible build environments.
 
 ## Currently Tagged Images/Snapshots
 
+3/17/25:
+
+`debian:bookworm-20250317-slim
+sha256:1209d8fd77def86ceb6663deef7956481cc6c14a25e1e64daec12c0ceffcc19d`
+
+`https://snapshot.debian.org/archive/debian/20250317T205300Z`
+
+`https://snapshot.debian.org/archive/debian-security/20250317T194126Z`
+
 2/24/25:
 
 `debian:bookworm-20250224-slim
@@ -21,15 +30,6 @@ sha256:34cd1c3529899fd810cb571dff498834235748a95d1c36008f022e93f5653128`
 
 `https://snapshot.debian.org/archive/debian-security/20250112T130311Z`
 
-12/23/24:
-
-`debian:bookworm-20241223-slim
-sha256:d365f4920711a9074c4bcd178e8f457ee59250426441ab2a5f8106ed8fe948eb`
-
-`https://snapshot.debian.org/archive/debian/20241223T205427Z`
-
-`https://snapshot.debian.org/archive/debian-security/20241223T165327Z`
-
 ## Usage
 
 `--remote` updates the submodules
@@ -44,6 +44,15 @@ debian: `bc bison device-tree-compiler flex gcc-aarch64-linux-gnu gcc-arm-linux-
 debian-extra: `adb acpica-tools autoconf automake ccache cpio cscope e2tools expect fastboot ftp-upload gdisk libattr1-dev libcap-ng-dev libfdt-dev libftdi-dev libglib2.0-dev libgmp3-dev libhidapi-dev libmpc-dev libpixman-1-dev libslirp-dev libtool libusb-1.0-0-dev make mtools netcat-openbsd ninja-build python3-cryptography python3-pip python3-serial python-is-python3 rsync xalan xdg-utils xterm xz-utils zlib1g-dev`
 
 ## Old Tags
+
+12/23/24:
+
+`debian:bookworm-20241223-slim
+sha256:d365f4920711a9074c4bcd178e8f457ee59250426441ab2a5f8106ed8fe948eb`
+
+`https://snapshot.debian.org/archive/debian/20241223T205427Z`
+
+`https://snapshot.debian.org/archive/debian-security/20241223T165327Z`
 
 12/2/24:
 
