@@ -1,7 +1,7 @@
 # [debian](https://hub.docker.com/r/0mniteck/)
 Tagged releases of debian docker images for reproducible build environments.
 
-## Currently Tagged Images/Snapshots
+## Currently Supported Tagged Images/Snapshots
 
 7/4/25:
 
@@ -30,15 +30,6 @@ sha256:912d8a461ca5f85380a40de97d7b38dfcc39972de210518de07136126dd0bfa9`
 
 `https://snapshot.debian.org/archive/debian-security/20250424T134513Z`
 
-3/17/25:
-
-`debian:bookworm-20250317-slim
-sha256:1209d8fd77def86ceb6663deef7956481cc6c14a25e1e64daec12c0ceffcc19d`
-
-`https://snapshot.debian.org/archive/debian/20250317T205300Z`
-
-`https://snapshot.debian.org/archive/debian-security/20250317T194126Z`
-
 ## Usage
 
 `--remote` updates the submodules
@@ -53,6 +44,15 @@ debian: `bc bison device-tree-compiler flex gcc-aarch64-linux-gnu gcc-arm-linux-
 debian-extra: `adb acpica-tools autoconf automake ccache cpio cscope e2tools expect fastboot ftp-upload gdisk libattr1-dev libcap-ng-dev libfdt-dev libftdi-dev libglib2.0-dev libgmp3-dev libhidapi-dev libmpc-dev libpixman-1-dev libslirp-dev libtool libusb-1.0-0-dev make mtools netcat-openbsd ninja-build python3-cryptography python3-pip python3-serial python-is-python3 rsync xalan xdg-utils xterm xz-utils zlib1g-dev`
 
 ## Old Tags
+
+3/17/25:
+
+`debian:bookworm-20250317-slim
+sha256:1209d8fd77def86ceb6663deef7956481cc6c14a25e1e64daec12c0ceffcc19d`
+
+`https://snapshot.debian.org/archive/debian/20250317T205300Z`
+
+`https://snapshot.debian.org/archive/debian-security/20250317T194126Z`
 
 2/24/25:
 
