@@ -5,8 +5,8 @@ Tagged releases of debian docker images for reproducible build environments.
 
 8/9/25:
 
-`debian:bookworm-20250721-slim
-sha256:eba101979ce3b5e66f688c62d92581c7fd27a947c39d6e5e8a2f0ec87fd6868f`
+`debian:trixie-20250721-slim
+sha256:77c8f9d6272a913f5c5aaadd9bf97dfc29717001b7c0577b39a389f74d0dd560`
 
 `https://snapshot.debian.org/archive/debian/20250809T023713Z`
 
