@@ -1,4 +1,4 @@
-ARG SOURCE=debian-slim:bookworm
+ARG SOURCE=debian-slim:trixie
 FROM $SOURCE AS omniteck-debian-slim
 LABEL org.opencontainers.image.authors="shant@omniteck.com"
 LABEL org.opencontainers.image.vendor="OMNITECK"
