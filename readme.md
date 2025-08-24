@@ -3,6 +3,15 @@ Tagged releases of debian docker images for reproducible build environments.
 
 ## Currently Supported Tagged Images/Snapshots
 
+8/23/25:
+
+`debian:trixie-20250811-slim
+sha256:35970418eb2600fee5e2c0990f6d2754f2db63485b9f73ac220ef2f514ca04b7`
+
+`https://snapshot.debian.org/archive/debian/20250823T144135Z`
+
+`https://snapshot.debian.org/archive/debian-security/20250823T124534Z`
+
 8/9/25:
 
 `debian:trixie-20250721-slim
@@ -21,14 +30,6 @@ sha256:6ac2c08566499cc2415926653cf2ed7c3aedac445675a013cc09469c9e118fdd`
 
 `https://snapshot.debian.org/archive/debian-security/20250704T170049Z`
 
-5/20/25:
-
-`debian:bookworm-20250520-slim
-sha256:f41950d5d084b96ee49ad4c872319f5afce6667bcc99b6bb318df03cd0621ad6`
-
-`https://snapshot.debian.org/archive/debian/20250520T202712Z`
-
-`https://snapshot.debian.org/archive/debian-security/20250520T202737Z`
 
 ## Usage
 
@@ -44,6 +45,15 @@ debian: `bc bison device-tree-compiler flex gcc-aarch64-linux-gnu gcc-arm-linux-
 debian-extra: `adb acpica-tools autoconf automake ccache cpio cscope e2tools expect fastboot ftp-upload gdisk libattr1-dev libcap-ng-dev libfdt-dev libftdi-dev libglib2.0-dev libgmp3-dev libhidapi-dev libmpc-dev libpixman-1-dev libslirp-dev libtool libusb-1.0-0-dev make mtools netcat-openbsd ninja-build python3-cryptography python3-pip python3-serial python-is-python3 rsync xalan xdg-utils xterm xz-utils zlib1g-dev`
 
 ## Old Tags
+
+5/20/25:
+
+`debian:bookworm-20250520-slim
+sha256:f41950d5d084b96ee49ad4c872319f5afce6667bcc99b6bb318df03cd0621ad6`
+
+`https://snapshot.debian.org/archive/debian/20250520T202712Z`
+
+`https://snapshot.debian.org/archive/debian-security/20250520T202737Z`
 
 4/24/25:
 
