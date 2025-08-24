@@ -34,8 +34,14 @@ docker buildx build --load \
 --build-arg DEBIAN_SECURITY=$debian_security \
 --build-arg SOURCE=$source .
 rm -f $module.manifest.spdx.json
-mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-$module -o spdx-json=$module.manifest.spdx.json && rm -f -r "$HOME/syft"
-grype sbom:$module.manifest.spdx.json -o json > $module.grype.json
+rm -f $module.spdx.json
+mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan docker:omniteck-$module -o spdx-json=$module.spdx.json && rm -f -r "$HOME/syft"
+script -q -c "grype sbom:$module.spdx.json -o json > $module.grype.json" $module.grype.tmp
+ansifilter < $module.grype.tmp > $module.grype.tmp2
+grep "✔ Scanned for vulnerabilities" $module.grype.tmp2 | tail -n 1 > $module.grype.status; grep "├── by severity:" $module.grype.tmp2 | tail -n 1 >> $module.grype.status; grep "└── by status:" $module.grype.tmp2 | tail -n 1 >> $module.grype.status
+rm -f $module.grype.tmp*
+rm -f readme.md
+cp $module.grype.status readme.md
 docker tag omniteck-$module:latest 0mniteck/$module:$rel_date
 docker push 0mniteck/$module:$rel_date > push.log
 echo "$(cat push.log | grep digest)" > push.log && cat push.log
