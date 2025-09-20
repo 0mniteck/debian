@@ -1,0 +1,3 @@
+└── by status: 3 fixed, 674 not-fixed, 307 ignored
+├── by severity: 0 critical, 25 high, 37 medium, 11 low, 387 negligible (217 unknown)[K
+└── by status: 3 fixed, 674 not-fixed, 307 ignored
