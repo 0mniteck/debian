@@ -52,7 +52,6 @@ for module in debian-slim debian debian-extra
 do
 pushd $module/
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
-rm -f $module.manifest.spdx.json
 rm -f $module.spdx.json
 rm -f $module.meta.json
 rm -f $module.grype.json
