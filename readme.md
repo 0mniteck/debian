@@ -1,6 +1,17 @@
 # [debian](https://hub.docker.com/r/0mniteck/)
 Tagged releases of debian docker images for reproducible build environments.
 
+## Grype Status at Buildtime
+
+Debian Slim:
+https://github.com/0mniteck/debian/blob/a340fa012b9c60ea52808df773571f018dea6d74/readme.md?plain=1#L1-L3
+
+Debian (Error)
+https://github.com/0mniteck/debian/blob/366b4f4712532c3f67b1ca3017d9d003c79e11c7/readme.md
+
+Debian Extra:
+https://github.com/0mniteck/debian/blob/551ab3993acd54a404475a46ce560eaeab8d3ebb/readme.md?plain=1#L1-L3
+
 ## Currently Supported Tagged Images/Snapshots
 
 9/19/25:
