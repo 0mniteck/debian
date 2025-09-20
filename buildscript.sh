@@ -5,7 +5,7 @@ date_rel="2025-09-20"
 
 debian_security="20250919T182858Z"
 debian="20250919T203151Z"
-source="0mniteck/dhi-debian-base:trixie-debian13@sha256:479727d212c95f1dbd7379cc8edb65059955eee269683574ec419872e6a827ae"
+source="dhi/debian-base:trixie-debian13@sha256:479727d212c95f1dbd7379cc8edb65059955eee269683574ec419872e6a827ae"
 
 export GRYPE_DB_CACHE_DIR="$HOME"
 export TMPDIR="$HOME"
