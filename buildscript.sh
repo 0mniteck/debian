@@ -11,7 +11,7 @@ export GRYPE_DB_CACHE_DIR="$HOME"
 export TMPDIR="$HOME"
 
 scan_using_grype() { # $1 = Name, $2 = Type:[Name]
-  if [ -f "$HOME/.grype.yaml" ]; then GRCONF="-c $HOME/.grype.yaml"; fi
+    if [ -f "$HOME/.grype.yaml" ]; then GRCONF="-c $HOME/.grype.yaml"; fi
     mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan $2 -o spdx-json=$1.spdx.json && rm -f -r "$HOME/syft"
     script -q -c "grype $GRCONF sbom:$1.spdx.json -o json > $1.grype.json" $1.grype.tmp
     grep "✔ Scanned for vulnerabilities" $1.grype.tmp | tail -n 1 > $1.grype.status.1
@@ -33,7 +33,6 @@ scan_using_grype() { # $1 = Name, $2 = Type:[Name]
     rm -f $1.grype.status.*
     cat $1.grype.status
     return
-  fi
 }
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
