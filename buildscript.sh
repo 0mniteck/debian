@@ -61,6 +61,7 @@ rm -f $module.manifest.spdx.json
 rm -f $module.spdx.json
 rm -f $module.meta.json
 rm -f $module.grype.json
+rm -f $module.grype.status
 rm -f readme.md
 docker buildx build --load \
 --tag omniteck-$module \
