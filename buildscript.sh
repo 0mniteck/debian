@@ -1,7 +1,7 @@
 #!/bin/bash
 
-rel_date="08-23-2025"
-date_rel="2025-08-23"
+rel_date="09-19-2025"
+date_rel="2025-09-19"
 
 debian_security="20250919T182858Z"
 debian="20250919T203151Z"
