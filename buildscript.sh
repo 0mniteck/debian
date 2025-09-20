@@ -10,32 +10,28 @@ source="debian:trixie-20250908-slim@sha256:57801c95cab6cb8003835d78008f0ec0655be
 export GRYPE_DB_CACHE_DIR="$HOME"
 export TMPDIR="$HOME"
 
-scan_using_grype() { # $1 = Name, $2 = Type:[Name], $3 = $3
-  if [ "$3" != "yes" ]; then
-    pushd Results/
-      if [ -f "$HOME/.grype.yaml" ]; then GRCONF="-c $HOME/.grype.yaml"; fi
-      mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan $2 -o spdx-json=$1.spdx.json && rm -f -r "$HOME/syft"
-      script -q -c "grype $GRCONF sbom:$1.spdx.json -o json > $1.grype.json" $1.grype.tmp
-      grep "✔ Scanned for vulnerabilities" $1.grype.tmp | tail -n 1 > $1.grype.status.1
-      tr -d '\000-\037\177' < $1.grype.status.1 | sed '/^$/d' > $1.grype.status.1.tmp
-      line1=$(cat $1.grype.status.1.tmp)
-      left1=${line1%%" [K"*}
-      grep "├── by severity:" $1.grype.tmp | tail -n 1 > $1.grype.status.2
-      tr -d '\000-\037\177' < $1.grype.status.2 | sed '/^$/d' > $1.grype.status.2.tmp
-      line2=$(cat $1.grype.status.2.tmp)
-      left2=${line2%%" [K"*}
-      grep "└── by status:" $1.grype.tmp | tail -n 1 > $1.grype.status.3
-      tr -d '\000-\037\177' < $1.grype.status.3 | sed '/^$/d' > $1.grype.status.3.tmp
-      line3=$(cat $1.grype.status.3.tmp)
-      left3=${line3%%" [K"*}
-      echo $left1 > $1.grype.status
-      echo $left2 >> $1.grype.status
-      echo $left3 >> $1.grype.status
-      rm -f $1.grype.tmp
-      rm -f $1.grype.status.*
-      cat $1.grype.status
-    popd
-  else
+scan_using_grype() { # $1 = Name, $2 = Type:[Name]
+  if [ -f "$HOME/.grype.yaml" ]; then GRCONF="-c $HOME/.grype.yaml"; fi
+    mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan $2 -o spdx-json=$1.spdx.json && rm -f -r "$HOME/syft"
+    script -q -c "grype $GRCONF sbom:$1.spdx.json -o json > $1.grype.json" $1.grype.tmp
+    grep "✔ Scanned for vulnerabilities" $1.grype.tmp | tail -n 1 > $1.grype.status.1
+    tr -d '\000-\037\177' < $1.grype.status.1 | sed '/^$/d' > $1.grype.status.1.tmp
+    line1=$(cat $1.grype.status.1.tmp)
+    left1=${line1%%" [K"*}
+    grep "├── by severity:" $1.grype.tmp | tail -n 1 > $1.grype.status.2
+    tr -d '\000-\037\177' < $1.grype.status.2 | sed '/^$/d' > $1.grype.status.2.tmp
+    line2=$(cat $1.grype.status.2.tmp)
+    left2=${line2%%" [K"*}
+    grep "└── by status:" $1.grype.tmp | tail -n 1 > $1.grype.status.3
+    tr -d '\000-\037\177' < $1.grype.status.3 | sed '/^$/d' > $1.grype.status.3.tmp
+    line3=$(cat $1.grype.status.3.tmp)
+    left3=${line3%%" [K"*}
+    echo $left1 > $1.grype.status
+    echo $left2 >> $1.grype.status
+    echo $left3 >> $1.grype.status
+    rm -f $1.grype.tmp
+    rm -f $1.grype.status.*
+    cat $1.grype.status
     return
   fi
 }
