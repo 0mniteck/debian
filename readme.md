@@ -3,6 +3,15 @@ Tagged releases of debian docker images for reproducible build environments.
 
 ## Currently Supported Tagged Images/Snapshots
 
+9/19/25:
+
+`debian:trixie-20250908-slim
+sha256:57801c95cab6cb8003835d78008f0ec0655bed246f9038be25df807427a1971d`
+
+`https://snapshot.debian.org/archive/debian/20250919T203151Z`
+
+`https://snapshot.debian.org/archive/debian-security/20250919T182858Z`
+
 8/23/25:
 
 `debian:trixie-20250811-slim
@@ -21,15 +30,6 @@ sha256:77c8f9d6272a913f5c5aaadd9bf97dfc29717001b7c0577b39a389f74d0dd560`
 
 `https://snapshot.debian.org/archive/debian-security/20250809T070340Z`
 
-7/4/25:
-
-`debian:bookworm-20250630-slim
-sha256:6ac2c08566499cc2415926653cf2ed7c3aedac445675a013cc09469c9e118fdd`
-
-`https://snapshot.debian.org/archive/debian/20250704T143531Z`
-
-`https://snapshot.debian.org/archive/debian-security/20250704T170049Z`
-
 
 ## Usage
 
@@ -45,6 +45,15 @@ debian: `bc bison device-tree-compiler flex gcc-aarch64-linux-gnu gcc-arm-linux-
 debian-extra: `adb acpica-tools autoconf automake ccache cpio cscope e2tools expect fastboot ftp-upload gdisk libattr1-dev libcap-ng-dev libfdt-dev libftdi-dev libglib2.0-dev libgmp3-dev libhidapi-dev libmpc-dev libpixman-1-dev libslirp-dev libtool libusb-1.0-0-dev make mtools netcat-openbsd ninja-build python3-cryptography python3-pip python3-serial python-is-python3 rsync xalan xdg-utils xterm xz-utils zlib1g-dev`
 
 ## Old Tags
+
+7/4/25:
+
+`debian:bookworm-20250630-slim
+sha256:6ac2c08566499cc2415926653cf2ed7c3aedac445675a013cc09469c9e118fdd`
+
+`https://snapshot.debian.org/archive/debian/20250704T143531Z`
+
+`https://snapshot.debian.org/archive/debian-security/20250704T170049Z`
 
 5/20/25:
 
@@ -126,12 +135,3 @@ sha256:936ea04e67a02e5e83056bfa8c7331e1c9ae89d4a324bbc1654d9497b815ae56`
 `https://snapshot.debian.org/archive/debian/20241109T082826Z`
 
 `https://snapshot.debian.org/archive/debian-security/20241109T084744Z`
-
-10/30/24:
-
-`debian:bookworm-20241016-slim
-sha256:936ea04e67a02e5e83056bfa8c7331e1c9ae89d4a324bbc1654d9497b815ae56`
-
-`https://snapshot.debian.org/archive/debian/20241024T023111Z`
-
-`https://snapshot.debian.org/archive/debian-security/20241024T023334Z`
