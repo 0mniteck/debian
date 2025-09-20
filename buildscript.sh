@@ -1,11 +1,11 @@
 #!/bin/bash
 
-rel_date="09-20-2025"
-date_rel="2025-09-20"
+rel_date="09-19-2025"
+date_rel="2025-09-19"
 
 debian_security="20250919T182858Z"
 debian="20250919T203151Z"
-source="dhi/debian-base:trixie-debian13@sha256:479727d212c95f1dbd7379cc8edb65059955eee269683574ec419872e6a827ae"
+source="debian:trixie-20250908-slim@sha256:57801c95cab6cb8003835d78008f0ec0655bed246f9038be25df807427a1971d"
 
 export GRYPE_DB_CACHE_DIR="$HOME"
 export TMPDIR="$HOME"
