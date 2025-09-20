@@ -1,0 +1,52 @@
+{
+  "buildx.build.provenance": {
+    "buildType": "https://mobyproject.org/buildkit@v1",
+    "materials": [
+      {
+        "uri": "pkg:docker/debian@trixie-20250908-slim?digest=sha256:57801c95cab6cb8003835d78008f0ec0655bed246f9038be25df807427a1971d\u0026platform=linux%2Farm64",
+        "digest": {
+          "sha256": "57801c95cab6cb8003835d78008f0ec0655bed246f9038be25df807427a1971d"
+        }
+      }
+    ],
+    "invocation": {
+      "configSource": {},
+      "parameters": {
+        "frontend": "dockerfile.v0",
+        "args": {
+          "build-arg:DEBIAN": "20250919T203151Z",
+          "build-arg:DEBIAN_SECURITY": "20250919T182858Z",
+          "build-arg:REL_DATE": "09-19-2025",
+          "build-arg:SOURCE": "debian:trixie-20250908-slim@sha256:57801c95cab6cb8003835d78008f0ec0655bed246f9038be25df807427a1971d"
+        },
+        "locals": [
+          {
+            "name": "context"
+          },
+          {
+            "name": "dockerfile"
+          }
+        ]
+      },
+      "environment": {
+        "platform": "linux/arm64"
+      }
+    }
+  },
+  "buildx.build.ref": "debian-builder/debian-builder0/n8vqj2kfpgh1wjv2tsueg9ovb",
+  "containerimage.config.digest": "sha256:9206372be467319d80cba16bd4b1094e99048171af24e940e675d08bd8733b68",
+  "containerimage.descriptor": {
+    "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+    "digest": "sha256:941f18a4585483acf552a00770e228ee27999a0f32e43ba9ba41e4e28756abac",
+    "size": 2842,
+    "annotations": {
+      "org.opencontainers.image.created": "2025-09-20T08:19:28Z"
+    },
+    "platform": {
+      "architecture": "arm64",
+      "os": "linux"
+    }
+  },
+  "containerimage.digest": "sha256:941f18a4585483acf552a00770e228ee27999a0f32e43ba9ba41e4e28756abac",
+  "image.name": "docker.io/library/omniteck-debian-slim:latest"
+}
