@@ -3,9 +3,9 @@
 rel_date="08-23-2025"
 date_rel="2025-08-23"
 
-debian_security="20250823T124534Z"
-debian="20250823T144135Z"
-source="debian:trixie-20250811-slim@sha256:35970418eb2600fee5e2c0990f6d2754f2db63485b9f73ac220ef2f514ca04b7"
+debian_security="20250919T182858Z"
+debian="20250919T203151Z"
+source="debian:trixie-20250908-slim@sha256:57801c95cab6cb8003835d78008f0ec0655bed246f9038be25df807427a1971d"
 
 export GRYPE_DB_CACHE_DIR="$HOME"
 export TMPDIR="$HOME"
