@@ -4,15 +4,24 @@ Tagged releases of debian docker images for reproducible build environments.
 ## Grype Status at Buildtime
 
 Debian Slim:
-https://github.com/0mniteck/debian/blob/a340fa012b9c60ea52808df773571f018dea6d74/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/debian/blob//readme.md?plain=1#L1-L3
 
-Debian (Error)
-https://github.com/0mniteck/debian/blob/366b4f4712532c3f67b1ca3017d9d003c79e11c7/readme.md
+Debian:
+https://github.com/0mniteck/debian/blob//readme.md?plain=1#L1-L3
 
 Debian Extra:
-https://github.com/0mniteck/debian/blob/551ab3993acd54a404475a46ce560eaeab8d3ebb/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/debian/blob//readme.md?plain=1#L1-L3
 
 ## Currently Supported Tagged Images/Snapshots
+
+10/16/25:
+
+`debian:trixie-20250929-slim
+sha256:c2242b938e28bd6f39c0372db589cfbb3a448fa593509f42ef887616e83d7047`
+
+`https://snapshot.debian.org/archive/debian/20251016T204015Z`
+
+`https://snapshot.debian.org/archive/debian-security/20251016T202337Z`
 
 9/19/25:
 
@@ -32,15 +41,6 @@ sha256:35970418eb2600fee5e2c0990f6d2754f2db63485b9f73ac220ef2f514ca04b7`
 
 `https://snapshot.debian.org/archive/debian-security/20250823T124534Z`
 
-8/9/25:
-
-`debian:trixie-20250721-slim
-sha256:77c8f9d6272a913f5c5aaadd9bf97dfc29717001b7c0577b39a389f74d0dd560`
-
-`https://snapshot.debian.org/archive/debian/20250809T023713Z`
-
-`https://snapshot.debian.org/archive/debian-security/20250809T070340Z`
-
 
 ## Usage
 
@@ -56,6 +56,15 @@ debian: `bc bison device-tree-compiler flex gcc-aarch64-linux-gnu gcc-arm-linux-
 debian-extra: `adb acpica-tools autoconf automake ccache cpio cscope e2tools expect fastboot ftp-upload gdisk libattr1-dev libcap-ng-dev libfdt-dev libftdi-dev libglib2.0-dev libgmp3-dev libhidapi-dev libmpc-dev libpixman-1-dev libslirp-dev libtext-template-perl libtool libusb-1.0-0-dev make mtools netcat-openbsd ninja-build python3-cryptography python3-pip python3-serial python-is-python3 rsync xalan xdg-utils xterm xz-utils zlib1g-dev`
 
 ## Old Tags
+
+8/9/25:
+
+`debian:trixie-20250721-slim
+sha256:77c8f9d6272a913f5c5aaadd9bf97dfc29717001b7c0577b39a389f74d0dd560`
+
+`https://snapshot.debian.org/archive/debian/20250809T023713Z`
+
+`https://snapshot.debian.org/archive/debian-security/20250809T070340Z`
 
 7/4/25:
 
