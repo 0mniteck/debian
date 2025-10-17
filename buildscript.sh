@@ -66,7 +66,7 @@ docker buildx build --load \
 --build-arg SOURCE=$source .
 scan_using_grype $module docker:omniteck-$module
 cp $module.grype.status readme.md
-sed -i "1,3s'^'####'" readme.md
+sed -i "1,3s'^'#### '" readme.md
 docker tag omniteck-$module:latest 0mniteck/$module:$rel_date
 docker push 0mniteck/$module:$rel_date > push.log
 echo "$(cat push.log | grep digest)" > push.log && cat push.log
