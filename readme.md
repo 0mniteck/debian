@@ -1,4 +1,4 @@
-# [debian](https://hub.docker.com/r/0mniteck/)
+# [Debian](https://hub.docker.com/r/0mniteck/)
 Tagged releases of debian docker images for reproducible build environments.
 
 ## Grype Status at Buildtime
