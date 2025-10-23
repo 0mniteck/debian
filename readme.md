@@ -4,13 +4,13 @@ Tagged releases of debian docker images for reproducible build environments.
 ## Grype Status at Buildtime
 
 Debian Slim:
-https://github.com/0mniteck/debian/blob/b86d40537adc6d151ffc108c534e440ec59158fa/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/Debian/blob/b86d40537adc6d151ffc108c534e440ec59158fa/readme.md?plain=1#L1-L3
 
 Debian:
-https://github.com/0mniteck/debian/blob/df23391f9338fba336b7241c81e9a31dace469c7/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/Debian/blob/df23391f9338fba336b7241c81e9a31dace469c7/readme.md?plain=1#L1-L3
 
 Debian Extra:
-https://github.com/0mniteck/debian/blob/8e1e9798a4d7e5eda6a131b6f43a91fec80cc96e/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/Debian/blob/8e1e9798a4d7e5eda6a131b6f43a91fec80cc96e/readme.md?plain=1#L1-L3
 
 ## Currently Supported Tagged Images/Snapshots
 
