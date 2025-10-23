@@ -35,7 +35,7 @@ scan_using_grype() { # $1 = Name, $2 = Type:[Name]
     return
 }
 
-git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
+git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init $1 --recursive
 sudo apt install -y snapd
 sudo snap install syft --classic
