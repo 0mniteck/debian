@@ -4,15 +4,24 @@ Tagged releases of debian docker images for reproducible build environments.
 ## Grype Status at Buildtime
 
 Debian Slim:
-https://github.com/0mniteck/Debian/blob/b86d40537adc6d151ffc108c534e440ec59158fa/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L3
 
 Debian:
-https://github.com/0mniteck/Debian/blob/df23391f9338fba336b7241c81e9a31dace469c7/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L3
 
 Debian Extra:
-https://github.com/0mniteck/Debian/blob/8e1e9798a4d7e5eda6a131b6f43a91fec80cc96e/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L3
 
 ## Currently Supported Tagged Images/Snapshots
+
+11/10/25:
+
+`debian:trixie-20251103-slim
+sha256:c8f0beb24beca8d20b134642aa45df1d5d2fd3ce5ce1437325becbb1d457bc7c`
+
+`https://snapshot.debian.org/archive/debian/20251109T143950Z`
+
+`https://snapshot.debian.org/archive/debian-security/20251109T121306Z`
 
 10/16/25:
 
@@ -32,15 +41,6 @@ sha256:57801c95cab6cb8003835d78008f0ec0655bed246f9038be25df807427a1971d`
 
 `https://snapshot.debian.org/archive/debian-security/20250919T182858Z`
 
-8/23/25:
-
-`debian:trixie-20250811-slim
-sha256:35970418eb2600fee5e2c0990f6d2754f2db63485b9f73ac220ef2f514ca04b7`
-
-`https://snapshot.debian.org/archive/debian/20250823T144135Z`
-
-`https://snapshot.debian.org/archive/debian-security/20250823T124534Z`
-
 
 ## Usage
 
@@ -56,6 +56,15 @@ debian: `bc bison device-tree-compiler flex gcc-aarch64-linux-gnu gcc-arm-linux-
 debian-extra: `adb acpica-tools autoconf automake ccache cpio cscope e2tools expect fastboot ftp-upload gdisk libattr1-dev libcap-ng-dev libfdt-dev libftdi-dev libglib2.0-dev libgmp3-dev libhidapi-dev libmpc-dev libpixman-1-dev libslirp-dev libtext-template-perl libtool libusb-1.0-0-dev make mtools netcat-openbsd ninja-build python3-cryptography python3-pip python3-serial python-is-python3 rsync xalan xdg-utils xterm xz-utils zlib1g-dev`
 
 ## Old Tags
+
+8/23/25:
+
+`debian:trixie-20250811-slim
+sha256:35970418eb2600fee5e2c0990f6d2754f2db63485b9f73ac220ef2f514ca04b7`
+
+`https://snapshot.debian.org/archive/debian/20250823T144135Z`
+
+`https://snapshot.debian.org/archive/debian-security/20250823T124534Z`
 
 8/9/25:
 
