@@ -1,11 +1,11 @@
 #!/bin/bash
 
-rel_date="10-16-2025"
-date_rel="2025-10-16"
+rel_date="11-10-2025"
+date_rel="2025-11-10"
 
-debian_security="20251016T202337Z"
-debian="20251016T204015Z"
-source="debian:trixie-20250929-slim@sha256:c2242b938e28bd6f39c0372db589cfbb3a448fa593509f42ef887616e83d7047"
+debian_security="20251109T121306Z"
+debian="20251109T143950Z"
+source="debian:trixie-20251103-slim@sha256:c8f0beb24beca8d20b134642aa45df1d5d2fd3ce5ce1437325becbb1d457bc7c"
 
 export GRYPE_DB_CACHE_DIR="$HOME"
 export TMPDIR="$HOME"
@@ -16,7 +16,7 @@ scan_using_grype() { # $1 = Name, $2 = Type:[Name]
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     grep "$3" $1.grype.tmp | tail -n 1 > $1.grype.status.$2
     tr -d '\000-\037\177' < $1.grype.status.$2 | sed '/^$/d' > $1.grype.status.$2.tmp
-    line1=$(<"${1}.grype.status.${2}.tmp")
+    line1=$(<"$1.grype.status.$2.tmp")
     left1="${line1%%' [K[2A'*}"
     right1="${line1#*' [K[2A'}"
     if [[ "$right1" == *$3* ]]; then
