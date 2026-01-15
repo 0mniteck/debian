@@ -14,14 +14,14 @@ https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L3
 
 ## Currently Supported Tagged Images/Snapshots
 
-11/10/25:
+01/15/26:
 
-`debian:trixie-20251103-slim
-sha256:c8f0beb24beca8d20b134642aa45df1d5d2fd3ce5ce1437325becbb1d457bc7c`
+`debian:trixie-20260112-slim
+sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193`
 
-`https://snapshot.debian.org/archive/debian/20251109T143950Z`
+`https://snapshot.debian.org/archive/debian/20260115T202701Z`
 
-`https://snapshot.debian.org/archive/debian-security/20251109T121306Z`
+`https://snapshot.debian.org/archive/debian-security/20260115T193932Z`
 
 10/16/25:
 
