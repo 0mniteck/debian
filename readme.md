@@ -49,7 +49,7 @@ sha256:57801c95cab6cb8003835d78008f0ec0655bed246f9038be25df807427a1971d`
 `./buildscript.sh --remote`
 
 ## Included Packages
-debian-slim: `build-essential curl git git-lfs lsb-release wget`
+debian-slim: `build-essential curl git git-lfs libasound2-dev libgtk-3-dev libnss3-dev libpulse-dev lsb-release rubygems wget xauth xvfb`
 ### ↓
 debian: `bc bison device-tree-compiler flex gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf gcc-arm-none-eabi libgnutls28-dev libncurses-dev libssl-dev lzop nasm parted python3-dev python3-pyelftools python3-setuptools swig unzip uuid-dev zip`
 ### ↓
