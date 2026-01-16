@@ -43,15 +43,14 @@ snap remove docker --purge
 mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
-su shant -c ' \
-git config --global --add safe.directory /home/shant/Debian \
-git config --global --add safe.directory /home/shant/Debian/debian-slim \
-git config --global --add safe.directory /home/shant/Debian/debian \
-git config --global --add safe.directory /home/shant/Debian/debian-extra \
-git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git \
-git submodule update --init $1 --recursive'
-chown -R shant:shant /home/shant/Debian/*
-su shant
+
+bash -c "su shant && exit"
+git config --global --add safe.directory $HOME/Debian
+git config --global --add safe.directory $HOME/Debian/debian-slim
+git config --global --add safe.directory $HOME/Debian/debian
+git config --global --add safe.directory $HOME/Debian/debian-extra
+git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
+git submodule update --init $1 --recursive
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
 docker login
 
@@ -86,7 +85,7 @@ git status && git add -A && git status
 git commit -a -S -m "Successful Build of Release $date_rel" && git push --set-upstream origin builder
 git tag -a $date_rel -s -m "Tagged Release $date_rel" && git push origin $date_rel
 docker logout
-
+exit
 snap disable docker
 rm -f -r /var/snap/docker*
 sleep 5
