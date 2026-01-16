@@ -44,7 +44,10 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
-bash -c "su shant && exit"
+
+#WIP
+
+
 git config --global --add safe.directory $HOME/Debian
 git config --global --add safe.directory $HOME/Debian/debian-slim
 git config --global --add safe.directory $HOME/Debian/debian
