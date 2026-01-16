@@ -7,12 +7,9 @@ debian_security="20260115T193932Z"
 debian="20260115T202701Z"
 source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
 
-export GRYPE_DB_CACHE_DIR="$HOME"
-export TMPDIR="$HOME"
-
 scan_using_grype() { # $1 = Name, $2 = Type:[Name]
   mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan $2 -o spdx-json=$1.spdx.json && rm -f -r "$HOME/syft"
-  script -q -c "grype $GRCONF sbom:$1.spdx.json -o json > $1.grype.json" $1.grype.tmp.tmp > $1.grype.tmp
+  script -q -c 'grype TMPDIR="$HOME" GRYPE_DB_CACHE_DIR="$HOME" sbom:$1.spdx.json -o json > $1.grype.json' $1.grype.tmp.tmp > $1.grype.tmp
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     grep "$3" $1.grype.tmp | tail -n 1 > $1.grype.status.$2
     tr -d '\000-\037\177' < $1.grype.status.$2 | sed '/^$/d' > $1.grype.status.$2.tmp
@@ -38,8 +35,6 @@ scan_using_grype() { # $1 = Name, $2 = Type:[Name]
   cat $1.grype.status
 }
 
-git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
-git submodule update --init $1 --recursive
 apt install -y snapd
 snap install syft --classic
 snap install grype --classic
@@ -48,6 +43,15 @@ snap remove docker --purge
 mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
+su shant -c ' \
+git config --global --add safe.directory /home/shant/Debian \
+git config --global --add safe.directory /home/shant/Debian/debian-slim \
+git config --global --add safe.directory /home/shant/Debian/debian \
+git config --global --add safe.directory /home/shant/Debian/debian-extra \
+git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git \
+git submodule update --init $1 --recursive'
+chown -R shant:shant /home/shant/Debian/*
+su shant
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
 docker login
 
