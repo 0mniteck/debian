@@ -54,7 +54,7 @@ docker login
 for module in debian-slim debian debian-extra
 do
   pushd $module/
-    git remote remove origin && git remote add origin git@Debian:0mniteck/debian.git
+    git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
     rm -f $module.spdx.json
     rm -f $module.meta.json
     rm -f $module.grype.json
