@@ -40,9 +40,9 @@ scan_using_grype() { # $1 = Name, $2 = Type:[Name]
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init $1 --recursive
-sudo apt install -y snapd
-sudo snap install syft --classic
-sudo snap install grype --classic
+apt install -y snapd
+snap install syft --classic
+snap install grype --classic
 rm -f -r /var/snap/docker*
 snap remove docker --purge
 mkdir /var/snap/docker
