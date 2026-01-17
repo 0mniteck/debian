@@ -44,11 +44,13 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
-su $(id -u 1000 -n) <<EOF
-git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian
-git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-slim
-git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian
-git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-extra
+su -P $(id -u 1000 -n) <<EOF
+if [[ $(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig) != *debian-* ]]; then
+  git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian
+  git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-slim
+  git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian
+  git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-extra
+fi
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init --remote --merge
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
