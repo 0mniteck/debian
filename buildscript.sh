@@ -44,8 +44,8 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
-{
-`echo $(id -u -n)
+su $(id -u 1000 -n) <<EOF
+echo \$(id -u -n)
 git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian
 git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-slim
 git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian
@@ -86,8 +86,8 @@ git status && git add -A && git status
 git commit -a -S -m "Successful Build of Release $date_rel" && git push --set-upstream origin builder
 git tag -a $date_rel -s -m "Tagged Release $date_rel" && git push origin $date_rel
 docker logout
-exit`
-} | su $(id -u 1000 -n)
+exit
+EOF
 
 snap disable docker
 rm -f -r /var/snap/docker*
