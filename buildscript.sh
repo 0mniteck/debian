@@ -44,7 +44,10 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
+#WIP
+
 su -l $(id -u 1000 -n) -P <<EOF
+export SSH_TTY=$(tty)
 export GPG_TTY=$(tty)
 cd $(echo $PWD)
 if [[ "$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)" != *debian-* ]]; then
