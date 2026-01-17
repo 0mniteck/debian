@@ -44,7 +44,8 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
-su -P -l $(id -u 1000 -n) <<EOF
+su -l $(id -u 1000 -n) -P <<EOF
+exec bash -l
 cd $(echo $PWD)
 if [[ "$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)" != *debian-* ]]; then
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian
