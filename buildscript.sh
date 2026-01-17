@@ -47,10 +47,10 @@ snap install docker --revision=3380
 echo $USER $UID
 {
 echo 'echo $USER $UID'
-git config --global --add safe.directory '$HOME'/Debian
-git config --global --add safe.directory '$HOME'/Debian/debian-slim
-git config --global --add safe.directory '$HOME'/Debian/debian
-git config --global --add safe.directory '$HOME'/Debian/debian-extra
+git config --global --add safe.directory $HOME/Debian
+git config --global --add safe.directory $HOME/Debian/debian-slim
+git config --global --add safe.directory $HOME/Debian/debian
+git config --global --add safe.directory $HOME/Debian/debian-extra
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init $1 --recursive
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
