@@ -8,8 +8,8 @@ debian="20260115T202701Z"
 source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
 
 scan_using_grype() { # $1 = Name, $2 = Type:[Name]
-  mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" syft scan $2 -o spdx-json=$1.spdx.json && rm -f -r "$HOME/syft"
-  script -q -c 'grype TMPDIR="$HOME" GRYPE_DB_CACHE_DIR="$HOME" sbom:$1.spdx.json -o json > $1.grype.json' $1.grype.tmp.tmp > $1.grype.tmp
+  mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" SYFT_CACHE_DIR="$HOME/syft" syft scan $2 -o spdx-json=$1.spdx.json && rm -f -r "$HOME/syft"
+  mkdir -p "$HOME/grype" && script -q -c 'grype TMPDIR="$HOME/grype" GRYPE_DB_CACHE_DIR="$HOME/grype" sbom:$1.spdx.json -o json > $1.grype.json' $1.grype.tmp.tmp > $1.grype.tmp && rm -f -r "$HOME/grype"
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     grep "$3" $1.grype.tmp | tail -n 1 > $1.grype.status.$2
     tr -d '\000-\037\177' < $1.grype.status.$2 | sed '/^$/d' > $1.grype.status.$2.tmp
@@ -44,14 +44,13 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
-
-#WIP
-
-
-git config --global --add safe.directory $HOME/Debian
-git config --global --add safe.directory $HOME/Debian/debian-slim
-git config --global --add safe.directory $HOME/Debian/debian
-git config --global --add safe.directory $HOME/Debian/debian-extra
+echo $USER $UID
+{
+echo 'echo $USER $UID'
+git config --global --add safe.directory '$HOME'/Debian
+git config --global --add safe.directory '$HOME'/Debian/debian-slim
+git config --global --add safe.directory '$HOME'/Debian/debian
+git config --global --add safe.directory '$HOME'/Debian/debian-extra
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init $1 --recursive
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
@@ -89,6 +88,9 @@ git commit -a -S -m "Successful Build of Release $date_rel" && git push --set-up
 git tag -a $date_rel -s -m "Tagged Release $date_rel" && git push origin $date_rel
 docker logout
 exit
+} | su shant
+echo $USER $UID
+
 snap disable docker
 rm -f -r /var/snap/docker*
 sleep 5
@@ -97,4 +99,6 @@ snap remove docker --purge
 networkctl delete docker0
 snap remove syft --purge
 snap remove grype --purge
-rm /root/getter* -f -r && rm /root/grype-scratch* -f -r && rm /root/syft -f -r && rm /root/6 -f -r && rm /root/Library -f -r && rm -f -r $HOME/.cache/grype && rm -f -r $HOME/.cache/syft && rm -f -r /tmp/grype-scratch* && rm -f -r /tmp/getter*
+
+# rm $HOME/getter* -f -r && rm $HOME/grype-scratch* -f -r && rm $HOME/syft -f -r && rm $HOME/6 -f -r && rm $HOME/Library -f -r
+# rm -f -r $HOME/.cache/grype && rm -f -r $HOME/.cache/syft && rm -f -r /tmp/grype-scratch* && rm -f -r /tmp/getter*
