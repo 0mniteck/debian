@@ -44,15 +44,13 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
-echo $USER $UID
 {
-echo 'echo $USER $UID'
 git config --global --add safe.directory $HOME/Debian
 git config --global --add safe.directory $HOME/Debian/debian-slim
 git config --global --add safe.directory $HOME/Debian/debian
 git config --global --add safe.directory $HOME/Debian/debian-extra
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
-git submodule update --init $1 --recursive
+git submodule update --init --remote --merge
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
 docker login
 
@@ -89,7 +87,6 @@ git tag -a $date_rel -s -m "Tagged Release $date_rel" && git push origin $date_r
 docker logout
 exit
 } | su shant
-echo $USER $UID
 
 snap disable docker
 rm -f -r /var/snap/docker*
