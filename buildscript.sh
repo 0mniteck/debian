@@ -45,10 +45,10 @@ chown root:root /var/snap/docker
 snap install docker --revision=3380
 
 {
-git config --global --add safe.directory $(echo $HOME)/Debian
-git config --global --add safe.directory $(echo $HOME)/Debian/debian-slim
-git config --global --add safe.directory $(echo $HOME)/Debian/debian
-git config --global --add safe.directory $(echo $HOME)/Debian/debian-extra
+git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian
+git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-slim
+git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian
+git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-extra
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init --remote --merge
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
