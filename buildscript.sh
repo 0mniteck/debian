@@ -86,7 +86,7 @@ git commit -a -S -m "Successful Build of Release $date_rel" && git push --set-up
 git tag -a $date_rel -s -m "Tagged Release $date_rel" && git push origin $date_rel
 docker logout
 exit
-} | su shant
+} | su $(id -u 1000 -n)
 
 snap disable docker
 rm -f -r /var/snap/docker*
