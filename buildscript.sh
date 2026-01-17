@@ -45,7 +45,7 @@ chown root:root /var/snap/docker
 snap install docker --revision=3380
 
 su -P $(id -u 1000 -n) <<EOF
-if [[ $(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig) != *debian-* ]]; then
+if [[ "$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)" != *debian-* ]]; then
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-slim
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian
@@ -58,28 +58,28 @@ docker login
 
 for module in debian-slim debian debian-extra
 do
-  pushd $module/
+  pushd \$module/
     git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
-    rm -f $module.spdx.json
-    rm -f $module.meta.json
-    rm -f $module.grype.json
-    rm -f $module.grype.status
+    rm -f \$module.spdx.json
+    rm -f \$module.meta.json
+    rm -f \$module.grype.json
+    rm -f \$module.grype.status
     rm -f readme.md
     docker buildx build --load \
-    --tag omniteck-$module \
-    --metadata-file $module.meta.json \
+    --tag omniteck-\$module \
+    --metadata-file \$module.meta.json \
     --build-arg REL_DATE=$rel_date \
     --build-arg DEBIAN=$debian \
     --build-arg DEBIAN_SECURITY=$debian_security \
     --build-arg SOURCE=$source .
-    scan_using_grype $module docker:omniteck-$module
-    cp $module.grype.status readme.md
+    scan_using_grype \$module docker:omniteck-\$module
+    cp \$module.grype.status readme.md
     sed -i "1,3s'^'#### '" readme.md
-    docker tag omniteck-$module:latest 0mniteck/$module:$rel_date
-    docker push 0mniteck/$module:$rel_date > push.log
+    docker tag omniteck-\$module:latest 0mniteck/\$module:$rel_date
+    docker push 0mniteck/\$module:$rel_date > push.log
     echo "\$(cat push.log | grep digest)" > push.log && cat push.log
     git status && git add -A && git status
-    git commit -a -S -m "Successful Build of $module:\$(cat push.log)" && git push --set-upstream origin HEAD:$module
+    git commit -a -S -m "Successful Build of \$module:\$(cat push.log)" && git push --set-upstream origin HEAD:\$module
   popd
 done
 
