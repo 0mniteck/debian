@@ -53,6 +53,7 @@ if [[ "$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)" != *debian-* ]
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-extra
 fi
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
+exit
 EOF
 
 machinectl shell $(id -u 1000 -n)@ /bin/bash -c 'git submodule update --init --remote --merge'
@@ -87,6 +88,7 @@ do
   popd
 done
 docker logout
+exit
 EOF
 
 machinectl shell $(id -u 1000 -n)@ /bin/bash -c "
