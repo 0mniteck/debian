@@ -19,8 +19,8 @@ snap install docker --revision=3380
 machinectl shell $(id -u 1000 -n)@ /bin/bash -c "
 
 scan_using_grype() { # \$1 = Name, \$2 = Type:[Name]
-  mkdir -p \"$HOME/syft\" && TMPDIR=\"$HOME/syft\" SYFT_CACHE_DIR=\"$HOME/syft\" syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r \"$HOME/syft\"
-  mkdir -p \"$HOME/grype\" && script -q -c 'grype TMPDIR=\"$HOME/grype\" GRYPE_DB_CACHE_DIR=\"$HOME/grype\" sbom:\$1.spdx.json -o json > \$1.grype.json' \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r \"$HOME/grype\"
+  mkdir -p \"$(echo /home/$(id -u 1000 -n))/syft\" && TMPDIR=\"$(echo /home/$(id -u 1000 -n))/syft\" SYFT_CACHE_DIR=\"$(echo /home/$(id -u 1000 -n))/syft\" syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r \"$(echo /home/$(id -u 1000 -n))/syft\"
+  mkdir -p \"$(echo /home/$(id -u 1000 -n))/grype\" && script -q -c 'grype TMPDIR=\"$(echo /home/$(id -u 1000 -n))/grype\" GRYPE_DB_CACHE_DIR=\"$(echo /home/$(id -u 1000 -n))/grype\" sbom:\$1.spdx.json -o json > \$1.grype.json' \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r \"$(echo /home/$(id -u 1000 -n))/grype\"
   marker() { # \$1 = Name, \$2 = Order, \$3 = Marker/ID
     grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
     tr -d '\000-\037\177' < \$1.grype.status.\$2 | sed '/^\$/d' > \$1.grype.status.\$2.tmp
