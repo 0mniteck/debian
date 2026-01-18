@@ -44,11 +44,7 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
-#WIP
-
 su -l $(id -u 1000 -n) -P <<EOF
-export SSH_TTY=$(tty)
-export GPG_TTY=$(tty)
 cd $(echo $PWD)
 if [[ "$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)" != *debian-* ]]; then
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian
@@ -57,10 +53,13 @@ if [[ "$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)" != *debian-* ]
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-extra
 fi
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
-git submodule update --init --remote --merge
+EOF
+
+machinectl shell $(id -u 1000 -n)@ /bin/bash -c 'git submodule update --init --remote --merge'
+
+su -l $(id -u 1000 -n) -P <<EOF
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
 docker login
-
 for module in debian-slim debian debian-extra
 do
   pushd \$module/
@@ -87,13 +86,13 @@ do
     git commit -a -S -m "Successful Build of \$module:\$(cat push.log)" && git push --set-upstream origin HEAD:\$module
   popd
 done
-
-git status && git add -A && git status
-git commit -a -S -m "Successful Build of Release $date_rel" && git push --set-upstream origin builder
-git tag -a $date_rel -s -m "Tagged Release $date_rel" && git push origin $date_rel
 docker logout
-exit
 EOF
+
+machinectl shell $(id -u 1000 -n)@ /bin/bash -c "
+git status && git add -A && git status
+git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-upstream origin builder
+git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel"
 
 snap disable docker
 rm -f -r /var/snap/docker*
