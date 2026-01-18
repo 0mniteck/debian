@@ -7,34 +7,6 @@ debian_security="20260115T193932Z"
 debian="20260115T202701Z"
 source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
 
-scan_using_grype() { # $1 = Name, $2 = Type:[Name]
-  mkdir -p "$HOME/syft" && TMPDIR="$HOME/syft" SYFT_CACHE_DIR="$HOME/syft" syft scan $2 -o spdx-json=$1.spdx.json && rm -f -r "$HOME/syft"
-  mkdir -p "$HOME/grype" && script -q -c 'grype TMPDIR="$HOME/grype" GRYPE_DB_CACHE_DIR="$HOME/grype" sbom:$1.spdx.json -o json > $1.grype.json' $1.grype.tmp.tmp > $1.grype.tmp && rm -f -r "$HOME/grype"
-  marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
-    grep "$3" $1.grype.tmp | tail -n 1 > $1.grype.status.$2
-    tr -d '\000-\037\177' < $1.grype.status.$2 | sed '/^$/d' > $1.grype.status.$2.tmp
-    line1=$(<"${1}.grype.status.${2}.tmp")
-    left1="${line1%%' [K[2A'*}"
-    right1="${line1#*' [K[2A'}"
-    if [[ "$right1" == *$3* ]]; then
-      export "wright$2"="${right1%%' [K'*}"
-    elif [[ "$left1" == *$3* ]]; then
-      export "wright$2"="${left1%%' [K'*}"
-    fi
-  }
-  marker $1 1 "✔ Scanned for vulnerabilities"
-  marker $1 2 "├── by severity:"
-  marker $1 3 "└── by status:"
-  echo $wright1 > $1.grype.status
-  echo $wright2 >> $1.grype.status
-  echo $wright3 >> $1.grype.status
-  sed -i "s'\[K''" $1.grype.status
-  sed -i "s'\[2A''" $1.grype.status
-  rm -f $1.grype.tmp*
-  rm -f $1.grype.status.*
-  cat $1.grype.status
-}
-
 apt install -y snapd
 snap install syft --classic
 snap install grype --classic
@@ -45,6 +17,35 @@ chown root:root /var/snap/docker
 snap install docker --revision=3380
 
 machinectl shell $(id -u 1000 -n)@ /bin/bash -c "
+
+scan_using_grype() { # \$1 = Name, \$2 = Type:[Name]
+  mkdir -p \"$HOME/syft\" && TMPDIR=\"$HOME/syft\" SYFT_CACHE_DIR=\"$HOME/syft\" syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r \"$HOME/syft\"
+  mkdir -p \"$HOME/grype\" && script -q -c 'grype TMPDIR=\"$HOME/grype\" GRYPE_DB_CACHE_DIR=\"$HOME/grype\" sbom:\$1.spdx.json -o json > \$1.grype.json' \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r \"$HOME/grype\"
+  marker() { # \$1 = Name, \$2 = Order, \$3 = Marker/ID
+    grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
+    tr -d '\000-\037\177' < \$1.grype.status.\$2 | sed '/^\$/d' > \$1.grype.status.\$2.tmp
+    line1=$(<\"\${1}.grype.status.\${2}.tmp\")
+    left1=\"\${line1%%' [K[2A'*}\"
+    right1=\"\${line1#*' [K[2A'}\"
+    if [[ \"\$right1\" == *\$3* ]]; then
+      export \"wright\$2\"=\"\${right1%%' [K'*}\"
+    elif [[ \"\$left1\" == *\$3* ]]; then
+      export \"wright\$2\"=\"\${left1%%' [K'*}\"
+    fi
+  }
+  marker \$1 1 \"✔ Scanned for vulnerabilities\"
+  marker \$1 2 \"├── by severity:\"
+  marker \$1 3 \"└── by status:\"
+  echo \$wright1 > \$1.grype.status
+  echo \$wright2 >> \$1.grype.status
+  echo \$wright3 >> \$1.grype.status
+  sed -i \"s'\[K''\" \$1.grype.status
+  sed -i \"s'\[2A''\" \$1.grype.status
+  rm -f \$1.grype.tmp*
+  rm -f \$1.grype.status.*
+  cat \$1.grype.status
+}
+
 cd $(echo $PWD)
 if [[ \"$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)\" != *debian-* ]]; then
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian
@@ -52,10 +53,12 @@ if [[ \"$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)\" != *debian-*
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-extra
 fi
+
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init --remote --merge
 docker buildx create --name debian-builder --driver-opt \"network=host\" --bootstrap --use
 docker login
+
 for module in debian-slim debian debian-extra
 do
   pushd \$module/
@@ -82,6 +85,7 @@ do
     git commit -a -S -m \"Successful Build of \$module:\$(cat push.log)\" && git push --set-upstream origin HEAD:\$module
   popd
 done
+
 docker logout
 git status && git add -A && git status
 git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-upstream origin builder
