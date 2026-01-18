@@ -56,9 +56,10 @@ git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 exit
 EOF
 
-machinectl shell $(id -u 1000 -n)@ /bin/bash -c 'git submodule update --init --remote --merge'
+machinectl shell $(id -u 1000 -n)@ /bin/bash -c "cd $(echo $PWD); git submodule update --init --remote --merge"
 
 su -l $(id -u 1000 -n) -P <<EOF
+cd $(echo $PWD)
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
 docker login
 for module in debian-slim debian debian-extra
@@ -92,6 +93,7 @@ exit
 EOF
 
 machinectl shell $(id -u 1000 -n)@ /bin/bash -c "
+cd $(echo $PWD)
 git status && git add -A && git status
 git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-upstream origin builder
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel"
