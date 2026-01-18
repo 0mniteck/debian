@@ -44,7 +44,7 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
-su -l $(id -u 1000 -n) -P <<EOF
+su -l $(id -u 1000 -n) <<EOF
 cd $(echo $PWD)
 if [[ "$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)" != *debian-* ]]; then
   git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian
@@ -58,7 +58,7 @@ EOF
 
 machinectl shell $(id -u 1000 -n)@ /bin/bash -c "cd $(echo $PWD); git submodule update --init --remote --merge"
 
-su -l $(id -u 1000 -n) -P <<EOF
+su -l $(id -u 1000 -n) <<EOF
 cd $(echo $PWD)
 docker buildx create --name debian-builder --driver-opt "network=host" --bootstrap --use
 docker login
