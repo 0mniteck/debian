@@ -18,33 +18,7 @@ snap install docker --revision=3380
 
 machinectl shell $(id -u 1000 -n)@ /bin/bash -c "
 
-scan_using_grype() { # \$1 = Name, \$2 = Type:[Name]
-  mkdir -p \"$(echo /home/$(id -u 1000 -n))/syft\" && TMPDIR=\"$(echo /home/$(id -u 1000 -n))/syft\" SYFT_CACHE_DIR=\"$(echo /home/$(id -u 1000 -n))/syft\" syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r \"$(echo /home/$(id -u 1000 -n))/syft\"
-  mkdir -p \"$(echo /home/$(id -u 1000 -n))/grype\" && script -q -c \"grype TMPDIR=\"$(echo /home/$(id -u 1000 -n))/grype\" GRYPE_DB_CACHE_DIR=\"$(echo /home/$(id -u 1000 -n))/grype\" sbom:\$1.spdx.json -o json > \$1.grype.json" \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r \"$(echo /home/$(id -u 1000 -n))/grype\"
-  marker() { # \$1 = Name, \$2 = Order, \$3 = Marker/ID
-    grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
-    tr -d '\000-\037\177' < \$1.grype.status.\$2 | sed '/^$/d' > \$1.grype.status.\$2.tmp
-    line1=\$(<\"\${1}.grype.status.\${2}.tmp\")
-    left1=\"\${line1%%' [K[2A'*}\"
-    right1=\"\${line1#*' [K[2A'}\"
-    if [[ \"\$right1\" == *\$3* ]]; then
-      export \"wright\$2\"=\"\${right1%%' [K'*}\"
-    elif [[ \"\$left1\" == *\$3* ]]; then
-      export \"wright\$2\"=\"\${left1%%' [K'*}\"
-    fi
-  }
-  marker \$1 1 \"✔ Scanned for vulnerabilities\"
-  marker \$1 2 \"├── by severity:\"
-  marker \$1 3 \"└── by status:\"
-  echo \$wright1 > \$1.grype.status
-  echo \$wright2 >> \$1.grype.status
-  echo \$wright3 >> \$1.grype.status
-  sed -i \"s'\[K''\" \$1.grype.status
-  sed -i \"s'\[2A''\" \$1.grype.status
-  rm -f \$1.grype.tmp*
-  rm -f \$1.grype.status.*
-  cat \$1.grype.status
-}
+#WIP
 
 cd $(echo $PWD)
 if [[ \"$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)\" != *debian-* ]]; then
