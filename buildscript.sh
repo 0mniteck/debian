@@ -16,6 +16,13 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
+if [[ "$(grep debian- $(echo /root/.gitconfig)" != *debian-* ]]; then
+  git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian
+  git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-slim
+  git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian
+  git config --global --add safe.directory $(echo /home/$(id -u 1000 -n))/Debian/debian-extra
+fi
+
 machinectl shell $(id -u 1000 -n)@ /bin/bash -c "
 cd $(echo $PWD)
 
@@ -35,14 +42,17 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
   marker \$1 2 \"├── by severity:\"
   marker \$1 3 \"└── by status:\"
   echo \$wright1 > \$1.grype.status
-  echo ├\$wright2 >> \$1.grype.status
-  echo └\$wright3 >> \$1.grype.status
-  sed -i 's,\[K,,' \$1.grype.status
-  sed -i 's,\[2A,,' \$1.grype.status
-  sed -i 's,\[3A,,' \$1.grype.status
+  echo \$wright2 >> \$1.grype.status
+  echo \$wright3 >> \$1.grype.status
+  sed -i 's/[^[:print:]]//g' \$1.grype.status
+  sed -i 's/\[K//g' \$1.grype.status
+  sed -i 's/\[2A//g' \$1.grype.status
+  sed -i 's/\[3A//g' \$1.grype.status
   rm -f \$1.grype.tmp*
   rm -f \$1.grype.status.*
-  cat \$1.grype.status
+  cp \$1.grype.status readme.md
+  sed -i '1,3s/^/#### /g' readme.md
+  cat readme.md
 }
 
 if [[ \"$(grep debian- $(echo /home/$(id -u 1000 -n))/.gitconfig)\" != *debian-* ]]; then
@@ -74,20 +84,23 @@ do
     --build-arg DEBIAN_SECURITY=$debian_security \
     --build-arg SOURCE=$source .
     scan_using_grype \$module docker:omniteck-\$module
-    cp \$module.grype.status readme.md
-    sed -i '1,3s,^,#### ,' readme.md
     docker tag omniteck-\$module:latest 0mniteck/\$module:$rel_date
     docker push 0mniteck/\$module:$rel_date > push.log
     echo \"\$(cat push.log | grep digest)\" > push.log && cat push.log
     git status && git add -A && git status
-    git commit -a -S -m \"Successful Build of \$module:\$(cat push.log)\" && git push --set-upstream origin HEAD:\$module
   popd
 done
-
 docker logout
-git status && git add -A && git status
-git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-upstream origin builder
-git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel"
+git status && git add -A && git status"
+
+for module in debian-slim debian debian-extra
+do
+  pushd $module/
+    git commit -a -S -m "Successful Build of $module:$(cat push.log)" && git push --set-upstream origin HEAD:$module
+  popd
+done
+git commit -a -S -m "Successful Build of Release $date_rel" && git push --set-upstream origin builder
+git tag -a $date_rel -s -m "Tagged Release $date_rel" && git push origin $date_rel
 
 snap disable docker
 rm -f -r /var/snap/docker*
