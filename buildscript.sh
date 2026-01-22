@@ -76,6 +76,7 @@ do
     rm -f \$module.grype.json
     rm -f \$module.grype.status
     rm -f readme.md
+    rm -f push.log
     docker buildx build --load \
     --tag omniteck-\$module \
     --metadata-file \$module.meta.json \
@@ -86,7 +87,7 @@ do
     scan_using_grype \$module docker:omniteck-\$module
     docker tag omniteck-\$module:latest 0mniteck/\$module:$rel_date
     docker push 0mniteck/\$module:$rel_date > push.log
-    echo \"\$(cat push.log | grep digest)\" > push.log && cat push.log
+    cat push.log | grep digest > digest
     git status && git add -A && git status
   popd
 done
