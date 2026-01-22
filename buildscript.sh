@@ -75,6 +75,7 @@ do
     rm -f \$module.meta.json
     rm -f \$module.grype.json
     rm -f \$module.grype.status
+    rm -f digest
     rm -f readme.md
     rm -f push.log
     docker buildx build --load \
