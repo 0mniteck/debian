@@ -89,6 +89,7 @@ do
     docker buildx build \
     --tag 0mniteck/\$module:$rel_date --push \
     --metadata-file \$module.meta.json \
+    --attest \"type=provenance,mode=max\" \
     --build-arg REL_DATE=$rel_date \
     --build-arg DEBIAN=$debian \
     --build-arg DEBIAN_SECURITY=$debian_security \
