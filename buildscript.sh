@@ -21,6 +21,7 @@ snap install docker --revision=3380
 usermod -aG plugdev $run_as
 sed -i 's/"1050", ATTR{idProduct}=="0407", /"1050", MODE="0660", GROUP="plugdev", ATTR{idProduct}=="0407", /g' /lib/udev/rules.d/60-scdaemon.rules && udevadm control --reload-rules && udevadm trigger && \
 if [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; then read -p "Plugin any Yubikeys again then hit enter..."; fi
+chown $run_as:plugdev /dev/hidraw*
 
 if [[ "$(grep debian- $(echo /root/.gitconfig))" != *debian-* ]]; then
   git config --global --add safe.directory /home/$run_as/Debian
