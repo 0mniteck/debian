@@ -18,7 +18,7 @@
         "args": {
           "build-arg:DEBIAN": "20260115T202701Z",
           "build-arg:DEBIAN_SECURITY": "20260120T213558Z",
-          "build-arg:REL_DATE": "1-21-2026",
+          "build-arg:REL_DATE": "1-22-2026",
           "build-arg:SOURCE": "debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
         },
         "locals": [
@@ -35,20 +35,20 @@
       }
     }
   },
-  "buildx.build.ref": "debian-builder/debian-builder0/pldekk1t6veqdkbhtzvyd6u8t",
-  "containerimage.config.digest": "sha256:84cff644fee93067a9fa1d59f1152c0e4ed53e3562985425ccd1aed55a9c4fae",
+  "buildx.build.ref": "debian-builder/debian-builder0/0v9ov2b6rw5rx4qz0i6qtvrwz",
+  "containerimage.config.digest": "sha256:603e37f202d22db15cf50825b8197fe7953a13cc46480b93fcbd24f1f7aff2e5",
   "containerimage.descriptor": {
     "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
-    "digest": "sha256:6c9b09023e85af0a1a55f1a116038f455609320d8d0e611d1b50071a66ed3efe",
+    "digest": "sha256:56aa304e2175e7041201ccf643927dd07978d4995450dab03eac795eb36477d1",
     "size": 2842,
     "annotations": {
-      "org.opencontainers.image.created": "2026-01-22T15:08:51Z"
+      "org.opencontainers.image.created": "2026-01-22T17:47:43Z"
     },
     "platform": {
       "architecture": "arm64",
       "os": "linux"
     }
   },
-  "containerimage.digest": "sha256:6c9b09023e85af0a1a55f1a116038f455609320d8d0e611d1b50071a66ed3efe",
+  "containerimage.digest": "sha256:56aa304e2175e7041201ccf643927dd07978d4995450dab03eac795eb36477d1",
   "image.name": "docker.io/library/omniteck-debian-slim:latest"
 }
