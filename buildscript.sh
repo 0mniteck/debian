@@ -2,11 +2,11 @@
 
 run_as=$(id -u $(echo $PKEXEC_UID) -n)
 
-rel_date="1-22-2026"
-date_rel="2026-1-22"
+rel_date="01-22-2026"
+date_rel="2026-01-22"
 
-debian_security="20260120T213558Z"
-debian="20260115T202701Z"
+debian_security="20260122T200547Z"
+debian="20260122T143611Z"
 source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
 
 apt install -y snapd gnupg2 gpg-agent pcscd scdaemon
@@ -78,28 +78,30 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init --remote --merge
-docker buildx create --name debian-builder --driver-opt \"network=host\" --bootstrap --use
-docker login
+docker login && export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
 
 for module in debian-slim debian debian-extra
 do
   pushd \$module/
     git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
     rm -f \$module.spdx.json \$module.meta.json \$module.grype.json \$module.grype.status digest readme.md push.log
-    docker buildx build --load \
-    --tag omniteck-\$module \
+    docker buildx create --name debian-builder-\$module --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
+    docker buildx build \
+    --tag 0mniteck/\$module:$rel_date --push \
     --metadata-file \$module.meta.json \
     --build-arg REL_DATE=$rel_date \
     --build-arg DEBIAN=$debian \
     --build-arg DEBIAN_SECURITY=$debian_security \
     --build-arg SOURCE=$source .
-    scan_using_grype \$module docker:omniteck-\$module
-    docker tag omniteck-\$module:latest 0mniteck/\$module:$rel_date
-    docker push 0mniteck/\$module:$rel_date > push.log && docker rmi omniteck-\$module
-    echo 0mniteck/\$module:$rel_date > digest && cat push.log | grep digest >> digest
+    scan_using_grype \$module docker:0mniteck/\$module
+    docker buildx stop --name debian-builder-\$module
+    docker buildx rm -f --all-inactive
+    docker buildx prune -f -a
+    echo 0mniteck/\$module:$rel_date > digest
+    cat \$module.meta.json | grep '\"digest\": \"sha256'
     echo '## ' >> readme.md && cat digest >> readme.md && cat readme.md
     git status && git add -A && git status
-    git commit -a -S -m \"Successful Build of \$module:\$(cat push.log | grep digest)\" && git push --set-upstream origin HEAD:\$module
+    git commit -a -S -m \"Successful Build of \$module:\$(cat *.meta.json | grep digest)\" && git push --set-upstream origin HEAD:\$module
   popd
 done
 
