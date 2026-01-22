@@ -50,7 +50,7 @@ fi
 
 scan_using_grype() { # $1 = Name, $2 = Type:Name
   grype config > /home/$run_as/.grype.yaml
-  TMPDIR=/home/$run_as/syft SYFT_CACHE_DIR=/home/$run_as/syft syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r /home/$run_as/syft/*
+  TMPDIR=/home/$run_as/syft SYFT_CACHE_DIR=/home/$run_as/syft syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r /home/$run_as/syft/* && wait
   script -q -c \"TMPDIR=/home/$run_as/grype GRYPE_DB_CACHE_DIR=/home/$run_as/grype grype sbom:\$1.spdx.json -c /home/$run_as/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r /home/$run_as/grype/*
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
@@ -94,14 +94,14 @@ do
     --build-arg DEBIAN_SECURITY=$debian_security \
     --build-arg SOURCE=$source .
     scan_using_grype \$module docker:0mniteck/\$module
-    docker buildx stop --name debian-builder-\$module
-    docker buildx rm -f --all-inactive
+    docker buildx stop --name debian-builder-\$module && wait
+    docker buildx rm -f --all-inactive && wait
     docker buildx prune -f -a
     echo 0mniteck/\$module:$rel_date > digest
-    cat \$module.meta.json | grep '\"digest\": \"sha256'
+    cat \$module.meta.json | grep '\"digest\": \"sha256' >> digest
     echo '## ' >> readme.md && cat digest >> readme.md && cat readme.md
     git status && git add -A && git status
-    git commit -a -S -m \"Successful Build of \$module:\$(cat *.meta.json | grep digest)\" && git push --set-upstream origin HEAD:\$module
+    git commit -a -S -m \"Successful Build of \$module:\$(cat digest)\" && git push --set-upstream origin HEAD:\$module
   popd
 done
 
