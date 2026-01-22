@@ -95,7 +95,8 @@ do
   popd
 done
 docker logout
-git status && git add -A && git status"
+git status && git add -A && git status
+eval \"$(ssh-agent -k)\""
 
 for module in debian-slim debian debian-extra
 do
