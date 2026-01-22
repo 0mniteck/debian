@@ -1,1 +1,39 @@
-10-16-2025: digest: sha256:aa56598a56a68f2f7499f7613c62b5e875d7a44521c1c884fd06fc3fd42028ea size: 3236
+The push refers to repository [docker.io/0mniteck/debian]
+34f6ae4a6638: Preparing
+b749953e2594: Preparing
+452b482600fd: Preparing
+d7c10f4095e1: Preparing
+7188c3a52d60: Preparing
+e60e140aa528: Preparing
+0691d93e5336: Preparing
+cd40fb5b8c2c: Preparing
+d1de33c6a9a7: Preparing
+ed43c4f7efd7: Preparing
+b291c4e3ccd0: Preparing
+04d1063d3933: Preparing
+d0bbd37d806d: Preparing
+37127a0fa4c7: Preparing
+e60e140aa528: Waiting
+0691d93e5336: Waiting
+cd40fb5b8c2c: Waiting
+d1de33c6a9a7: Waiting
+ed43c4f7efd7: Waiting
+b291c4e3ccd0: Waiting
+04d1063d3933: Waiting
+d0bbd37d806d: Waiting
+37127a0fa4c7: Waiting
+d7c10f4095e1: Mounted from 0mniteck/debian-slim
+452b482600fd: Mounted from 0mniteck/debian-slim
+7188c3a52d60: Mounted from 0mniteck/debian-slim
+b749953e2594: Mounted from 0mniteck/debian-slim
+e60e140aa528: Mounted from 0mniteck/debian-slim
+0691d93e5336: Mounted from 0mniteck/debian-slim
+cd40fb5b8c2c: Mounted from 0mniteck/debian-slim
+d1de33c6a9a7: Mounted from 0mniteck/debian-slim
+b291c4e3ccd0: Mounted from 0mniteck/debian-slim
+ed43c4f7efd7: Mounted from 0mniteck/debian-slim
+04d1063d3933: Mounted from 0mniteck/debian-slim
+d0bbd37d806d: Mounted from 0mniteck/debian-slim
+37127a0fa4c7: Mounted from 0mniteck/debian-slim
+34f6ae4a6638: Pushed
+1-22-2026: digest: sha256:cf2886b05b2b7eaecd415651f33f4ca5497f59b21c1cc2b5a4ece3b0d6581fcf size: 3236

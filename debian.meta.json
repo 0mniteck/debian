@@ -3,9 +3,9 @@
     "buildType": "https://mobyproject.org/buildkit@v1",
     "materials": [
       {
-        "uri": "pkg:docker/0mniteck/debian-slim@10-16-2025?platform=linux%2Farm64",
+        "uri": "pkg:docker/0mniteck/debian-slim@1-22-2026?platform=linux%2Farm64",
         "digest": {
-          "sha256": "c1b2685a46ae20a3702ae41e21fc27553c7e645814978d1392e80b0397e7252d"
+          "sha256": "ccf8bfa2f2034fb7fcad94d5ccc4ac2660b1e10a2127ca888e7ae5367c25ae04"
         }
       }
     ],
@@ -16,10 +16,10 @@
       "parameters": {
         "frontend": "dockerfile.v0",
         "args": {
-          "build-arg:DEBIAN": "20251016T204015Z",
-          "build-arg:DEBIAN_SECURITY": "20251016T202337Z",
-          "build-arg:REL_DATE": "10-16-2025",
-          "build-arg:SOURCE": "debian:trixie-20250929-slim@sha256:c2242b938e28bd6f39c0372db589cfbb3a448fa593509f42ef887616e83d7047"
+          "build-arg:DEBIAN": "20260115T202701Z",
+          "build-arg:DEBIAN_SECURITY": "20260120T213558Z",
+          "build-arg:REL_DATE": "1-22-2026",
+          "build-arg:SOURCE": "debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
         },
         "locals": [
           {
@@ -35,20 +35,20 @@
       }
     }
   },
-  "buildx.build.ref": "debian-builder/debian-builder0/yvd3c52d8rnef5j1f413w23g3",
-  "containerimage.config.digest": "sha256:219530944dccf434eb59546751270982ec649743073aef87f8014ce18efebdd2",
+  "buildx.build.ref": "debian-builder/debian-builder0/j9m94b2adgl9l9ur45f9kh4z1",
+  "containerimage.config.digest": "sha256:9e6989f19c994b147ae53b69ab765859e3220386ef13eba79b07cb403ffdacb7",
   "containerimage.descriptor": {
     "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
-    "digest": "sha256:992084ac30cd0a44a69926285b05001c4130e972b854a552bcab61b4a7feecf5",
+    "digest": "sha256:daab2929a2cd5469c57c829317fbaa6d65ac2a39d174666001dd8011026014df",
     "size": 3042,
     "annotations": {
-      "org.opencontainers.image.created": "2025-10-16T23:42:22Z"
+      "org.opencontainers.image.created": "2026-01-22T18:06:04Z"
     },
     "platform": {
       "architecture": "arm64",
       "os": "linux"
     }
   },
-  "containerimage.digest": "sha256:992084ac30cd0a44a69926285b05001c4130e972b854a552bcab61b4a7feecf5",
+  "containerimage.digest": "sha256:daab2929a2cd5469c57c829317fbaa6d65ac2a39d174666001dd8011026014df",
   "image.name": "docker.io/library/omniteck-debian:latest"
 }
