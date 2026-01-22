@@ -12,7 +12,7 @@ source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa2
 apt install -y snapd gnupg2 gpg-agent pcscd scdaemon
 snap install syft --classic
 snap install grype --classic
-rm -f -r /var/snap/docker*
+rm -f -r /var/snap/docker/
 snap remove docker --purge
 mkdir /var/snap/docker
 chown root:root /var/snap/docker
@@ -109,7 +109,7 @@ git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date
 eval \"\$(ssh-agent -k)\""
 
 snap disable docker
-rm -f -r /var/snap/docker*
+rm -f -r /var/snap/docker/
 sleep 5
 snap remove docker --purge
 snap remove docker --purge
