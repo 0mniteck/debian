@@ -98,6 +98,8 @@ docker logout
 git status && git add -A && git status
 eval \"$(ssh-agent -k)\""
 
+eval "$(ssh-agent -s)"
+ssh-add /home/$(id -u 1000 -n)/.ssh/id_ecdsa_s*[!.pub]
 for module in debian-slim debian debian-extra
 do
   pushd $module/
@@ -106,7 +108,9 @@ do
 done
 git commit -a -S -m "Successful Build of Release $date_rel" && git push --set-upstream origin builder
 git tag -a $date_rel -s -m "Tagged Release $date_rel" && git push origin $date_rel
+eval "$(ssh-agent -k)"
 
+chown -R $(id -u 1000 -n):$(id -u 1000 -n) *
 snap disable docker
 rm -f -r /var/snap/docker*
 sleep 5
