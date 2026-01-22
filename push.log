@@ -1,1 +1,36 @@
-10-16-2025: digest: sha256:c1b2685a46ae20a3702ae41e21fc27553c7e645814978d1392e80b0397e7252d size: 3023
+The push refers to repository [docker.io/0mniteck/debian-slim]
+75e770fd8e86: Preparing
+196a59a2e15c: Preparing
+2afd07659318: Preparing
+54fae9822843: Preparing
+f8077b9c4d70: Preparing
+258c2edaac4f: Preparing
+1fd6a8f2e93e: Preparing
+5adefa27d1e6: Preparing
+d4d5a6993c18: Preparing
+ea356b75f85d: Preparing
+1075439cbab6: Preparing
+ee544d0c2244: Preparing
+37127a0fa4c7: Preparing
+258c2edaac4f: Waiting
+1fd6a8f2e93e: Waiting
+5adefa27d1e6: Waiting
+d4d5a6993c18: Waiting
+ea356b75f85d: Waiting
+1075439cbab6: Waiting
+ee544d0c2244: Waiting
+37127a0fa4c7: Waiting
+2afd07659318: Pushed
+f8077b9c4d70: Pushed
+196a59a2e15c: Pushed
+258c2edaac4f: Pushed
+1fd6a8f2e93e: Pushed
+5adefa27d1e6: Pushed
+d4d5a6993c18: Pushed
+ea356b75f85d: Pushed
+1075439cbab6: Pushed
+54fae9822843: Pushed
+ee544d0c2244: Pushed
+37127a0fa4c7: Pushed
+75e770fd8e86: Pushed
+1-21-2026: digest: sha256:baffa89921b052ec1e9907a6ddcd0de41102380add557c0277a0606bec5d8c0e size: 3023
