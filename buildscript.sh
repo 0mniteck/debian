@@ -19,9 +19,12 @@ chown root:root /var/snap/docker
 snap install docker --revision=3380
 
 usermod -aG plugdev $run_as
-sed -i 's/"1050", ATTR{idProduct}=="0407", /"1050", MODE="0660", GROUP="plugdev", ATTR{idProduct}=="0407", /g' /lib/udev/rules.d/60-scdaemon.rules && udevadm control --reload-rules && udevadm trigger && \
-if [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; then read -p "Plugin any Yubikeys again then hit enter..."; fi
-chown $run_as:plugdev /dev/hidraw*
+sed -i 's/"1050", ATTR{idProduct}=="0407", /"1050", MODE="0660", GROUP="plugdev", ATTR{idProduct}=="0407", /g' /lib/udev/rules.d/60-scdaemon.rules
+udevadm control --reload-rules && udevadm trigger
+if [[ "$(ls -la /dev/hidraw* | grep plugdev)" != *plugdev* ]]; then
+  if [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; then read -p "Plugin any Yubikeys again then hit enter..."; fi
+  chown $run_as:plugdev /dev/hidraw*
+fi
 
 if [[ "$(grep debian- $(echo /root/.gitconfig))" != *debian-* ]]; then
   git config --global --add safe.directory /home/$run_as/Debian
@@ -48,8 +51,8 @@ mkdir -p /home/$run_as/grype
 
 scan_using_grype() { # $1 = Name, $2 = Type:Name
   grype config > /home/$run_as/.grype.yaml
-  TMPDIR=/home/$run_as/syft SYFT_CACHE_DIR=/home/$run_as/syft syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r /home/$run_as/syft
-  script -q -c \"TMPDIR=/home/$run_as/grype GRYPE_DB_CACHE_DIR=/home/$run_as/grype grype sbom:\$1.spdx.json -c /home/$run_as/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r /home/$run_as/grype
+  TMPDIR=/home/$run_as/syft SYFT_CACHE_DIR=/home/$run_as/syft syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r /home/$run_as/syft/*
+  script -q -c \"TMPDIR=/home/$run_as/grype GRYPE_DB_CACHE_DIR=/home/$run_as/grype grype sbom:\$1.spdx.json -c /home/$run_as/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r /home/$run_as/grype/*
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
     tr -d '\000-\037\177' < \$1.grype.status.\$2 | sed '/^$/d' > \$1.grype.status.\$2.tmp
