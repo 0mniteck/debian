@@ -1,15 +1,12 @@
 # [Debian](https://hub.docker.com/r/0mniteck/)
 Tagged releases of debian docker images for reproducible build environments.
 
-## Grype Status at Buildtime & Docker Push Digest
+## Grype Status at Buildtime & Push Digest
 
-Debian Slim:
 https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L6
 
-Debian:
 https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L6
 
-Debian Extra:
 https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L6
 
 ## Currently Supported Tagged Images/Snapshots
