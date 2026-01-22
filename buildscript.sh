@@ -9,7 +9,7 @@ debian_security="20260120T213558Z"
 debian="20260115T202701Z"
 source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
 
-apt install -y snapd gnupg2 gpg-agent libccid pcscd scdaemon
+apt install -y snapd gnupg2 gpg-agent pcscd scdaemon ssh-agent
 snap install syft --classic
 snap install grype --classic
 rm -f -r /var/snap/docker*
@@ -19,18 +19,8 @@ chown root:root /var/snap/docker
 snap install docker --revision=3380
 
 usermod -aG plugdev $run_as
-sed -i 's/"1050", ATTR{idProduct}=="0407", /"1050", MODE="0660", GROUP="plugdev", ATTR{idProduct}=="0407", /g' /lib/udev/rules.d/60-scdaemon.rules
-udevadm control --reload-rules && udevadm trigger
-if [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; then
-  read -p "Plugin any Yubikeys again then hit enter..."
-  if [[ "$(gpg-card list)" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
-    echo "Signing key present"
-  else
-    echo "Signing key missing"
-    read -p "Check Yubikey and try again."
-    exit 0
-  fi
-fi
+sed -i 's/"1050", ATTR{idProduct}=="0407", /"1050", MODE="0660", GROUP="plugdev", ATTR{idProduct}=="0407", /g' /lib/udev/rules.d/60-scdaemon.rules && udevadm control --reload-rules && udevadm trigger && \
+if [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; then read -p "Plugin any Yubikeys again then hit enter..."; fi
 
 if [[ "$(grep debian- $(echo /root/.gitconfig))" != *debian-* ]]; then
   git config --global --add safe.directory /home/$run_as/Debian
@@ -43,6 +33,15 @@ machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 eval \"\$(ssh-agent -s)\"
 ssh-add /home/$run_as/.ssh/id_ecdsa_s*[!.pub]
+systemctl --user restart gpg-agent && wait
+if [[ \"\$(gpg-card list)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
+  echo \"Signing key present\"
+else
+  echo \"Signing key missing\"
+  read -p \"Check Yubikey and try again.\"
+  exit 0
+fi
+
 mkdir -p /home/$run_as/syft
 mkdir -p /home/$run_as/grype
 
@@ -109,6 +108,7 @@ do
     git commit -a -S -m \"Successful Build of \$module:\$(cat push.log | grep digest)\" && git push --set-upstream origin HEAD:\$module
   popd
 done
+
 docker logout
 cat ./*/digest > digests
 git status && git add -A && git status
@@ -116,7 +116,7 @@ git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
 eval \"\$(ssh-agent -k)\""
 
-chown -R $run_as:$run_as *
+# chown -R $run_as:$run_as *
 snap disable docker
 rm -f -r /var/snap/docker*
 sleep 5
@@ -127,6 +127,3 @@ snap remove syft --purge
 rm -f -r /home/$run_as/syft
 snap remove grype --purge
 rm -f -r /home/$run_as/grype
-
-# rm $HOME/getter* -f -r && rm $HOME/grype-scratch* -f -r && rm $HOME/syft -f -r && rm $HOME/6 -f -r && rm $HOME/Library -f -r
-# rm -f -r $HOME/.cache/grype && rm -f -r $HOME/.cache/syft && rm -f -r /tmp/grype-scratch* && rm -f -r /tmp/getter*
