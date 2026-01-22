@@ -74,7 +74,6 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
   rm -f \$1.grype.status.*
   cp \$1.grype.status readme.md
   sed -i '1,3s/^/#### /g' readme.md
-  cat readme.md
 }
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
@@ -96,19 +95,15 @@ do
     --build-arg SOURCE=$source .
     scan_using_grype \$module docker:omniteck-\$module
     docker tag omniteck-\$module:latest 0mniteck/\$module:$rel_date
-    docker push 0mniteck/\$module:$rel_date > push.log
-    docker rmi omniteck-\$module
-    echo 0mniteck/\$module:$rel_date > digest
-    cat push.log | grep digest >> digest
-    echo '## ' >> readme.md && cat digest >> readme.md
+    docker push 0mniteck/\$module:$rel_date > push.log && docker rmi omniteck-\$module
+    echo 0mniteck/\$module:$rel_date > digest && cat push.log | grep digest >> digest
+    echo '## ' >> readme.md && cat digest >> readme.md && cat readme.md
     git status && git add -A && git status
     git commit -a -S -m \"Successful Build of \$module:\$(cat push.log | grep digest)\" && git push --set-upstream origin HEAD:\$module
   popd
 done
 
-docker logout
-cat ./*/digest > digests
-git status && git add -A && git status
+docker logout && cat ./*/digest > digests && git status && git add -A && git status
 git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-upstream origin builder
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
 eval \"\$(ssh-agent -k)\""
