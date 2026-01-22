@@ -25,6 +25,8 @@ fi
 
 machinectl shell $(id -u 1000 -n)@ /bin/bash -c "
 cd $(echo $PWD)
+eval \"$(ssh-agent -s)\"
+ssh-add /home/$(id -u 1000 -n)/.ssh/id_ecdsa_s*[!.pub]
 
 scan_using_grype() { # $1 = Name, $2 = Type:Name
   grype config > /home/$(id -u 1000 -n)/.grype.yaml
