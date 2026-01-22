@@ -1,20 +1,20 @@
 # [Debian](https://hub.docker.com/r/0mniteck/)
 Tagged releases of debian docker images for reproducible build environments.
 
-## Grype Status at Buildtime
+## Grype Status at Buildtime & Docker Push Digest
 
 Debian Slim:
-https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L6
 
 Debian:
-https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L6
 
 Debian Extra:
-https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L3
+https://github.com/0mniteck/Debian/blob/#/readme.md?plain=1#L1-L6
 
 ## Currently Supported Tagged Images/Snapshots
 
-01/21/26:
+01/22/26:
 
 `debian:trixie-20260112-slim
 sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193`
