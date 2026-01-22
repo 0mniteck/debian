@@ -1,6 +1,6 @@
 #!/bin/bash
 
-run_as=$1
+run_as=$(id -u $(echo $PKEXEC_UID) -n)
 
 rel_date="1-21-2026"
 date_rel="2026-1-21"
@@ -42,7 +42,7 @@ systemctl --user restart gpg-agent && wait
 if [[ \"\$(gpg-card list)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
   echo \"Signing key 287EE837E6ED2DD3 present\"
 else
-  echo \"Signing key 287EE837E6ED2DD3 missing!\"
+  echo \"Signing key 287EE837E6ED2DD3 missing\!\"
   read -p \"Check Yubikey and try again.\"
   lsusb
   exit 0
