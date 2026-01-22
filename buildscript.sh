@@ -18,36 +18,35 @@ mkdir /var/snap/docker
 chown root:root /var/snap/docker
 snap install docker --revision=3380
 
-usermod -aG plugdev $run_as
-sed -i 's/"1050", ATTR{idProduct}=="0407", /"1050", MODE="0660", GROUP="plugdev", ATTR{idProduct}=="0407", /g' /lib/udev/rules.d/60-scdaemon.rules
-udevadm control --reload-rules && udevadm trigger
-if [[ "$(ls -la /dev/hidraw* | grep plugdev)" != *plugdev* ]]; then
-  if [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; then read -p "Plugin any Yubikeys again then hit enter..."; fi
-  chown $run_as:plugdev /dev/hidraw*
+if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep plugdev)" != *plugdev* ]]; then
+  usermod -aG plugdev $run_as
+  sed -i 's/"1050", ATTR{idProduct}=="040.", /&MODE="0660", GROUP="plugdev", /g' /lib/udev/rules.d/60-scdaemon.rules
+  udevadm control --reload-rules && udevadm trigger
+  if [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; then
+    read -p "Plugin Yubikey again then hit enter..."
+    chown $run_as:plugdev /dev/hidraw*
+  fi
 fi
 
-if [[ "$(grep debian- $(echo /root/.gitconfig))" != *debian-* ]]; then
-  git config --global --add safe.directory /home/$run_as/Debian
-  git config --global --add safe.directory /home/$run_as/Debian/debian-slim
-  git config --global --add safe.directory /home/$run_as/Debian/debian
-  git config --global --add safe.directory /home/$run_as/Debian/debian-extra
+if [[ "$(ls -la /dev/hidraw* | grep plugdev)" != *plugdev* ]]; then
+  chown $run_as:plugdev /dev/hidraw*
 fi
 
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
-eval \"\$(ssh-agent -s)\"
-ssh-add /home/$run_as/.ssh/id_ecdsa_s*[!.pub]
+
+mkdir -p /home/$run_as/syft && mkdir -p /home/$run_as/grype
+eval \"\$(ssh-agent -s)\" && ssh-add /home/$run_as/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
+
 if [[ \"\$(gpg-card list)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
-  echo \"Signing key present\"
+  echo \"Signing key 287EE837E6ED2DD3 present\"
 else
-  echo \"Signing key missing\"
+  echo \"Signing key 287EE837E6ED2DD3 missing!\"
   read -p \"Check Yubikey and try again.\"
+  lsusb
   exit 0
 fi
-
-mkdir -p /home/$run_as/syft
-mkdir -p /home/$run_as/grype
 
 scan_using_grype() { # $1 = Name, $2 = Type:Name
   grype config > /home/$run_as/.grype.yaml
@@ -77,13 +76,6 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
   sed -i '1,3s/^/#### /g' readme.md
   cat readme.md
 }
-
-if [[ \"$(grep debian- $(echo /home/$run_as)/.gitconfig)\" != *debian-* ]]; then
-  git config --global --add safe.directory $(echo /home/$run_as)/Debian
-  git config --global --add safe.directory $(echo /home/$run_as)/Debian/debian-slim
-  git config --global --add safe.directory $(echo /home/$run_as)/Debian/debian
-  git config --global --add safe.directory $(echo /home/$run_as)/Debian/debian-extra
-fi
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init --remote --merge
@@ -120,7 +112,6 @@ git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
 eval \"\$(ssh-agent -k)\""
 
-# chown -R $run_as:$run_as *
 snap disable docker
 rm -f -r /var/snap/docker*
 sleep 5
