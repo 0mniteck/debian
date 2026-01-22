@@ -2,8 +2,8 @@
 
 run_as=$(id -u $(echo $PKEXEC_UID) -n)
 
-rel_date="1-21-2026"
-date_rel="2026-1-21"
+rel_date="1-22-2026"
+date_rel="2026-1-22"
 
 debian_security="20260120T213558Z"
 debian="20260115T202701Z"
@@ -97,10 +97,10 @@ do
     scan_using_grype \$module docker:omniteck-\$module
     docker tag omniteck-\$module:latest 0mniteck/\$module:$rel_date
     docker push 0mniteck/\$module:$rel_date > push.log
-    docker ps && docker images
+    docker rmi omniteck-\$module
     echo 0mniteck/\$module:$rel_date > digest
     cat push.log | grep digest >> digest
-    cat digest
+    echo '## ' >> readme.md && cat digest >> readme.md
     git status && git add -A && git status
     git commit -a -S -m \"Successful Build of \$module:\$(cat push.log | grep digest)\" && git push --set-upstream origin HEAD:\$module
   popd
