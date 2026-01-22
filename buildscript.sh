@@ -102,7 +102,7 @@ do
     cat \$module.meta.json | grep '\"digest\": \"sha256' >> digest
     echo '## ' >> readme.md && cat digest >> readme.md && cat readme.md
     git status && git add -A && git status
-    git commit -a -S -m \"Successful Build of \$module:\$(cat digest)\" && git push --set-upstream origin HEAD:\$module
+    git commit -a -S -m \"Successful Build of \$module:$date_rel\" && git push --set-upstream origin HEAD:\$module
   popd
 done
 
