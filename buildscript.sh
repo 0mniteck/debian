@@ -9,7 +9,7 @@ debian_security="20260120T213558Z"
 debian="20260115T202701Z"
 source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
 
-apt install -y snapd gnupg2 gpg-agent pcscd scdaemon ssh-agent
+apt install -y snapd gnupg2 gpg-agent pcscd scdaemon
 snap install syft --classic
 snap install grype --classic
 rm -f -r /var/snap/docker*
