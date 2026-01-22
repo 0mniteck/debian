@@ -43,13 +43,13 @@ machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 eval \"\$(ssh-agent -s)\"
 ssh-add /home/$run_as/.ssh/id_ecdsa_s*[!.pub]
-mkdir -p '/home/$run_as/syft'
-mkdir -p '/home/$run_as/grype'
+mkdir -p /home/$run_as/syft
+mkdir -p /home/$run_as/grype
 
 scan_using_grype() { # $1 = Name, $2 = Type:Name
   grype config > /home/$run_as/.grype.yaml
-  TMPDIR=/home/$run_as/syft SYFT_CACHE_DIR=/home/$run_as/syft syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r \"/home/$run_as/syft\"
-  script -q -c \"TMPDIR=/home/$run_as/grype GRYPE_DB_CACHE_DIR=/home/$run_as/grype grype sbom:\$1.spdx.json -c /home/$run_as/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r \"/home/$run_as/grype\"
+  TMPDIR=/home/$run_as/syft SYFT_CACHE_DIR=/home/$run_as/syft syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r /home/$run_as/syft
+  script -q -c \"TMPDIR=/home/$run_as/grype GRYPE_DB_CACHE_DIR=/home/$run_as/grype grype sbom:\$1.spdx.json -c /home/$run_as/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r /home/$run_as/grype
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
     tr -d '\000-\037\177' < \$1.grype.status.\$2 | sed '/^$/d' > \$1.grype.status.\$2.tmp
@@ -124,9 +124,9 @@ snap remove docker --purge
 snap remove docker --purge
 networkctl delete docker0
 snap remove syft --purge
-rm -f -r "/home/$run_as/syft"
+rm -f -r /home/$run_as/syft
 snap remove grype --purge
-rm -f -r "/home/$run_as/grype"
+rm -f -r /home/$run_as/grype
 
 # rm $HOME/getter* -f -r && rm $HOME/grype-scratch* -f -r && rm $HOME/syft -f -r && rm $HOME/6 -f -r && rm $HOME/Library -f -r
 # rm -f -r $HOME/.cache/grype && rm -f -r $HOME/.cache/syft && rm -f -r /tmp/grype-scratch* && rm -f -r /tmp/getter*
