@@ -31,11 +31,10 @@ if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep plugdev)" != *plugdev* ]
   done
   while [[ "$(lsusb | grep Yubikey)" != *Yubikey* ]]; do
     printf "\rPlease re-insert yubikey...\033[K"
-  done
-  sleep 5
+  done && sleep 2
 fi
 
-if [[ "$(ls -la /dev/hidraw* | grep plugdev)" != *plugdev* ]]; then
+if [[ "$(ls -la /dev/h* | grep plugdev)" != *plugdev* ]]; then
   chown $run_as:plugdev /dev/hidraw*
 fi
 
