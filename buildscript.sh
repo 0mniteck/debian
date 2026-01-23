@@ -13,11 +13,11 @@ source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa2
 if [[ "$(echo $PKEXEC_UID)" == "" ]]; then
   if [[ "$(whoami)" == *root* ]]; then
     echo "DO NOT run with sudo or su!"
-    echo "Instead Use: ~\$ 'pkexec --keep-cwd ./buildscript'"
+    echo "Instead Use: ~\$ 'pkexec --keep-cwd ./buildscript.sh'"
     exit 1
   else
     echo "Super user is required for installation steps."
-    echo "Use ~\$ 'pkexec --keep-cwd ./buildscript'"
+    echo "Use ~\$ 'pkexec --keep-cwd ./buildscript.sh'"
     exit 1
   fi
 fi
@@ -26,12 +26,12 @@ if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep plugdev)" != *plugdev* ]
   usermod -aG plugdev $run_as
   sed -i 's/"1050", ATTR{idProduct}=="040.", /&MODE="0660", GROUP="plugdev", /g' /lib/udev/rules.d/60-scdaemon.rules
   udevadm control --reload-rules && udevadm trigger
-  while [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; then
-    echo "Unplug the Yubikey."
-    while [[ "$(lsusb | grep Yubikey)" != *Yubikey* ]]; then
-      echo "And plug it back in."
-      chown $run_as:plugdev /dev/hidraw*
-  fi
+  while [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; do
+    printf "\rPlease remove yubikey...\033[K"
+  done
+  while [[ "$(lsusb | grep Yubikey)" != *Yubikey* ]]; do
+    printf "\rPlease re-insert yubikey...\033[K"
+  done
 fi
 
 if [[ "$(ls -la /dev/hidraw* | grep plugdev)" != *plugdev* ]]; then
@@ -63,7 +63,7 @@ mkdir -p /home/root
 sed -i "s':/root:':/home/root:'" /etc/passwd
 sed -i "s|\[Service\]|\[Service\]\\
 User=$(echo $run_as)|" /etc/systemd/system/snap.docker.dockerd.service
-sed -i "s|EnvironmentFile.*|EnvironmentFile=-$(echo $HOME)/tmp/environment-rootless|" /etc/systemd/system/snap.docker.dockerd.service
+sed -i "s|EnvironmentFile.*|EnvironmentFile=-$HOME/tmp/environment-rootless|" /etc/systemd/system/snap.docker.dockerd.service
 sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$HOME/rootless.sh\'|" /etc/systemd/system/snap.docker.dockerd.service
 sed -i "s|\[Service\]|\[Service\]\\
 User=$(echo $run_as)|" /etc/systemd/system/snap.docker.nvidia-container-toolkit.service
@@ -78,7 +78,8 @@ cd $(echo $PWD)
 scan_using_grype() { # $1 = Name, $2 = Type:Name
   grype config > /home/$run_as/.grype.yaml
   TMPDIR=/home/$run_as/syft SYFT_CACHE_DIR=/home/$run_as/syft syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r /home/$run_as/syft/* && wait
-  script -q -c \"TMPDIR=/home/$run_as/grype GRYPE_DB_CACHE_DIR=/home/$run_as/grype grype sbom:\$1.spdx.json -c /home/$run_as/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r /home/$run_as/grype/*
+  script -q -c \"TMPDIR=/home/$run_as/grype GRYPE_DB_CACHE_DIR=/home/$run_as/grype grype sbom:\$1.spdx.json -c /home/$run_as/.grype.yaml \
+  -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r /home/$run_as/grype/* && wait
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
     tr -d '\000-\037\177' < \$1.grype.status.\$2 | sed '/^$/d' > \$1.grype.status.\$2.tmp
@@ -106,8 +107,7 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
 mkdir -p /home/$run_as/syft && mkdir -p /home/$run_as/grype
 eval \"\$(ssh-agent -s)\" && ssh-add /home/$run_as/.ssh/id_ecdsa_s*[!.pub]
 export DOCKER_HOST=unix:///run/user/$run_as/docker.sock && $docker info | grep rootless
-systemctl --user restart gpg-agent && wait
-
+systemctl --user restart gpg-agent && wait && systemctl status snap.docker.dockerd --no-pager -n 0
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init --remote --merge
 $docker login && export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
@@ -126,9 +126,11 @@ do
   pushd \$module/
     git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
     rm -f \$module.spdx.json \$module.meta.json \$module.grype.json \$module.grype.status digest readme.md push.log
-    $docker buildx create --name \$module-builder --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
-    $docker buildx build \
-    --tag 0mniteck/\$module:$rel_date --push \
+    $docker buildx create \
+    --name \$module-builder --buildkitd-flags \"--oci-worker-rootless=true\" \
+    --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
+    $docker buildx build --push \
+    --tag 0mniteck/\$module:$rel_date \
     --metadata-file \$module.meta.json \
     --attest \"type=provenance,mode=max\" \
     --build-arg REL_DATE=$rel_date \
@@ -153,8 +155,7 @@ git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date
 eval \"\$(ssh-agent -k)\""
 
 snap disable docker
-rm -f -r /var/snap/docker/
-sleep 5
+rm -f -r /var/snap/docker/ && wait
 snap remove docker --purge
 snap remove docker --purge
 networkctl delete docker0
