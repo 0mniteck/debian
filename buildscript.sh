@@ -70,7 +70,7 @@ User=$(echo $run_as)|" /etc/systemd/system/snap.docker.nvidia-container-toolkit.
 mkdir -p /usr/libexec/docker/cli-plugins
 ln -s /snap/docker/current/usr/libexec/docker/cli-plugins/docker-buildx /usr/libexec/docker/cli-plugins/docker-buildx
 systemctl daemon-reload && wait
-snap start docker
+snap start docker && wait
 
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
@@ -106,8 +106,8 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
 
 mkdir -p /home/$run_as/syft && mkdir -p /home/$run_as/grype
 eval \"\$(ssh-agent -s)\" && ssh-add /home/$run_as/.ssh/id_ecdsa_s*[!.pub]
-export DOCKER_HOST=unix:///run/user/$run_as/docker.sock && $docker info | grep rootless
 systemctl --user restart gpg-agent && wait && systemctl status snap.docker.dockerd --no-pager -n 0
+export DOCKER_HOST=unix:///run/user/$run_as/docker.sock && $docker info | grep rootless
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init --remote --merge
 $docker login && export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
