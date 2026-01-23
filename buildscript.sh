@@ -3,8 +3,8 @@ docker='/snap/docker/current/bin/docker'
 run_as=$(id -u $(echo $PKEXEC_UID) -n)
 HOME=/home/$run_as
 
-rel_date="01-22-2026"
-date_rel="2026-01-22"
+rel_date="01-23-2026"
+date_rel="2026-01-23"
 
 debian_security="20260122T200547Z"
 debian="20260122T143611Z"
@@ -62,24 +62,28 @@ mkdir -p /home/root
 sed -i "s':/root:':/home/root:'" /etc/passwd
 sed -i "s|\[Service\]|\[Service\]\\
 User=$(echo $run_as)|" /etc/systemd/system/snap.docker.dockerd.service
-sed -i "s|EnvironmentFile.*|EnvironmentFile=-$HOME/tmp/environment-rootless|" /etc/systemd/system/snap.docker.dockerd.service
-sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$HOME/rootless.sh\'|" /etc/systemd/system/snap.docker.dockerd.service
+sed -i "s|EnvironmentFile.*|EnvironmentFile=-$HOME/tmp/environment-rootless|" \
+/etc/systemd/system/snap.docker.dockerd.service
+sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$HOME/rootless.sh\'|" \
+/etc/systemd/system/snap.docker.dockerd.service
 sed -i "s|\[Service\]|\[Service\]\\
 User=$(echo $run_as)|" /etc/systemd/system/snap.docker.nvidia-container-toolkit.service
 
 systemctl daemon-reload && wait
 snap start docker && wait
 
-mkdir -p /usr/libexec/docker/cli-plugins
+mkdir -p /usr/libexec/docker/cli-plugins && wait
 ln -s /snap/docker/current/usr/libexec/docker/cli-plugins/docker-buildx /usr/libexec/docker/cli-plugins/docker-buildx
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 
 scan_using_grype() { # $1 = Name, $2 = Type:Name
   grype config > /home/$run_as/.grype.yaml
-  TMPDIR=/home/$run_as/syft SYFT_CACHE_DIR=/home/$run_as/syft syft scan \$2 -o spdx-json=\$1.spdx.json && rm -f -r /home/$run_as/syft/* && wait
-  script -q -c \"TMPDIR=/home/$run_as/grype GRYPE_DB_CACHE_DIR=/home/$run_as/grype grype sbom:\$1.spdx.json -c /home/$run_as/.grype.yaml \
-  -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp && rm -f -r /home/$run_as/grype/* && wait
+  TMPDIR=/home/$run_as/syft SYFT_CACHE_DIR=/home/$run_as/syft syft scan \$2 -o spdx-json=\$1.spdx.json
+  rm -f -r /home/$run_as/syft/* && wait
+  script -q -c \"TMPDIR=/home/$run_as/grype GRYPE_DB_CACHE_DIR=/home/$run_as/grype grype sbom:\$1.spdx.json \
+  -c /home/$run_as/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
+  rm -f -r /home/$run_as/grype/* && wait
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
     tr -d '\000-\037\177' < \$1.grype.status.\$2 | sed '/^$/d' > \$1.grype.status.\$2.tmp
@@ -107,10 +111,10 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
 mkdir -p /home/$run_as/syft && mkdir -p /home/$run_as/grype
 eval \"\$(ssh-agent -s)\" && ssh-add /home/$run_as/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait && systemctl status snap.docker.dockerd --no-pager -n 0
-export DOCKER_HOST=unix:///run/user/$run_as/docker.sock && $docker info | grep rootless
+export DOCKER_HOST=unix:///run/user/$run_as/docker.sock && $docker info | grep rootless >> $HOME/tmp/log
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
-git submodule update --init --remote --merge
-$docker login && export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
+git submodule update --init --remote --merge && $docker login
+export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
 
 if [[ \"\$(gpg-card list)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
   echo && echo \"Signing key 287EE837E6ED2DD3 present\" && echo
