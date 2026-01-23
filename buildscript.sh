@@ -113,7 +113,7 @@ eval \"\$(ssh-agent -s)\" && ssh-add /home/$run_as/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait && systemctl status snap.docker.dockerd --no-pager -n 0
 export DOCKER_HOST=unix:///run/user/\$(echo $PKEXEC_UID)/docker.sock && $docker info | grep rootless >> $HOME/tmp/log
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
-git submodule update --init --remote --merge && $docker login
+git submodule update --init --remote --merge && docker login
 export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
 
 if [[ \"\$(gpg-card list)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
