@@ -70,6 +70,8 @@ User=$(echo $run_as)|" /etc/systemd/system/snap.docker.nvidia-container-toolkit.
 systemctl daemon-reload && wait
 snap start docker && wait
 
+mkdir -p /usr/libexec/docker/cli-plugins
+ln -s /snap/docker/current/usr/libexec/docker/cli-plugins/docker-buildx /usr/libexec/docker/cli-plugins/docker-buildx
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 
@@ -102,9 +104,7 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-mkdir -p /usr/libexec/docker/cli-plugins
 mkdir -p /home/$run_as/syft && mkdir -p /home/$run_as/grype
-ln -s /snap/docker/current/usr/libexec/docker/cli-plugins/docker-buildx /usr/libexec/docker/cli-plugins/docker-buildx
 eval \"\$(ssh-agent -s)\" && ssh-add /home/$run_as/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait && systemctl status snap.docker.dockerd --no-pager -n 0
 export DOCKER_HOST=unix:///run/user/$run_as/docker.sock && $docker info | grep rootless
