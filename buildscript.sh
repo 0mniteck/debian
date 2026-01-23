@@ -22,6 +22,13 @@ if [[ "$(echo $PKEXEC_UID)" == "" ]]; then
   fi
 fi
 
+apt install -y gnupg2 gpg-agent pcscd pkexec rootlesskit scdaemon slirp4netns snapd uidmap
+snap install syft --classic
+snap install grype --classic
+snap remove docker --purge
+snap install docker --revision=3380
+snap stop docker && wait
+
 if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep plugdev)" != *plugdev* ]]; then
   usermod -aG plugdev $run_as
   sed -i 's/"1050", ATTR{idProduct}=="040.", /&MODE="0660", GROUP="plugdev", /g' /lib/udev/rules.d/60-scdaemon.rules
@@ -31,19 +38,12 @@ if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep plugdev)" != *plugdev* ]
   done
   while [[ "$(lsusb | grep Yubikey)" != *Yubikey* ]]; do
     printf "\rPlease re-insert yubikey...\033[K"
-  done && sleep 2
+  done && sleep 1 && echo
 fi
 
 if [[ "$(ls -la /dev/h* | grep plugdev)" != *plugdev* ]]; then
   chown $run_as:plugdev /dev/hidraw*
 fi
-
-apt install -y gnupg2 gpg-agent pcscd pkexec rootlesskit scdaemon slirp4netns snapd uidmap
-snap install syft --classic
-snap install grype --classic
-snap remove docker --purge
-snap install docker --revision=3380
-snap stop docker
 
 > $HOME/rootless.sh
 cat >> $HOME/rootless.sh << __EOF
@@ -52,12 +52,11 @@ rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopb
 env > $HOME/tmp/environment-docker
 grep ROOTLESS $HOME/tmp/environment-docker >> $HOME/tmp/environment-rootless
 echo "HOME=$HOME" >> $HOME/tmp/environment-rootless
-echo "XDG_RUNTIME_DIR=/run/user/$(id -u)" >> $HOME/tmp/environment-rootless
+echo "XDG_RUNTIME_DIR=/run/user/$(id -u $PKEXEC_UID)" >> $HOME/tmp/environment-rootless
 echo "PATH=$PATH:/snap/docker/current/bin" >> $HOME/tmp/environment-rootless
 echo "\$(echo \$(<$HOME/tmp/environment-rootless)) /snap/docker/current/bin/dockerd --rootless" | bash 2> $HOME/tmp/log'
 __EOF
-chmod +x $HOME/rootless.sh
-chown $run_as:$run_as $HOME/rootless.sh
+chmod +x $HOME/rootless.sh && chown $run_as:$run_as $HOME/rootless.sh
 
 mkdir -p /home/root
 sed -i "s':/root:':/home/root:'" /etc/passwd
@@ -67,8 +66,7 @@ sed -i "s|EnvironmentFile.*|EnvironmentFile=-$HOME/tmp/environment-rootless|" /e
 sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$HOME/rootless.sh\'|" /etc/systemd/system/snap.docker.dockerd.service
 sed -i "s|\[Service\]|\[Service\]\\
 User=$(echo $run_as)|" /etc/systemd/system/snap.docker.nvidia-container-toolkit.service
-mkdir -p /usr/libexec/docker/cli-plugins
-ln -s /snap/docker/current/usr/libexec/docker/cli-plugins/docker-buildx /usr/libexec/docker/cli-plugins/docker-buildx
+
 systemctl daemon-reload && wait
 snap start docker && wait
 
@@ -104,7 +102,9 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
   sed -i '1,3s/^/#### /g' readme.md
 }
 
+mkdir -p /usr/libexec/docker/cli-plugins
 mkdir -p /home/$run_as/syft && mkdir -p /home/$run_as/grype
+ln -s /snap/docker/current/usr/libexec/docker/cli-plugins/docker-buildx /usr/libexec/docker/cli-plugins/docker-buildx
 eval \"\$(ssh-agent -s)\" && ssh-add /home/$run_as/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait && systemctl status snap.docker.dockerd --no-pager -n 0
 export DOCKER_HOST=unix:///run/user/$run_as/docker.sock && $docker info | grep rootless
@@ -118,7 +118,7 @@ else
   echo \"Signing key 287EE837E6ED2DD3 missing\!\"
   read -p \"Check Yubikey and try again.\"
   lsusb
-  exit 0
+  exit 1
 fi
 
 for module in debian-slim debian debian-extra
