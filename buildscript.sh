@@ -37,7 +37,12 @@ snap install grype --classic && wait
 snap remove docker --purge && wait
 snap install docker --revision=3380 && wait && sleep 5
 snap set docker nvidia-support.disabled=true && wait
-snap stop docker && wait && rm -f -r /run/docker*
+snap stop docker && wait
+rm -r -f /run/docker*
+rm -r -f /run/snap.docker/*
+rm -r -f /run/containerd/
+rm -r -f /run/user/1000/docker*
+rm -r -f /run/user/1000/runc/
 groupadd -fr docker && usermod -aG docker $run_as && wait
 
 machinectl shell $run_as@ /bin/bash -c "
@@ -71,7 +76,7 @@ $systemd_path.dockerd.service
 sed -i "s|\[Service\]|\[Service\]\\
 User=$run_as\\
 Group=docker|" $systemd_path.nvidia-container-toolkit.service
-cat $systemd_path.dockerd.service
+
 systemctl daemon-reload && wait && snap start docker && wait
 
 mkdir -p /$buildx_path && wait && \
