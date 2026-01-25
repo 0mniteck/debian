@@ -125,7 +125,7 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
 systemctl status snap.docker.dockerd --no-pager -n 0
 export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
 export DOCKER_HOST=unix:///run/user/$run_id/docker.sock
-$docker info && $docker info | grep rootless >> $rootless_path/log
+$docker info && $docker info | grep rootless >> $home/rootless.log
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
