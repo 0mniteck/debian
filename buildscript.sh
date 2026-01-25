@@ -31,7 +31,7 @@ fi
 
 apt install -y gnupg2 gpg-agent \
                pcscd pkexec rootlesskit \
-               scdaemon slirp4netns snapd uidmap
+               scdaemon slirp4netns snapd systemd-container uidmap
 snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge && wait
