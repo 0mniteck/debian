@@ -83,9 +83,8 @@ systemctl daemon-reload && wait && snap start docker && wait
 mkdir -p /$buildx_path && wait && \
 ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
 
-if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep plugdev)" != *plugdev* ]]; then
-  groupadd -fr plugdev && usermod -aG plugdev $run_as && wait
-  sed -i 's/"1050", ATTR{idProduct}=="040.", /&MODE="0660", GROUP="plugdev", /g' /lib/udev/rules.d/60-scdaemon.rules
+if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep $run_as)" != *$run_as* ]]; then
+  sed -i "s/\"1050\", ATTR{idProduct}==\"040.\", /&MODE=\"0660\", GROUP=\"$run_as\", /g" /lib/udev/rules.d/60-scdaemon.rules
   udevadm control --reload-rules && udevadm trigger
   while [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; do
     printf "\rPlease remove yubikey...\033[K"
@@ -95,8 +94,8 @@ if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep plugdev)" != *plugdev* ]
   done && sleep 1 && echo
 fi
 
-if [[ "$(ls -la /dev/h* | grep plugdev)" != *plugdev* ]]; then
-  chown $run_as:plugdev /dev/hidraw*
+if [[ "$(ls -la /dev/h* | grep \"$run_as $run_as\")" != *$run_as $run_as* ]]; then
+  chown $run_as:$run_as /dev/hidraw*
 fi
 
 machinectl shell $run_as@ /bin/bash -c "
