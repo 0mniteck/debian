@@ -1,5 +1,6 @@
 #!/bin/bash
-docker='/snap/bin/docker'
+docker_path='/snap/docker/current/bin'
+docker="$docker_path/docker"
 run_as=$(id -u $(echo $PKEXEC_UID) -n)
 HOME=/home/$run_as
 
@@ -53,7 +54,7 @@ env > $HOME/tmp/environment-docker
 grep ROOTLESS $HOME/tmp/environment-docker >> $HOME/tmp/environment-rootless
 echo "HOME=$HOME" >> $HOME/tmp/environment-rootless
 echo "XDG_RUNTIME_DIR=/run/user/$(id -u $PKEXEC_UID)" >> $HOME/tmp/environment-rootless
-echo "PATH=$PATH:/snap/docker/current/bin" >> $HOME/tmp/environment-rootless
+echo "PATH=\$PATH:$(echo $docker_path)" >> $HOME/tmp/environment-rootless
 echo "\$(echo \$(<$HOME/tmp/environment-rootless)) $(echo $docker)d --rootless" | bash 2> $HOME/tmp/log'
 __EOF
 chmod +x $HOME/rootless.sh && chown $run_as:$run_as $HOME/rootless.sh
