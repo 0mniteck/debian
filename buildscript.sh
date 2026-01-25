@@ -68,14 +68,16 @@ mkdir -p /home/root
 sed -i "s':/root:':/home/root:'" /etc/passwd
 sed -i "s|\[Service\]|\[Service\]\\
 User=$run_as\\
-Group=$run_as|" $systemd_path.dockerd.service
+Group=$run_as\\
+Slice=docker.slice|" $systemd_path.dockerd.service
 sed -i "s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|" \
 $systemd_path.dockerd.service
 sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$home/rootless.sh\'|" \
 $systemd_path.dockerd.service
 sed -i "s|\[Service\]|\[Service\]\\
 User=$run_as\\
-Group=$run_as|" $systemd_path.nvidia-container-toolkit.service
+Group=$run_as\\
+Slice=docker.slice|" $systemd_path.nvidia-container-toolkit.service
 
 snap set docker nvidia-support.disabled=true && wait
 systemctl daemon-reload && wait && snap start docker && wait
