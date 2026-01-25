@@ -89,6 +89,7 @@ fi
 
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
+groups
 
 scan_using_grype() { # $1 = Name, $2 = Type:Name
   grype config > $home/.grype.yaml
