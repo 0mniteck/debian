@@ -96,9 +96,7 @@ if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep $run_as)" != *$run_as* ]
   done && sleep 1 && echo
 fi
 
-if [[ "$(ls -la /dev/h* | grep \"$run_as $run_as\")" != *$run_as $run_as* ]]; then
-  chown $run_as:$run_as /dev/hidraw*
-fi
+chown $run_as:$run_as /dev/hidraw*
 
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
