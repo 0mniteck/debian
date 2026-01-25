@@ -35,9 +35,9 @@ apt install -y gnupg2 gpg-agent \
 snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge && wait
-snap install docker --revision=3380 && wait
+snap install docker --revision=3380 && wait && sleep 5
 snap set docker nvidia-support.disabled=true && wait
-snap stop docker && wait
+snap stop docker && wait && rm -f -r /run/docker*
 groupadd -fr docker && usermod -aG docker $run_as && wait
 
 machinectl shell $run_as@ /bin/bash -c "
