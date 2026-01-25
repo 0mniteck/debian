@@ -38,7 +38,7 @@ snap remove docker --purge && wait
 snap install docker --revision=3380 && wait
 snap stop docker && wait
 snap set docker nvidia-support.disabled=true
-groupadd -fr docker && usermod -aG docker $run_as
+groupadd -fr docker && usermod -aG docker $run_as && wait
 
 machinectl shell $run_as@ /bin/bash -c "
 docker login && mkdir -p $home/.docker && \
@@ -62,13 +62,15 @@ chmod +x $home/rootless.sh && chown $run_as:$run_as $home/rootless.sh
 mkdir -p /home/root
 sed -i "s':/root:':/home/root:'" /etc/passwd
 sed -i "s|\[Service\]|\[Service\]\\
-User=$run_as|" $systemd_path.dockerd.service
+User=$run_as
+Group=docker|" $systemd_path.dockerd.service
 sed -i "s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|" \
 $systemd_path.dockerd.service
 sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$home/rootless.sh\'|" \
 $systemd_path.dockerd.service
 sed -i "s|\[Service\]|\[Service\]\\
-User=$run_as|" $systemd_path.nvidia-container-toolkit.service
+User=$run_as
+Group=docker|" $systemd_path.nvidia-container-toolkit.service
 
 systemctl daemon-reload && wait && snap start docker && wait
 
@@ -76,7 +78,7 @@ mkdir -p /$buildx_path && wait && \
 ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
 
 if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep plugdev)" != *plugdev* ]]; then
-  groupadd -fr plugdev && usermod -aG plugdev $run_as
+  groupadd -fr plugdev && usermod -aG plugdev $run_as && wait
   sed -i 's/"1050", ATTR{idProduct}=="040.", /&MODE="0660", GROUP="plugdev", /g' /lib/udev/rules.d/60-scdaemon.rules
   udevadm control --reload-rules && udevadm trigger
   while [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; do
