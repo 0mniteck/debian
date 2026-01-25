@@ -35,7 +35,7 @@ if [[ "$run_id" == "" ]]; then
   fi
 fi
 
-apt-get -q install -y gnupg2 gpg-agent \
+apt-get -qq install -y gnupg2 gpg-agent \
                pcscd pkexec rootlesskit \
                scdaemon slirp4netns snapd systemd-container uidmap
 snap install syft --classic && wait
