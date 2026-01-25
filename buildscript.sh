@@ -19,8 +19,8 @@ buildx_path=usr/libexec/docker/cli-plugins
 rel_date="01-25-2026"
 date_rel="2026-01-25"
 
-debian_security=20260122T200547Z
-debian=20260122T143611Z
+debian_security=20260125T223411Z
+debian=20260125T203410Z
 source=debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193
 
 if [[ "$run_id" == "" ]]; then
