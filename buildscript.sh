@@ -36,12 +36,12 @@ snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge && wait
 snap install docker --revision=3380 && wait
+snap set docker nvidia-support.disabled=true && wait
 snap stop docker && wait
-snap set docker nvidia-support.disabled=true
 groupadd -fr docker && usermod -aG docker $run_as && wait
 
 machinectl shell $run_as@ /bin/bash -c "
-groups && docker login && mkdir -p $home/.docker && \
+docker login && mkdir -p $home/.docker && \
 ln -s $home/$snap_path/.docker/config.json $home/.docker/config.json || exit 1"
 
 > $home/rootless.sh
@@ -71,7 +71,7 @@ $systemd_path.dockerd.service
 sed -i "s|\[Service\]|\[Service\]\\
 User=$run_as\\
 Group=docker|" $systemd_path.nvidia-container-toolkit.service
-
+cat $systemd_path.dockerd.service
 systemctl daemon-reload && wait && snap start docker && wait
 
 mkdir -p /$buildx_path && wait && \
@@ -95,7 +95,6 @@ fi
 
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
-groups
 
 scan_using_grype() { # $1 = Name, $2 = Type:Name
   grype config > $home/.grype.yaml
