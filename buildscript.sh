@@ -60,7 +60,7 @@ XDG_RUNTIME_DIR=/run/user/$run_id
 XDG_CONFIG_HOME=$home
 DOCKER_TMPDIR=$home/.docker/tmp
 PATH=\$PATH:$docker_path" >> $rootless_path/env-rootless
-echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker" | /bin/bash 2> $home/rootless.log'
+echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker" | /bin/bash 2> $rootless_path/log'
 __EOF
 chmod +x $home/rootless.sh && chown $run_as:$run_as $home/rootless.sh
 
@@ -68,15 +68,16 @@ mkdir -p /home/root
 sed -i "s':/root:':/home/root:'" /etc/passwd
 sed -i "s|\[Service\]|\[Service\]\\
 User=$run_as\\
-Group=docker|" $systemd_path.dockerd.service
+Group=$run_as|" $systemd_path.dockerd.service
 sed -i "s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|" \
 $systemd_path.dockerd.service
 sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$home/rootless.sh\'|" \
 $systemd_path.dockerd.service
 sed -i "s|\[Service\]|\[Service\]\\
 User=$run_as\\
-Group=docker|" $systemd_path.nvidia-container-toolkit.service
+Group=$run_as|" $systemd_path.nvidia-container-toolkit.service
 
+snap set docker nvidia-support.disabled=true && wait
 systemctl daemon-reload && wait && snap start docker && wait
 
 mkdir -p /$buildx_path && wait && \
@@ -135,7 +136,7 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
 systemctl status snap.docker.dockerd --no-pager -n 0
 export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
 export DOCKER_HOST=unix:///run/user/$run_id/docker.sock
-$docker info && $docker info | grep rootless >> $home/rootless.log
+$docker info && $docker info | grep rootless >> $rootless_path/log
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
