@@ -2,10 +2,13 @@
 
 run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
-buildx_path=usr/libexec/docker/cli-plugins
-docker_path=/snap/docker/current/bin
-docker=$docker_path/docker
 home=/home/$run_as
+systemd_path=/etc/systemd/system/snap.docker
+buildx_path=usr/libexec/docker/cli-plugins
+snap_path=snap/docker/current
+docker_path=/$snap_path/bin
+rootless_path=$home/.rootless
+docker=$docker_path/docker
 
 rel_date="01-24-2026"
 date_rel="2026-01-24"
@@ -35,37 +38,37 @@ snap stop docker && wait
 
 machinectl shell $run_as@ /bin/bash -c "
 docker login && mkdir -p $home/.docker && \
-ln -s $home/snap/docker/current/.docker/config.json $home/.docker/config.json || exit 1"
+ln -s $home/$snap_path/.docker/config.json $home/.docker/config.json || exit 1"
 
 > $home/rootless.sh
 cat >> $home/rootless.sh << __EOF
 #!/bin/bash
-rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $home/.rootless /bin/bash -i -c '
-env > $home/.rootless/env-docker
-grep ROOTLESS $home/.rootless/env-docker > $home/.rootless/env-rootless
+rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path /bin/bash -i -c '
+env > $rootless_path/env-docker
+grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
 echo "HOME=$home
 XDG_RUNTIME_DIR=/run/user/$run_id
-PATH=\$PATH:$docker_path" >> $home/.rootless/env-rootless
-echo "\$(echo \$(<$home/.rootless/env-rootless)) $(echo $docker)d --rootless" | /bin/bash 2> $home/.rootless/log'
+PATH=\$PATH:$docker_path" >> $rootless_path/env-rootless
+echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless" | /bin/bash 2> $rootless_path/log'
 __EOF
 chmod +x $home/rootless.sh && chown $run_as:$run_as $home/rootless.sh
 
 mkdir -p /home/root
 sed -i "s':/root:':/home/root:'" /etc/passwd
 sed -i "s|\[Service\]|\[Service\]\\
-User=$run_as|" /etc/systemd/system/snap.docker.dockerd.service
-sed -i "s|EnvironmentFile.*|EnvironmentFile=-$home/.rootless/env-rootless|" \
-/etc/systemd/system/snap.docker.dockerd.service
+User=$run_as|" $systemd_path.dockerd.service
+sed -i "s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|" \
+$systemd_path.dockerd.service
 sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$home/rootless.sh\'|" \
-/etc/systemd/system/snap.docker.dockerd.service
+$systemd_path.dockerd.service
 sed -i "s|\[Service\]|\[Service\]\\
-User=$run_as|" /etc/systemd/system/snap.docker.nvidia-container-toolkit.service
+User=$run_as|" $systemd_path.nvidia-container-toolkit.service
 
 systemctl daemon-reload && wait
 snap start docker && wait
 
 mkdir -p /$buildx_path && wait && \
-ln -s /snap/docker/current/$buildx_path/docker-buildx /$buildx_path/docker-buildx
+ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
 
 if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep plugdev)" != *plugdev* ]]; then
   usermod -aG plugdev $run_as
@@ -117,11 +120,13 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-mkdir -p $home/syft && mkdir -p $home/grype
-eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
-systemctl --user restart gpg-agent && wait && systemctl status snap.docker.dockerd --no-pager -n 0
+systemctl status snap.docker.dockerd --no-pager -n 0
 export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
-export DOCKER_HOST=unix:///run/user/$run_id/docker.sock && $docker info | grep rootless >> $home/.rootless/log
+export DOCKER_HOST=unix:///run/user/$run_id/docker.sock
+$docker info && $docker info | grep rootless >> $rootless_path/log
+
+eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
+systemctl --user restart gpg-agent && wait
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init --remote --merge
 
@@ -134,6 +139,7 @@ else
   exit 1
 fi
 
+mkdir -p $home/syft && mkdir -p $home/grype
 for module in debian-slim debian debian-extra
 do
   pushd \$module/
