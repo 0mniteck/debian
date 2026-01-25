@@ -41,7 +41,7 @@ snap set docker nvidia-support.disabled=true
 groupadd -fr docker && usermod -aG docker $run_as && wait
 
 machinectl shell $run_as@ /bin/bash -c "
-docker login && mkdir -p $home/.docker && \
+groups && docker login && mkdir -p $home/.docker && \
 ln -s $home/$snap_path/.docker/config.json $home/.docker/config.json || exit 1"
 
 > $home/rootless.sh
