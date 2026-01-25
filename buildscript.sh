@@ -55,7 +55,7 @@ XDG_RUNTIME_DIR=/run/user/$run_id
 XDG_CONFIG_HOME=$home
 DOCKER_TMPDIR=$home/.docker/tmp
 PATH=\$PATH:$docker_path" >> $rootless_path/env-rootless
-echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false" | /bin/bash 2> $home/rootless.log'
+echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker" | /bin/bash 2> $home/rootless.log'
 __EOF
 chmod +x $home/rootless.sh && chown $run_as:$run_as $home/rootless.sh
 
