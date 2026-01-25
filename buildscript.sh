@@ -62,14 +62,14 @@ chmod +x $home/rootless.sh && chown $run_as:$run_as $home/rootless.sh
 mkdir -p /home/root
 sed -i "s':/root:':/home/root:'" /etc/passwd
 sed -i "s|\[Service\]|\[Service\]\\
-User=$run_as
+User=$run_as\\
 Group=docker|" $systemd_path.dockerd.service
 sed -i "s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|" \
 $systemd_path.dockerd.service
 sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$home/rootless.sh\'|" \
 $systemd_path.dockerd.service
 sed -i "s|\[Service\]|\[Service\]\\
-User=$run_as
+User=$run_as\\
 Group=docker|" $systemd_path.nvidia-container-toolkit.service
 
 systemctl daemon-reload && wait && snap start docker && wait
