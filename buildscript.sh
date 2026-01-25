@@ -3,15 +3,19 @@
 run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
 home=/home/$run_as
+data_dir=$home/.local/share
 systemd_path=/etc/systemd/system/snap.docker
 buildx_path=usr/libexec/docker/cli-plugins
 snap_path=snap/docker/current
 docker_path=/$snap_path/bin
-rootless_path=$home/.rootless
 docker=$docker_path/docker
 
-rel_date="01-24-2026"
-date_rel="2026-01-24"
+sysusr_path=$data_dir/systemd/user
+docker_data=$data_dir/docker
+rootless_path=$data_dir/rootless
+
+rel_date="01-25-2026"
+date_rel="2026-01-25"
 
 debian_security=20260122T200547Z
 debian=20260122T143611Z
@@ -29,14 +33,13 @@ if [[ "$run_id" == "" ]]; then
   fi
 fi
 
-apt install -y gnupg2 gpg-agent \
+apt-get -q install -y gnupg2 gpg-agent \
                pcscd pkexec rootlesskit \
                scdaemon slirp4netns snapd systemd-container uidmap
 snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge && wait
-snap install docker --revision=3380 && wait && sleep 5
-snap set docker nvidia-support.disabled=true && wait
+snap install docker --revision=3380 && wait
 snap stop docker && wait
 rm -r -f /run/docker*
 rm -r -f /run/snap.docker/*
@@ -46,11 +49,11 @@ rm -r -f /run/user/1000/runc/
 groupadd -fr docker && usermod -aG docker $run_as && wait
 
 machinectl shell $run_as@ /bin/bash -c "
-docker login && mkdir -p $home/.docker && \
-ln -s $home/$snap_path/.docker/config.json $home/.docker/config.json || exit 1"
+docker login && mkdir -p $docker_data/.docker && \
+ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1"
 
-> $home/rootless.sh
-cat >> $home/rootless.sh << __EOF
+> $data_dir/rootless.sh
+cat >> $data_dir/rootless.sh << __EOF
 #!/bin/bash
 rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path /bin/bash -i -c '
 env > $rootless_path/env-docker
@@ -58,29 +61,26 @@ grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
 echo "HOME=$home
 XDG_RUNTIME_DIR=/run/user/$run_id
 XDG_CONFIG_HOME=$home
-DOCKER_TMPDIR=$home/.docker/tmp
+DOCKER_TMPDIR=$docker_data/tmp
 PATH=\$PATH:$docker_path" >> $rootless_path/env-rootless
 echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker" | /bin/bash 2> $rootless_path/log'
 __EOF
-chmod +x $home/rootless.sh && chown $run_as:$run_as $home/rootless.sh
+chmod +x $data_dir/rootless.sh && chown $run_as:$run_as $data_dir/rootless.sh
 
 mkdir -p /home/root
 sed -i "s':/root:':/home/root:'" /etc/passwd
-sed -i "s|\[Service\]|\[Service\]\\
-User=$run_as\\
-Group=$run_as\\
-Slice=docker.slice|" $systemd_path.dockerd.service
-sed -i "s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|" \
-$systemd_path.dockerd.service
-sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$home/rootless.sh\'|" \
-$systemd_path.dockerd.service
-sed -i "s|\[Service\]|\[Service\]\\
-User=$run_as\\
-Group=$run_as\\
-Slice=docker.slice|" $systemd_path.nvidia-container-toolkit.service
 
-snap set docker nvidia-support.disabled=true && wait
-systemctl daemon-reload && wait && snap start docker && wait
+mkdir -p $sysusr_path
+cp $systemd_path.dockerd.service $sysusr_path/docker.dockerd.service
+
+sed -i "s|\[Service\]|\[Service\]\\
+User=$run_as\\
+Group=$run_as\\
+Slice=docker.slice|" $sysusr_path/docker.dockerd.service
+sed -i "s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|" \
+$sysusr_path/docker.dockerd.service
+sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|" \
+$sysusr_path/docker.dockerd.service
 
 mkdir -p /$buildx_path && wait && \
 ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
@@ -102,12 +102,12 @@ machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 
 scan_using_grype() { # $1 = Name, $2 = Type:Name
-  grype config > $home/.grype.yaml
-  TMPDIR=$home/syft SYFT_CACHE_DIR=$home/syft syft scan \$2 -o spdx-json=\$1.spdx.json
-  rm -f -r $home/syft/* && wait
-  script -q -c \"TMPDIR=$home/grype GRYPE_DB_CACHE_DIR=$home/grype grype sbom:\$1.spdx.json \
-  -c $home/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
-  rm -f -r $home/grype/* && wait
+  grype config > $docker_data/.grype.yaml
+  TMPDIR=$docker_data/syft SYFT_CACHE_DIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json
+  rm -f -r $docker_data/syft/* && wait
+  script -q -c \"TMPDIR=$docker_data/grype GRYPE_DB_CACHE_DIR=$docker_data/grype grype sbom:\$1.spdx.json \
+  -c $docker_data/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
+  rm -f -r $docker_data/grype/* && wait
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
     tr -d '\000-\037\177' < \$1.grype.status.\$2 | sed '/^$/d' > \$1.grype.status.\$2.tmp
@@ -132,10 +132,12 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-systemctl status snap.docker.dockerd --no-pager -n 0
-export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
+systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 5
+systemctl --user status docker.dockerd --no-pager -n 0 >> $rootless_path/log
+export DOCKER_CONFIG=$docker_data/.docker
 export DOCKER_HOST=unix:///run/user/$run_id/docker.sock
-$docker info && $docker info | grep rootless >> $rootless_path/log
+export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
+$docker info | grep rootless >> $rootless_path/log
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
@@ -151,7 +153,7 @@ else
   exit 1
 fi
 
-mkdir -p $home/syft && mkdir -p $home/grype
+mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 for module in debian-slim debian debian-extra
 do
   pushd \$module/
@@ -168,12 +170,12 @@ do
     --build-arg DEBIAN=$debian \
     --build-arg DEBIAN_SECURITY=$debian_security \
     --build-arg SOURCE=$source .
-    scan_using_grype \$module docker:0mniteck/\$module
-    $docker buildx stop --name \$module-builder && wait
+    scan_using_grype \$module docker:0mniteck/\$module:$rel_date
+    $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
     $docker buildx ls && $docker buildx prune -f -a
     echo 0mniteck/\$module:$rel_date > digest
-    cat \$module.meta.json | grep '\"digest\": \"sha256' >> digest
+    # cat \$module.meta.json | grep '\"digest\": \"sha256' >> digest
     echo '## ' >> readme.md && cat digest >> readme.md && cat readme.md
     git status && git add -A && git status
     git commit -a -S -m \"Successful Build of \$module:$rel_date\" && git push --set-upstream origin HEAD:\$module
