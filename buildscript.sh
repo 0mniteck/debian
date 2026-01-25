@@ -4,15 +4,17 @@ run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
 home=/home/$run_as
 data_dir=$home/.local/share
-systemd_path=/etc/systemd/system/snap.docker
-buildx_path=usr/libexec/docker/cli-plugins
-snap_path=snap/docker/current
-docker_path=/$snap_path/bin
-docker=$docker_path/docker
 
 sysusr_path=$data_dir/systemd/user
 docker_data=$data_dir/docker
 rootless_path=$data_dir/rootless
+
+snap_path=snap/docker/current
+docker_path=/$snap_path/bin
+docker=$docker_path/docker
+
+systemd_path=/etc/systemd/system/snap.docker
+buildx_path=usr/libexec/docker/cli-plugins
 
 rel_date="01-25-2026"
 date_rel="2026-01-25"
