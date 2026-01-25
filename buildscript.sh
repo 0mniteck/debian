@@ -35,6 +35,7 @@ snap install grype --classic
 snap remove docker --purge
 snap install docker --revision=3380
 snap stop docker && wait
+usermod -aG docker $run_as
 
 machinectl shell $run_as@ /bin/bash -c "
 docker login && mkdir -p $home/.docker && \
@@ -49,7 +50,7 @@ grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
 echo "HOME=$home
 XDG_RUNTIME_DIR=/run/user/$run_id
 PATH=\$PATH:$docker_path" >> $rootless_path/env-rootless
-echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless" | /bin/bash 2> $rootless_path/log'
+echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless" | /bin/bash 2> $home/rootless.log'
 __EOF
 chmod +x $home/rootless.sh && chown $run_as:$run_as $home/rootless.sh
 
