@@ -65,7 +65,7 @@ XDG_RUNTIME_DIR=/run/user/$run_id
 XDG_CONFIG_HOME=$home
 DOCKER_TMPDIR=$docker_data/tmp
 PATH=\$PATH:$docker_path" >> $rootless_path/env-rootless
-echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker" | /bin/bash 2> $rootless_path/log'
+echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker" | /bin/bash 2>> $rootless_path/log'
 __EOF
 chmod +x $data_dir/rootless.sh && chown $run_as:$run_as $data_dir/rootless.sh
 
@@ -160,7 +160,7 @@ for module in debian-slim debian debian-extra
 do
   pushd \$module/
     git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
-    rm -f \$module.spdx.json \$module.meta.json \$module.grype.json \$module.grype.status digest readme.md push.log
+    rm -f \$module.spdx.json \$module.meta.json \$module.grype.json \$module.grype.status digest readme.md
     $docker buildx create \
     --name \$module-builder --buildkitd-flags \"--oci-worker-rootless=true\" \
     --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
@@ -176,9 +176,9 @@ do
     $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
     $docker buildx ls && $docker buildx prune -f -a
-    echo 0mniteck/\$module:$rel_date > digest
-    # cat \$module.meta.json | grep '\"digest\": \"sha256' >> digest
-    echo '## ' >> readme.md && cat digest >> readme.md && cat readme.md
+    echo 0mniteck/\$module:$rel_date > image.digest
+    cat \$module.meta.json | grep containerimage.digest >> image.digest
+    echo '## ' >> readme.md && cat image.digest >> readme.md && cat readme.md
     git status && git add -A && git status
     git commit -a -S -m \"Successful Build of \$module:$rel_date\" && git push --set-upstream origin HEAD:\$module
   popd
