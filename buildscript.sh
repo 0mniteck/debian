@@ -168,7 +168,7 @@ do
     $docker buildx create \
     --name \$module-builder --buildkitd-flags \"--oci-worker-rootless=true\" \
     --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
-    $docker buildx build --push --load \
+    $docker buildx build --push \
     --tag 0mniteck/\$module:$rel_date \
     --metadata-file \$module.meta.json \
     --attest \"type=provenance,mode=max\" \
@@ -176,7 +176,7 @@ do
     --build-arg DEBIAN=$debian \
     --build-arg DEBIAN_SECURITY=$debian_security \
     --build-arg SOURCE=$source .
-    scan_using_grype \$module docker:0mniteck/\$module:$rel_date
+    scan_using_grype \$module 0mniteck/\$module:$rel_date
     $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
     $docker buildx ls && $docker buildx prune -f -a
