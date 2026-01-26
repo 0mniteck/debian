@@ -108,7 +108,7 @@ cd $(echo $PWD)
 
 scan_using_grype() { # $1 = Name, $2 = Type:Name
   grype config > $docker_data/.grype.yaml
-  TMPDIR=$docker_data/syft SYFT_CACHE_DIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json
+  TMPDIR=$docker_data/syft SYFT_CACHE_DIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json
   rm -f -r $docker_data/syft/* && wait
   script -q -c \"TMPDIR=$docker_data/grype GRYPE_DB_CACHE_DIR=$docker_data/grype grype sbom:\$1.spdx.json \
   -c $docker_data/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
@@ -168,7 +168,7 @@ do
     $docker buildx create \
     --name \$module-builder --buildkitd-flags \"--oci-worker-rootless=true\" \
     --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
-    $docker buildx build --push \
+    $docker buildx build --push --load \
     --tag 0mniteck/\$module:$rel_date \
     --metadata-file \$module.meta.json \
     --attest \"type=provenance,mode=max\" \
