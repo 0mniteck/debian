@@ -76,7 +76,6 @@ mkdir -p $sysusr_path
 cp $systemd_path.dockerd.service $sysusr_path/docker.dockerd.service
 
 sed -i "s|\[Service\]|\[Service\]\\
-User=$run_as\\
 Group=$run_as\\
 Slice=docker.slice|" $sysusr_path/docker.dockerd.service
 sed -i "s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|" \
@@ -134,12 +133,13 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
   sed -i '1,3s/^/#### /g' readme.md
 }
 
+mkdir -p $rootless_path
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 5
 systemctl --user status docker.dockerd --no-pager -n 0 >> $rootless_path/log
 export DOCKER_CONFIG=$docker_data/.docker
 export DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
-$docker info | grep rootless >> $rootless_path/log
+$docker info | grep rootless >> $rootless_path/log 
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
