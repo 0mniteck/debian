@@ -64,6 +64,10 @@ echo "HOME=$home
 XDG_RUNTIME_DIR=/run/user/$run_id
 XDG_CONFIG_HOME=$home
 DOCKER_TMPDIR=$docker_data/tmp
+DOCKER_CONFIG=$docker_data/.docker
+DOCKER_HOST=unix:///run/user/$run_id/docker.sock
+BUILDX_METADATA_PROVENANCE=max
+BUILDX_METADATA_WARNINGS=1
 PATH=\$PATH:$docker_path" >> $rootless_path/env-rootless
 echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker" | /bin/bash 2>> $rootless_path/log'
 __EOF
@@ -139,7 +143,7 @@ systemctl --user status docker.dockerd --no-pager -n 0 >> $rootless_path/log
 export DOCKER_CONFIG=$docker_data/.docker
 export DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
-$docker info | grep rootless >> $rootless_path/log 2>/dev/null
+$docker info | grep rootless >> $rootless_path/log
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
