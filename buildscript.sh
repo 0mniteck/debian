@@ -16,8 +16,8 @@ docker=$docker_path/docker
 systemd_path=/etc/systemd/system/snap.docker
 buildx_path=usr/libexec/docker/cli-plugins
 
-rel_date="01-25-2026"
-date_rel="2026-01-25"
+rel_date="01-26-2026"
+date_rel="2026-01-26"
 
 debian_security=20260125T223411Z
 debian=20260125T203410Z
