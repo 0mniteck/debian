@@ -181,7 +181,7 @@ do
     $docker buildx rm -f --all-inactive && wait
     $docker buildx ls && $docker buildx prune -f -a
     echo 0mniteck/\$module:$rel_date > image.digest
-    cat \$module.meta.json | grep containerimage.digest >> image.digest
+    cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> image.digest
     echo '## ' >> readme.md && cat image.digest >> readme.md && cat readme.md
     git status && git add -A && git status
     git commit -a -S -m \"Successful Build of \$module:$rel_date\" && git push --set-upstream origin HEAD:\$module
