@@ -26,12 +26,12 @@ source=debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa26
 
 if [[ "$run_id" == "" ]]; then
   if [[ "$(whoami)" == *root* ]]; then
-    echo "DO NOT run with sudo or su!"
-    echo "Instead Use: ~\$ 'pkexec --keep-cwd ./buildscript.sh'"
+    echo && echo "DO NOT run with sudo or su!"
+    echo "Instead Use: ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
     exit 1
   else
-    echo "Super user is required for installation steps."
-    echo "Using ~\$ 'pkexec --keep-cwd ./buildscript.sh'"
+    echo && echo "Super user is required for installation steps!"
+    echo "Using ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
     exec pkexec --keep-cwd "$0" "$@"
     exit 0
   fi
@@ -93,7 +93,7 @@ DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
-echo \"\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker\" | /bin/bash 2>> $rootless_path/log'
+echo \"\$(echo \\$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker\" | /bin/bash 2>> $rootless_path/log'
 __EOF
 chmod +x $data_dir/rootless.sh
 
@@ -201,6 +201,4 @@ snap remove docker --purge
 snap remove docker --purge
 networkctl delete docker0
 snap remove syft --purge
-rm -f -r $home/syft
 snap remove grype --purge
-rm -f -r $home/grype
