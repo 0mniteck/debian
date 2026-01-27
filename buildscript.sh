@@ -81,7 +81,7 @@ ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || e
 > $data_dir/rootless.sh
 cat >> $data_dir/rootless.sh << __EOF
 #!/bin/bash
-rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path /bin/bash -i -c \'
+rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path /bin/bash -i -c '
 env > $rootless_path/env-docker
 grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
 echo \"HOME=$home
@@ -93,7 +93,7 @@ DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
-echo \"\$(echo \$(<$rootless_path/env-rootless)) $docker\d --rootless --feature cdi=false --group docker\" | /bin/bash 2>> $rootless_path/log\'
+echo \"\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker\" | /bin/bash 2>> $rootless_path/log'
 __EOF
 chmod +x $data_dir/rootless.sh
 
