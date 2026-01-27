@@ -13,11 +13,12 @@ snap_path=snap/docker/current
 docker_path=/$snap_path/bin
 docker=$docker_path/docker
 
-systemd_path=/etc/systemd/system/snap.docker
+sysusr_service=$sysusr_path/docker.dockerd.service
+systemd_service=/etc/systemd/system/snap.docker.dockerd.service
 buildx_path=usr/libexec/docker/cli-plugins
 
-rel_date="01-26-2026"
-date_rel="2026-01-26"
+rel_date="01-27-2026"
+date_rel="2026-01-27"
 
 debian_security=20260125T223411Z
 debian=20260125T203410Z
@@ -30,14 +31,17 @@ if [[ "$run_id" == "" ]]; then
     exit 1
   else
     echo "Super user is required for installation steps."
-    echo "Use ~\$ 'pkexec --keep-cwd ./buildscript.sh'"
-    exit 1
+    echo "Using ~\$ 'pkexec --keep-cwd ./buildscript.sh'"
+    exec pkexec --keep-cwd "$0" "$@"
+    exit 0
   fi
 fi
 
-apt-get -qq install -y gnupg2 gpg-agent \
+apt-get update && apt-get upgrade -y
+apt-get -qq install -y gnupg2 gpg-agent jq \
                pcscd pkexec rootlesskit \
-               scdaemon slirp4netns snapd systemd-container uidmap
+               scdaemon slirp4netns snapd \
+               systemd-container uidmap
 snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge && wait
@@ -48,51 +52,15 @@ rm -r -f /run/snap.docker/*
 rm -r -f /run/containerd/
 rm -r -f /run/user/1000/docker*
 rm -r -f /run/user/1000/runc/
-groupadd -fr docker && usermod -aG docker $run_as && wait
-
-machinectl shell $run_as@ /bin/bash -c "
-docker login && mkdir -p $docker_data/.docker && \
-ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1"
-
-> $data_dir/rootless.sh
-cat >> $data_dir/rootless.sh << __EOF
-#!/bin/bash
-rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path /bin/bash -i -c '
-env > $rootless_path/env-docker
-grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
-echo "HOME=$home
-XDG_RUNTIME_DIR=/run/user/$run_id
-XDG_CONFIG_HOME=$home
-DOCKER_TMPDIR=$docker_data/tmp
-DOCKER_CONFIG=$docker_data/.docker
-DOCKER_HOST=unix:///run/user/$run_id/docker.sock
-BUILDX_METADATA_PROVENANCE=max
-BUILDX_METADATA_WARNINGS=1
-PATH=\$PATH:$docker_path" >> $rootless_path/env-rootless
-echo "\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker" | /bin/bash 2>> $rootless_path/log'
-__EOF
-chmod +x $data_dir/rootless.sh && chown $run_as:$run_as $data_dir/rootless.sh
-
-mkdir -p /home/root
-sed -i "s':/root:':/home/root:'" /etc/passwd
-
-mkdir -p $sysusr_path
-cp $systemd_path.dockerd.service $sysusr_path/docker.dockerd.service
-
-sed -i "s|\[Service\]|\[Service\]\\
-Group=$run_as\\
-Slice=docker.slice|" $sysusr_path/docker.dockerd.service
-sed -i "s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|" \
-$sysusr_path/docker.dockerd.service
-sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|" \
-$sysusr_path/docker.dockerd.service
-chown -R $run_as:$run_as $sysusr_path
-
+groupadd -fr docker && wait
+usermod -aG docker $run_as && wait
+mkdir -p /home/root && sed -i "s':/root:':/home/root:'" /etc/passwd
 mkdir -p /$buildx_path && wait && \
 ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
 
 if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep $run_as)" != *$run_as* ]]; then
-  sed -i "s/\"1050\", ATTR{idProduct}==\"040.\", /&MODE=\"0660\", GROUP=\"$run_as\", /g" /lib/udev/rules.d/60-scdaemon.rules
+  sed -i "s/\"1050\", ATTR{idProduct}==\"040.\", /&MODE=\"0660\", GROUP=\"$run_as\", /g" \
+  /lib/udev/rules.d/60-scdaemon.rules
   udevadm control --reload-rules && udevadm trigger
   while [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; do
     printf "\rPlease remove yubikey...\033[K"
@@ -105,9 +73,40 @@ fi
 chown $run_as:$run_as /dev/hidraw*
 
 machinectl shell $run_as@ /bin/bash -c "
-cd $(echo $PWD)
+docker login && mkdir -p $docker_data/.docker && \
+ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
 
-scan_using_grype() { # $1 = Name, $2 = Type:Name
+> $data_dir/rootless.sh
+cat >> $data_dir/rootless.sh << __EOF
+#!/bin/bash
+rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path /bin/bash -i -c \'
+env > $rootless_path/env-docker
+grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
+echo \"HOME=$home
+XDG_RUNTIME_DIR=/run/user/$run_id
+XDG_CONFIG_HOME=$home
+DOCKER_TMPDIR=$docker_data/tmp
+DOCKER_CONFIG=$docker_data/.docker
+DOCKER_HOST=unix:///run/user/$run_id/docker.sock
+BUILDX_METADATA_PROVENANCE=max
+BUILDX_METADATA_WARNINGS=1
+PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
+echo \"\$(echo \$(<$rootless_path/env-rootless)) $docker\d --rootless --feature cdi=false --group docker\" | /bin/bash 2>> $rootless_path/log\'
+__EOF
+chmod +x $data_dir/rootless.sh
+
+mkdir -p $sysusr_path
+cp $systemd_service $sysusr_service
+
+sed -i \"s|\[Service\]|\[Service\]\\
+Group=$run_as\\
+Slice=docker.slice|\" $sysusr_service
+sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" \
+$sysusr_service
+sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" \
+$sysusr_service
+
+scan_using_grype() { # $1 = Name, $2 = Name:tag
   grype config > $docker_data/.grype.yaml
   TMPDIR=$docker_data/syft SYFT_CACHE_DIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json
   rm -f -r $docker_data/syft/* && wait
@@ -139,7 +138,7 @@ scan_using_grype() { # $1 = Name, $2 = Type:Name
 }
 
 mkdir -p $rootless_path
-systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 5
+systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker.dockerd --no-pager -n 0 >> $rootless_path/log
 export DOCKER_CONFIG=$docker_data/.docker
 export DOCKER_HOST=unix:///run/user/$run_id/docker.sock
