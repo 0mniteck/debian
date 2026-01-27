@@ -86,6 +86,7 @@ sed -i "s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|" \
 $sysusr_path/docker.dockerd.service
 sed -i "s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|" \
 $sysusr_path/docker.dockerd.service
+chown -R $run_as:$run_as $sysusr_path
 
 mkdir -p /$buildx_path && wait && \
 ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
