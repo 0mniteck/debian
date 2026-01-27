@@ -142,7 +142,8 @@ systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd 
 systemctl --user status docker.dockerd --no-pager -n 0 >> $rootless_path/log
 export DOCKER_CONFIG=$docker_data/.docker
 export DOCKER_HOST=unix:///run/user/$run_id/docker.sock
-export BUILDX_METADATA_PROVENANCE=max && export BUILDX_METADATA_WARNINGS=1
+export BUILDX_METADATA_PROVENANCE=max
+export BUILDX_METADATA_WARNINGS=1
 $docker info | grep rootless >> $rootless_path/log
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
@@ -164,7 +165,7 @@ for module in debian-slim debian debian-extra
 do
   pushd \$module/
     git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
-    rm -f \$module.spdx.json \$module.meta.json \$module.grype.json \$module.grype.status digest readme.md
+    rm -f \$module.* digest readme.md
     $docker buildx create \
     --name \$module-builder --buildkitd-flags \"--oci-worker-rootless=true\" \
     --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
@@ -180,9 +181,9 @@ do
     $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
     $docker buildx ls && $docker buildx prune -f -a
-    echo 0mniteck/\$module:$rel_date > image.digest
-    cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> image.digest
-    echo '## ' >> readme.md && cat image.digest >> readme.md && cat readme.md
+    echo '# '0mniteck/\$module:$rel_date > \$module.image.digest
+    cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> \$module.image.digest
+    echo '## ' >> readme.md && cat \$module.image.digest >> readme.md && cat readme.md
     git status && git add -A && git status
     git commit -a -S -m \"Successful Build of \$module:$rel_date\" && git push --set-upstream origin HEAD:\$module
   popd
