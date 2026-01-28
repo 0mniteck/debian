@@ -62,15 +62,15 @@ machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 set -x
 
-docker login && mkdir -p $docker_data/.docker && \
+docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
 
-> $data_dir/rootless.sh
-cat >> $data_dir/rootless.sh << __EOF
+> $rootless_path.sh
+cat >> $rootless_path.sh << __EOF
 #!/bin/bash
+mkdir -p $rootless_path && wait && \
 rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path /bin/bash -i -c '
-env > $rootless_path/env-docker
-grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
+env > $rootless_path/env-docker && grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
 echo \"HOME=$home
 XDG_RUNTIME_DIR=/run/user/$run_id
 XDG_CONFIG_HOME=$home
@@ -80,16 +80,16 @@ DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
-\$(echo \"\$(echo \$\(\<$rootless_path/env-rootless\)) $(echo $docker)d --rootless --userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path/log'
+\$(echo \"\$\(echo \$\(\<$rootless_path/env-rootless\)\) $(echo $docker)d --rootless --userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path.log'
 __EOF
-chmod +x $data_dir/rootless.sh
+chmod +x $rootless_path.sh
 
-mkdir -p $sysusr_path
+mkdir -p $sysusr_path && wait && \
 cp $systemd_service $sysusr_service
 
-sed -i \"s|\[Service\]|\[Service\]'
-'Group=$run_as'
-'Slice=docker.slice|\" $sysusr_service
+sed -i \"s|\[Service\]|\[Service\]
+Group=$run_as
+Slice=docker.slice|\" $sysusr_service
 sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" \
 $sysusr_service
 sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" \
@@ -126,14 +126,12 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-mkdir -p $rootless_path && wait
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
-systemctl --user status docker.dockerd --no-pager -n 0 >> $rootless_path/log
-export DOCKER_CONFIG=$docker_data/.docker
-export DOCKER_HOST=unix:///run/user/$run_id/docker.sock
-export BUILDX_METADATA_PROVENANCE=max
-export BUILDX_METADATA_WARNINGS=1
-$docker info | grep rootless >> $rootless_path/log
+STATUS=\"\$\(systemctl --user status docker.dockerd --no-pager -n 0\)\"
+echo \"\$STATUS\" && echo \"\$STATUS\" >> $rootless_path.log
+
+export -- \$\(\<$rootless_path/env-rootless\) || exit 1
+$docker info | grep rootless >> $rootless_path.log
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
