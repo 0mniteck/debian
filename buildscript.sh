@@ -79,15 +79,15 @@ DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
-\$(echo \"\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path/log'
+\$(echo \"\$(echo \$(<$rootless_path/env-rootless)) $(echo $docker)d --rootless --userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path/log'
 __EOF
 chmod +x $data_dir/rootless.sh
 
 mkdir -p $sysusr_path
 cp $systemd_service $sysusr_service
 
-sed -i \"s|\[Service\]|\[Service\]\\
-Group=$run_as\\
+sed -i \"s|\[Service\]|\[Service\]
+Group=$run_as
 Slice=docker.slice|\" $sysusr_service
 sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" \
 $sysusr_service
@@ -125,7 +125,7 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-mkdir -p $rootless_path
+mkdir -p $rootless_path && wait
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker.dockerd --no-pager -n 0 >> $rootless_path/log
 export DOCKER_CONFIG=$docker_data/.docker
