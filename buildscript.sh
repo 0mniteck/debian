@@ -69,7 +69,7 @@ ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || e
 cat >> $rootless_path.sh << __EOF
 #!/bin/bash
 mkdir -p $rootless_path && wait && \
-rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path /bin/bash -i -c '
+rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path/tmp /bin/bash -i -c '
 env > $rootless_path/env-docker && grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
 echo \"HOME=$home
 XDG_RUNTIME_DIR=/run/user/$run_id
@@ -127,10 +127,10 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
 }
 
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
-STATUS=\"\$\(systemctl --user status docker.dockerd --no-pager -n 0\)\"
+STATUS=\"\$(systemctl --user status docker.dockerd --no-pager -n 0)\"
 echo \"\$STATUS\" && echo \"\$STATUS\" >> $rootless_path.log
 
-export -- \$\(\<$rootless_path/env-rootless\) || exit 1
+export -- \$(\<$rootless_path/env-rootless) || exit 1
 $docker info | grep rootless >> $rootless_path.log
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
