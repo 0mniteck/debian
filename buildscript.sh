@@ -38,8 +38,8 @@ if [[ "$run_id" == "" ]]; then
 fi
 
 apt-get update && apt-get upgrade -y
-apt-get -qq install -y gnupg2 gpg-agent jq \
-               pcscd pkexec rootlesskit \
+apt-get -qq install -y gnupg2 gpg-agent \
+               jq pkexec rootlesskit \
                scdaemon slirp4netns snapd \
                systemd-container uidmap
 snap install syft --classic && wait
@@ -57,20 +57,6 @@ usermod -aG docker $run_as && wait
 mkdir -p /home/root && sed -i "s':/root:':/home/root:'" /etc/passwd
 mkdir -p /$buildx_path && wait && \
 ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
-
-if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep $run_as)" != *$run_as* ]]; then
-  sed -i "s/\"1050\", ATTR{idProduct}==\"040.\", /&MODE=\"0660\", GROUP=\"$run_as\", /g" \
-  /lib/udev/rules.d/60-scdaemon.rules
-  udevadm control --reload-rules && udevadm trigger
-  while [[ "$(lsusb | grep Yubikey)" == *Yubikey* ]]; do
-    printf "\rPlease remove yubikey...\033[K"
-  done
-  while [[ "$(lsusb | grep Yubikey)" != *Yubikey* ]]; do
-    printf "\rPlease re-insert yubikey...\033[K"
-  done && sleep 1 && echo
-fi
-
-chown $run_as:$run_as /dev/hidraw*
 
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
