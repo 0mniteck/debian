@@ -87,8 +87,8 @@ chmod +x $rootless_path.sh
 mkdir -p $sysusr_path && wait && \
 cp $systemd_service $sysusr_service
 
-sed -i \"s|\[Service\]|\[Service\]
-Group=$run_as
+sed -i \"s|\[Service\]|\[Service\]\
+Group=$run_as\
 Slice=docker.slice|\" $sysusr_service
 sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" \
 $sysusr_service
