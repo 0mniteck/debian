@@ -60,6 +60,7 @@ ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
 
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
+set -x
 
 docker login && mkdir -p $docker_data/.docker && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
