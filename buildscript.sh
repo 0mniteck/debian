@@ -5,8 +5,8 @@ run_as=$(id -u $run_id -n)
 home=/home/$run_as
 data_dir=$home/.local/share
 sed_ech=$(cat << _EOF__
-\[Service\]
-Group=$run_as
+\[Service\]\
+Group=$run_as\
 Slice=docker.slice
 _EOF__
 )
