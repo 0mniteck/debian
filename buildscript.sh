@@ -86,7 +86,7 @@ DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
-\$(echo \"$(echo $(echo echo \$(\<$rootless_path/env-rootless)) $(echo $docker)d --rootless --userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path.log'
+\$(echo \"$(echo $(echo echo \$(\<$rootless_path/env-rootless))) $(echo $docker)d --rootless --userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path.log'
 __EOF
 chmod +x $rootless_path.sh
 
