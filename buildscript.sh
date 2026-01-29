@@ -4,10 +4,11 @@ run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
 home=/home/$run_as
 data_dir=$home/.local/share
-sed_ech=$(cat << EOF__
+sed_ech=$(cat << _EOF__
 \[Service\]
 Group=$run_as
 Slice=docker.slice
+_EOF__
 )
 
 sysusr_path=$data_dir/systemd/user
