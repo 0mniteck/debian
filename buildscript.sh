@@ -4,6 +4,11 @@ run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
 home=/home/$run_as
 data_dir=$home/.local/share
+sed_ech=$(cat << EOF__
+\[Service\]
+Group=$run_as
+Slice=docker.slice
+)
 
 sysusr_path=$data_dir/systemd/user
 docker_data=$data_dir/docker
@@ -68,7 +73,7 @@ ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || e
 > $rootless_path.sh
 cat >> $rootless_path.sh << __EOF
 #!/bin/bash
-mkdir -p $rootless_path && wait && \
+mkdir -p $rootless_path/tmp && wait && \
 rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path/tmp /bin/bash -i -c '
 env > $rootless_path/env-docker && grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
 echo \"HOME=$home
@@ -80,16 +85,14 @@ DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
-\$(echo \"\$\(echo \$\(\<$rootless_path/env-rootless\)\) $(echo $docker)d --rootless --userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path.log'
+\$(echo \"$(echo $(echo \<$rootless_path/env-rootless)) $(echo $docker)d --rootless --userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path.log'
 __EOF
 chmod +x $rootless_path.sh
 
 mkdir -p $sysusr_path && wait && \
 cp $systemd_service $sysusr_service
 
-sed -i \"s|\[Service\]|\[Service\]\
-Group=$run_as\
-Slice=docker.slice|\" $sysusr_service
+sed -i \"s|\[Service\]|$sed_ech|\" $sysusr_service
 sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" \
 $sysusr_service
 sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" \
