@@ -2,11 +2,17 @@
 
 rel_date="01-29-2026"
 date_rel="2026-01-29"
+docker_ver=3380
+debug() {
+eval $(set -x)
+}
+# debug=debug() # uncomment to enable debugging
 
 debian_security=20260125T223411Z
 debian=20260125T203410Z
 source=debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193
 
+$debug
 run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
 home=/home/$run_as
@@ -15,8 +21,7 @@ sed_ech=$(cat << _EOF__
 \\\\[Service\\\\]\\
 Group=$run_as\\
 Slice=docker.slice\\
-_EOF__
-)
+_EOF__)
 
 sysusr_path=$data_dir/systemd/user
 docker_data=$data_dir/docker
@@ -51,8 +56,8 @@ apt-get -qq install -y gnupg2 gpg-agent \
 snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge && wait
-snap install docker --revision=3380 && wait
-snap stop docker && wait
+snap install docker --revision=$docker_ver \
+&& wait && snap stop docker && wait
 
 rm -r -f /run/docker*
 rm -r -f /run/snap.docker/*
@@ -62,13 +67,13 @@ rm -r -f /run/user/1000/runc/
 
 groupadd -f docker && wait # Keep docker group for function, but don't add as system group (-r)
 usermod -aG docker $run_as && wait
-mkdir -p /home/root && sed -i "s':/root:':/home/root:'" /etc/passwd
+mkdir -p /home/root && sed -i "s':/root:':/home/root:'" /etc/passwd #rootlesskit pseudo root
 mkdir -p /$buildx_path && wait && \
 ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
 
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
-set -x
+$debug
 
 docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
@@ -136,6 +141,7 @@ echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" >> $rootless_path/log
 
 export -- \$(\<$rootless_path/env-rootless || exit 1)
 $docker info | grep rootless >> $rootless_path/rootless.status
+docker info # testing userland-proxy
 if [[ "$(grep root rootless.status)" != *rootless* ]]; then exit 1; fi
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
