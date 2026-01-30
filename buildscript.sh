@@ -20,7 +20,8 @@ sed_ech=$(cat << _EOF__
 \\\\[Service\\\\]\\
 Group=$run_as\\
 Slice=docker.slice\\
-_EOF__ )
+_EOF__
+)
 
 sysusr_path=$data_dir/systemd/user
 rootless_path=$data_dir/rootless
@@ -95,7 +96,8 @@ PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
 \$(echo \"echo \$\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless \
 --userland-proxy-path=$docker_path/docker-proxy --init-path=$docker_path/docker-init \
 --feature cdi=false --group docker | /bin/bash 2>> $rootless_path/log'
-__EOF && chmod +x $rootless_path.sh
+__EOF
+chmod +x $rootless_path.sh
 
 mkdir -p $sysusr_path && wait && \
 cp $systemd_service $sysusr_service
