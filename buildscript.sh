@@ -3,7 +3,9 @@
 rel_date="01-29-2026"
 date_rel="2026-01-29"
 docker_ver=3380
-debug() { eval $(set -x) }
+debug() {
+eval $(set -x)
+}
 
 # debug=debug() # uncomment to enable debugging
 
@@ -65,7 +67,7 @@ rm -r -f /run/containerd/
 rm -r -f /run/user/1000/docker*
 rm -r -f /run/user/1000/runc/
 
-groupadd -f docker && wait # Keep docker group for function, but don't add as system group (-r)
+groupadd -f docker && wait # Keep docker group for function, but do not add as system group (-r)
 usermod -aG docker $run_as && wait
 mkdir -p /home/root && sed -i "s|:/root:|:/home/root:|" /etc/passwd #rootlesskit pseudo root
 mkdir -p /$buildx_path && wait && \
