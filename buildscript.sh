@@ -146,7 +146,7 @@ echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" >> $rootless_path/log
 export -- \$(\<$rootless_path/env-rootless || exit 1)
 $docker info | grep rootless >> $rootless_path/rootless.status
 docker info # testing userland-proxy
-if [[ "$(grep root $rootless_path/rootless.status)" != *rootless* ]]; then exit 1; fi
+if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then exit 1; fi
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
