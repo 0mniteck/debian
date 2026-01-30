@@ -80,7 +80,7 @@ $debug
 docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
 
-> $rootless_path.sh
+mkdir -p $rootless_path/tmp && > $rootless_path.sh
 cat >> $rootless_path.sh << __EOF
 #!/bin/bash
 mkdir -p $rootless_path/tmp && wait
@@ -97,7 +97,7 @@ BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
 \$(echo \"echo \$\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless \
 --userland-proxy-path=$docker_path/docker-proxy --init-path=$docker_path/docker-init \
---feature cdi=false --group docker | /bin/bash 2>> $rootless_path/log'
+--feature cdi=false --group docker | /bin/bash 2>> $rootless_path/rootless.log'
 __EOF
 chmod +x $rootless_path.sh
 
@@ -141,9 +141,9 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
 
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
 STATUSCTL=\"\$(systemctl --user status docker.dockerd --no-pager -n 0)\"
-echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" >> $rootless_path/log
+echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" >> $rootless_path/rootless.log
 
-export -- \$(\<$rootless_path/env-rootless || exit 1)
+export -- \$(\<$rootless_path/env-rootless) || exit 1
 $docker info | grep rootless >> $rootless_path/rootless.status
 docker info # testing userland-proxy
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then exit 1; fi
