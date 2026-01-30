@@ -7,7 +7,7 @@ debug() {
 eval $(set -x)
 }
 
-# debug=debug() # uncomment to enable debugging
+debug=debug() # uncomment to enable debugging
 
 debian_security=20260125T223411Z
 debian=20260125T203410Z
@@ -97,7 +97,7 @@ BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
 \$(echo \"echo $\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless \
 --userland-proxy-path=$docker_path/docker-proxy --init-path=$docker_path/docker-init \
---feature cdi=false --group docker) | /bin/bash 2>> $rootless_path/rootless.log'
+--feature cdi=false --group docker) | /bin/bash >> $rootless_path/rootless.log'
 __EOF
 chmod +x $rootless_path.sh
 
@@ -139,7 +139,7 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
+systemctl --user daemon-reload && read -p test_here && systemctl --user start docker.dockerd && sleep 10
 STATUSCTL=\"\$(systemctl --user status docker.dockerd --no-pager -n 0)\"
 echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" >> $rootless_path/rootless.log
 
