@@ -1,13 +1,20 @@
 #!/bin/bash
 
+rel_date="01-29-2026"
+date_rel="2026-01-29"
+
+debian_security=20260125T223411Z
+debian=20260125T203410Z
+source=debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193
+
 run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
 home=/home/$run_as
 data_dir=$home/.local/share
 sed_ech=$(cat << _EOF__
-\[Service\]\\
+\\\\[Service\\\\]\\
 Group=$run_as\\
-Slice=docker.slice
+Slice=docker.slice\\
 _EOF__
 )
 
@@ -22,13 +29,6 @@ docker=$docker_path/docker
 sysusr_service=$sysusr_path/docker.dockerd.service
 systemd_service=/etc/systemd/system/snap.docker.dockerd.service
 buildx_path=usr/libexec/docker/cli-plugins
-
-rel_date="01-27-2026"
-date_rel="2026-01-27"
-
-debian_security=20260125T223411Z
-debian=20260125T203410Z
-source=debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193
 
 if [[ "$run_id" == "" ]]; then
   if [[ "$(whoami)" == *root* ]]; then
@@ -86,18 +86,16 @@ DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
-\$(echo \"$(echo $(echo \<$rootless_path/env-rootless)) $(echo $docker)d --rootless --userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path.log'
+\$(echo \"echo \$\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless --userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path/log'
 __EOF
 chmod +x $rootless_path.sh
 
 mkdir -p $sysusr_path && wait && \
 cp $systemd_service $sysusr_service
 
-sed -i \"s|\[Service\]|$sed_ech|\" $sysusr_service
-sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" \
-$sysusr_service
-sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" \
-$sysusr_service
+sed -z -i \"s|\[Service\]\nEnv|$(printf \"%s\\\\n\" $(echo $sed_ech))Env|\" $sysusr_service
+sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" $sysusr_service
+sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" $sysusr_service
 
 scan_using_grype() { # $1 = Name, $2 = Name:tag
   grype config > $docker_data/.grype.yaml
@@ -131,11 +129,12 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
 }
 
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
-STATUS=\"\$(systemctl --user status docker.dockerd --no-pager -n 0)\"
-echo \"\$STATUS\" && echo \"\$STATUS\" >> $rootless_path.log
+STATUSCTL=\"\$(systemctl --user status docker.dockerd --no-pager -n 0)\"
+echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" >> $rootless_path/log
 
-export -- \$(\<$rootless_path/env-rootless) || exit 1
-$docker info | grep rootless >> $rootless_path.log
+export -- \$(\<$rootless_path/env-rootless || exit 1)
+$docker info | grep rootless >> $rootless_path/rootless.status
+if [[ "$(grep root rootless.status)" != *rootless* ]]; then exit 1; fi
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
