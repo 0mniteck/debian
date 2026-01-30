@@ -53,12 +53,14 @@ snap install grype --classic && wait
 snap remove docker --purge && wait
 snap install docker --revision=3380 && wait
 snap stop docker && wait
+
 rm -r -f /run/docker*
 rm -r -f /run/snap.docker/*
 rm -r -f /run/containerd/
 rm -r -f /run/user/1000/docker*
 rm -r -f /run/user/1000/runc/
-groupadd -fr docker && wait
+
+groupadd -f docker && wait # Keep docker group for function, but don't add as system group (-r)
 usermod -aG docker $run_as && wait
 mkdir -p /home/root && sed -i "s':/root:':/home/root:'" /etc/passwd
 mkdir -p /$buildx_path && wait && \
@@ -74,21 +76,21 @@ ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || e
 > $rootless_path.sh
 cat >> $rootless_path.sh << __EOF
 #!/bin/bash
-mkdir -p $rootless_path/tmp && wait && \
+mkdir -p $rootless_path/tmp && wait
 rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path/tmp /bin/bash -i -c '
-env > $rootless_path/env-docker && grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless
+env > $rootless_path/env-docker && grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless && rm -f $rootless_path/env-docker
 echo \"HOME=$home
-XDG_RUNTIME_DIR=/run/user/$run_id
 XDG_CONFIG_HOME=$home
+XDG_RUNTIME_DIR=/run/user/$run_id
 DOCKER_TMPDIR=$docker_data/tmp
 DOCKER_CONFIG=$docker_data/.docker
 DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
-\$(echo \"echo \$\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless --userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path/log'
-__EOF
-chmod +x $rootless_path.sh
+\$(echo \"echo \$\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless \
+--userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path/log'
+__EOF && chmod +x $rootless_path.sh
 
 mkdir -p $sysusr_path && wait && \
 cp $systemd_service $sysusr_service
