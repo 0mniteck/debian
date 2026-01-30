@@ -4,7 +4,7 @@ rel_date="01-29-2026"
 date_rel="2026-01-29"
 docker_ver=3380
 
-debug="eval $(set -x)" # uncomment to enable debugging
+debug="set -x" # uncomment to enable debugging
 
 debian_security=20260125T223411Z
 debian=20260125T203410Z
