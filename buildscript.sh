@@ -20,7 +20,7 @@ sed_ech=$(cat << _EOF__
 \\\\[Service\\\\]\\
 Group=$run_as\\
 Slice=docker.slice\\
-_EOF__)
+_EOF__ )
 
 sysusr_path=$data_dir/systemd/user
 rootless_path=$data_dir/rootless
