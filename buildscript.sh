@@ -7,7 +7,7 @@ debug() {
 eval $(set -x)
 }
 
-debug=debug() # uncomment to enable debugging
+debug="debug()" # uncomment to enable debugging
 
 debian_security=20260125T223411Z
 debian=20260125T203410Z
