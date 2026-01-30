@@ -3,9 +3,8 @@
 rel_date="01-29-2026"
 date_rel="2026-01-29"
 docker_ver=3380
-debug() {
-eval $(set -x)
-}
+debug() { eval $(set -x) }
+
 # debug=debug() # uncomment to enable debugging
 
 debian_security=20260125T223411Z
@@ -24,15 +23,15 @@ Slice=docker.slice\\
 _EOF__)
 
 sysusr_path=$data_dir/systemd/user
-docker_data=$data_dir/docker
 rootless_path=$data_dir/rootless
+docker_data=$data_dir/docker
 
 snap_path=snap/docker/current
 docker_path=/$snap_path/bin
 docker=$docker_path/docker
 
-sysusr_service=$sysusr_path/docker.dockerd.service
 systemd_service=/etc/systemd/system/snap.docker.dockerd.service
+sysusr_service=$sysusr_path/docker.dockerd.service
 buildx_path=usr/libexec/docker/cli-plugins
 
 if [[ "$run_id" == "" ]]; then
@@ -67,7 +66,7 @@ rm -r -f /run/user/1000/runc/
 
 groupadd -f docker && wait # Keep docker group for function, but don't add as system group (-r)
 usermod -aG docker $run_as && wait
-mkdir -p /home/root && sed -i "s':/root:':/home/root:'" /etc/passwd #rootlesskit pseudo root
+mkdir -p /home/root && sed -i "s|:/root:|:/home/root:|" /etc/passwd #rootlesskit pseudo root
 mkdir -p /$buildx_path && wait && \
 ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
 
@@ -94,7 +93,7 @@ BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
 \$(echo \"echo \$\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless \
---userland-proxy-path=$docker_path/docker-proxy --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path/log'
+--userland-proxy-path=$docker_path/docker-proxy --init-path=$docker_path/docker-init  --feature cdi=false --group docker\") | /bin/bash 2>> $rootless_path/log'
 __EOF && chmod +x $rootless_path.sh
 
 mkdir -p $sysusr_path && wait && \
