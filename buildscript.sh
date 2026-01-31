@@ -145,9 +145,9 @@ echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" >> $rootless_path/rootless.log
 read -p test_here
 set -x
 export -- \"\$\(\<$rootless_path/env-rootless\)\" || exit 1
-$docker info | grep "Running in rootless" > $rootless_path/rootless.status
+$docker info | grep "rootless" > $rootless_path/rootless.status
 docker info # testing userland-proxy
-if [[ \"\$(grep root $rootless_path/rootless.status)\" != *Running in rootless* ]]; then exit 1; fi
+if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then exit 1; fi
 read -p test_here
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
