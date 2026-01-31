@@ -144,12 +144,13 @@ systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd 
 systemctl --user status docker.dockerd --no-pager -n 10 > $rootless_path/rootless.ctl.log
 cat $rootless_path/rootless.ctl.log
 
-read -p test_here
-set -x
-export -- \"\$(\<$rootless_path/env-rootless)\"
+cat $rootless_path/env-rootless | xargs export --
 $docker info | grep "rootless" > $rootless_path/rootless.status
-docker info > $rootless_path/rootless.status2 # testing userland-proxy
-if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then exit 1; fi
+if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
+  exit 1
+else
+  echo && echo "Rootless Docker Started!" && echo
+fi
 read -p test_here
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
