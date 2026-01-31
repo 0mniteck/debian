@@ -4,7 +4,7 @@ rel_date="01-29-2026"
 date_rel="2026-01-29"
 docker_ver=3380
 
-debug="set -x" # uncomment to enable debugging
+# debug="set -x" # uncomment to enable debugging
 
 debian_security=20260125T223411Z
 debian=20260125T203410Z
@@ -142,11 +142,13 @@ systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd 
 STATUSCTL=\"\$(systemctl --user status docker.dockerd --no-pager -n 0)\"
 echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" >> $rootless_path/rootless.log
 
-read -p test_here 
-export -- \"\$(\<$rootless_path/env-rootless)\" || exit 1
-$docker info | grep rootless >> $rootless_path/rootless.status
+read -p test_here
+set -x
+export -- \"\$\(\<$rootless_path/env-rootless\)\" || exit 1
+$docker info | grep "Running in rootless" > $rootless_path/rootless.status
 docker info # testing userland-proxy
-if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then exit 1; fi
+if [[ \"\$(grep root $rootless_path/rootless.status)\" != *Running in rootless* ]]; then exit 1; fi
+read -p test_here
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
