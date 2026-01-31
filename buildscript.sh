@@ -67,7 +67,8 @@ snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge && wait
 snap install docker --revision=$docker_ver \
-&& wait && snap stop docker && wait
+&& wait && snap stop docker && wait \
+&& systemctl stop docker.docker && wait
 
 groupadd -f docker && wait # Keep docker group for function, but do not add as system group (-r)
 usermod -aG docker $run_as && wait
