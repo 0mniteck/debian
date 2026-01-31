@@ -79,13 +79,13 @@ $debug
 docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
 
-> $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && wait
-mkdir -p $rootless_path/tmp && chmod +x $rootless_path.sh && wait
+mkdir -p $rootless_path/tmp && wait
+> $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && chmod +x $rootless_path.sh && wait
 
 cat >> $rootless_path.sh << __EOF
 #!/bin/bash
-> $rootless_path/env-docker && > $rootless_path/env-rootless && wait
 mkdir -p $rootless_path/tmp && wait
+> $rootless_path/env-docker && > $rootless_path/env-rootless && wait
 rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path/tmp /bin/bash -i -c '
 env > $rootless_path/env-docker && grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless && rm -f $rootless_path/env-docker
 echo \"HOME=$home
@@ -146,7 +146,7 @@ echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" > $rootless_path/rootless.ctl.log
 
 read -p test_here
 set -x
-export -- \"\$\(\<$rootless_path/env-rootless\)\"
+export -- \"\$(\<$rootless_path/env-rootless)\"
 $docker info | grep "rootless" > $rootless_path/rootless.status
 docker info > $rootless_path/rootless.status2 # testing userland-proxy
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then exit 1; fi
