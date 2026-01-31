@@ -82,7 +82,7 @@ mkdir -p $rootless_path/tmp && chmod +x $rootless_path.sh
 
 cat >> $rootless_path.sh << __EOF
 #!/bin/bash
-> $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && wait
+> $rootless_path/env-docker && > $rootless_path/env-rootless && wait
 mkdir -p $rootless_path/tmp && chmod +x $rootless_path.sh && wait
 rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path/tmp /bin/bash -i -c '
 env > $rootless_path/env-docker && grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless && rm -f $rootless_path/env-docker
