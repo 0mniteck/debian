@@ -4,7 +4,7 @@ rel_date="01-29-2026"
 date_rel="2026-01-29"
 docker_ver=3380
 
-# debug="set -x" # uncomment to enable debugging
+debug="set -x" # uncomment to enable debugging
 
 debian_security=20260125T223411Z
 debian=20260125T203410Z
@@ -141,8 +141,8 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
 }
 
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
-STATUSCTL=\"\$(systemctl --user status docker.dockerd --no-pager -n 10)\"
-echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" > $rootless_path/rootless.ctl.log
+systemctl --user status docker.dockerd --no-pager -n 10 > $rootless_path/rootless.ctl.log
+cat $rootless_path/rootless.ctl.log
 
 read -p test_here
 set -x
