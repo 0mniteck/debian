@@ -139,14 +139,14 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
 }
 
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
-STATUSCTL=\"\$(systemctl --user status docker.dockerd --no-pager -n 0)\"
-echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" >> $rootless_path/rootless.log
+STATUSCTL=\"\$(systemctl --user status docker.dockerd --no-pager -n 10)\"
+echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" > $rootless_path/rootless.ctl.log
 
 read -p test_here
 set -x
 export -- \"\$\(\<$rootless_path/env-rootless\)\" || exit 1
 $docker info | grep "rootless" > $rootless_path/rootless.status
-docker info # testing userland-proxy
+docker info > $rootless_path/rootless.status2 # testing userland-proxy
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then exit 1; fi
 read -p test_here
 
