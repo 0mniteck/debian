@@ -77,10 +77,13 @@ $debug
 docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
 
-mkdir -p $rootless_path/tmp && > $rootless_path.sh
+> $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && wait
+mkdir -p $rootless_path/tmp && chmod +x $rootless_path.sh
+
 cat >> $rootless_path.sh << __EOF
 #!/bin/bash
-mkdir -p $rootless_path/tmp && wait
+> $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && wait
+mkdir -p $rootless_path/tmp && chmod +x $rootless_path.sh && wait
 rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path/tmp /bin/bash -i -c '
 env > $rootless_path/env-docker && grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless && rm -f $rootless_path/env-docker
 echo \"HOME=$home
@@ -94,9 +97,8 @@ BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
 \$(echo \"echo echo $\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless \
 --userland-proxy-path=$docker_path/docker-proxy --init-path=$docker_path/docker-init \
---feature cdi=false --group docker) | /bin/bash 2>> $rootless_path/rootless.log'
+--feature cdi=false --group docker) | /bin/bash | /bin/bash 2>> $rootless_path/rootless.log'
 __EOF
-chmod +x $rootless_path.sh
 
 mkdir -p $sysusr_path && wait && \
 cp $systemd_service $sysusr_service
@@ -136,11 +138,12 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-systemctl --user daemon-reload && read -p test_here && systemctl --user start docker.dockerd && sleep 10
+systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
 STATUSCTL=\"\$(systemctl --user status docker.dockerd --no-pager -n 0)\"
 echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" >> $rootless_path/rootless.log
 
-export -- \$(\<$rootless_path/env-rootless) || exit 1
+read -p test_here 
+export -- \"\$(\<$rootless_path/env-rootless)\" || exit 1
 $docker info | grep rootless >> $rootless_path/rootless.status
 docker info # testing userland-proxy
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then exit 1; fi
