@@ -49,6 +49,15 @@ fi
 
 chown $run_as:$run_as /dev/hidraw*
 
+rm -r -f /home/root/*
+rm -r -f /root/snap/
+rm -r -f /var/snap/docker/
+rm -r -f /run/docker*
+rm -r -f /run/snap.docker/*
+rm -r -f /run/containerd/
+rm -r -f /var/lib/snapd/cache/*
+rm -r -f /usr/libexec/docker/
+
 apt-get update && apt-get upgrade -y
 apt-get -qq install -y gnupg2 gpg-agent \
                jq pkexec rootlesskit \
@@ -60,12 +69,6 @@ snap remove docker --purge && wait
 snap install docker --revision=$docker_ver \
 && wait && snap stop docker && wait
 
-rm -r -f /run/docker*
-rm -r -f /run/snap.docker/*
-rm -r -f /run/containerd/
-rm -r -f /run/user/1000/docker*
-rm -r -f /run/user/1000/runc/
-
 groupadd -f docker && wait # Keep docker group for function, but do not add as system group (-r)
 usermod -aG docker $run_as && wait
 mkdir -p /home/root && sed -i "s|:/root:|:/home/root:|" /etc/passwd #rootlesskit pseudo root
@@ -75,6 +78,12 @@ ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx || exit
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 $debug
+rm -r -f /home/$run_as/.docker/
+rm -r -f /home/$run_as/.local/share/docker
+rm -r -f /home/$run_as/.local/share/rootless*
+rm -r -f /home/$run_as/.local/share/systemd
+rm -r -f /run/user/$run_id/docker*
+rm -r -f /run/user/$run_id/runc/
 
 docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
@@ -140,6 +149,7 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   sed -i '1,3s/^/#### /g' readme.md
 }
 
+systemctl --user stop docker.docker && wait
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker.dockerd --no-pager -n 10 > $rootless_path/rootless.ctl.log
 cat $rootless_path/rootless.ctl.log
@@ -199,7 +209,16 @@ done
 $docker logout && cat ./*/*.digest > image.digests && git status && git add -A && git status
 git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-upstream origin builder
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
-eval \"\$(ssh-agent -k)\""
+eval \"\$(ssh-agent -k)\"
+
+systemctl --user stop docker.docker && wait
+rm -r -f /home/$run_as/.docker/
+rm -r -f /home/$run_as/.local/share/docker
+rm -r -f /home/$run_as/.local/share/rootless*
+rm -r -f /home/$run_as/.local/share/systemd
+rm -r -f /run/user/$run_id/docker*
+rm -r -f /run/user/$run_id/runc/
+systemctl --user daemon-reload"
 
 snap disable docker
 snap remove docker --purge
@@ -207,3 +226,13 @@ snap remove docker --purge
 networkctl delete docker0
 snap remove syft --purge
 snap remove grype --purge
+sed -i "s':/home/root:':/root:'" /etc/passwd
+delgroup docker
+rm -r -f /home/root/*
+rm -r -f /root/snap/
+rm -r -f /var/snap/docker/
+rm -r -f /run/docker*
+rm -r -f /run/snap.docker/*
+rm -r -f /run/containerd/
+rm -r -f /var/lib/snapd/cache/*
+rm -r -f /usr/libexec/docker/
