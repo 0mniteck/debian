@@ -144,7 +144,7 @@ systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd 
 systemctl --user status docker.dockerd --no-pager -n 10 > $rootless_path/rootless.ctl.log
 cat $rootless_path/rootless.ctl.log
 
-cat $rootless_path/env-rootless | xargs -- export -- 
+source $rootless_path/env-rootless 
 $docker info | grep "rootless" > $rootless_path/rootless.status
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
   exit 1
