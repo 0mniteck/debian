@@ -47,6 +47,8 @@ if [[ "$run_id" == "" ]]; then
   fi
 fi
 
+chown $run_as:$run_as /dev/hidraw*
+
 apt-get update && apt-get upgrade -y
 apt-get -qq install -y gnupg2 gpg-agent \
                jq pkexec rootlesskit \
@@ -68,7 +70,7 @@ groupadd -f docker && wait # Keep docker group for function, but do not add as s
 usermod -aG docker $run_as && wait
 mkdir -p /home/root && sed -i "s|:/root:|:/home/root:|" /etc/passwd #rootlesskit pseudo root
 mkdir -p /$buildx_path && wait && \
-ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx
+ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx || exit 1
 
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
@@ -78,7 +80,7 @@ docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
 
 > $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && wait
-mkdir -p $rootless_path/tmp && chmod +x $rootless_path.sh
+mkdir -p $rootless_path/tmp && chmod +x $rootless_path.sh && wait
 
 cat >> $rootless_path.sh << __EOF
 #!/bin/bash
@@ -101,7 +103,7 @@ PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
 __EOF
 
 mkdir -p $sysusr_path && wait && \
-cp $systemd_service $sysusr_service
+cp $systemd_service $sysusr_service || exit 1
 
 sed -z -i \"s|\[Service\]\nEnv|$(printf \"%s\\\\n\" $(echo $sed_ech))Env|\" $sysusr_service
 sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" $sysusr_service
@@ -144,7 +146,7 @@ echo \"\$STATUSCTL\" && echo \"\$STATUSCTL\" > $rootless_path/rootless.ctl.log
 
 read -p test_here
 set -x
-export -- \"\$\(\<$rootless_path/env-rootless\)\" || exit 1
+export -- \"\$\(\<$rootless_path/env-rootless\)\"
 $docker info | grep "rootless" > $rootless_path/rootless.status
 docker info > $rootless_path/rootless.status2 # testing userland-proxy
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then exit 1; fi
