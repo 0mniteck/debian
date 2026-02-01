@@ -21,7 +21,7 @@ if [[ "$run_id" == "" ]]; then
     exit 1
   else
     echo && echo "Pkexec is required for installation steps"
-    echo "Using ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
+    echo "Using: ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
     exec pkexec --keep-cwd "$0" "$@"
     exit 0
   fi
@@ -58,7 +58,7 @@ rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
 rm -r -f /var/lib/snapd/cache/*
 
-apt-get update && apt-get upgrade -y
+apt-get -qq update && apt-get -qq upgrade -y
 apt-get -qq install -y gnupg2 gpg-agent \
                jq pkexec rootlesskit \
                scdaemon slirp4netns snapd \
@@ -66,9 +66,9 @@ apt-get -qq install -y gnupg2 gpg-agent \
 
 snap install syft --classic && wait
 snap install grype --classic && wait
-snap remove docker --purge && wait || echo "Failed to remove Docker" && exit 1
+snap remove docker --purge && wait || echo "Failed to remove Docker"
 networkctl delete docker0 2>/dev/null
-snap install docker --revision=$docker_ver && wait || echo "Failed to install Docker" && exit 1
+snap install docker --revision=$docker_ver && wait || echo "Failed to install Docker"
 
 snap stop docker && wait
 systemctl stop docker* --all && wait
