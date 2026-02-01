@@ -68,7 +68,16 @@ snap install grype --classic && wait
 snap remove docker --purge && wait
 snap install docker --revision=$docker_ver \
 && wait && snap stop docker && wait \
-&& systemctl stop docker.docker && wait
+&& systemctl stop docker.dockerd && wait
+
+rm -r -f /home/root/*
+rm -r -f /root/snap/
+rm -r -f /var/snap/docker/
+rm -r -f /run/docker*
+rm -r -f /run/snap.docker/*
+rm -r -f /run/containerd/
+rm -r -f /var/lib/snapd/cache/*
+rm -r -f /usr/libexec/docker/
 
 groupadd -f docker && wait # Keep docker group for function, but do not add as system group (-r)
 usermod -aG docker $run_as && wait
@@ -151,12 +160,14 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-systemctl --user stop docker.docker && wait
+systemctl --user stop docker.dockerd && wait
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker.dockerd --no-pager -n 10 > $rootless_path/rootless.ctl.log
 cat $rootless_path/rootless.ctl.log
-
+echo $DOCKER_HOST test 1
 source $rootless_path/env-rootless.exp
+echo $DOCKER_HOST test 2
+read -p test_here
 $docker info | grep "rootless" > $rootless_path/rootless.status
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
   read -p test_here
@@ -164,7 +175,6 @@ if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
 else
   echo && echo "Rootless Docker Started!" && echo
 fi
-read -p test_here
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent && wait
