@@ -1,6 +1,6 @@
 #!/bin/bash
 
-debug="set -x" # uncomment to enable debugging
+# debug="set -x" # uncomment to enable debugging
 $debug
 
 rel_date="02-01-2026"
@@ -53,7 +53,7 @@ rm -r -f /root/snap/docker/
 rm -r -f /var/snap/docker/
 rm -r -f /run/snap.docker/
 rm -r -f /run/containerd/
-rm -r -f /run/docker/
+rm -r -f /run/docker*
 rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
 rm -r -f /var/lib/snapd/cache/*
@@ -63,26 +63,30 @@ apt-get -qq install -y gnupg2 gpg-agent \
                jq pkexec rootlesskit \
                scdaemon slirp4netns snapd \
                systemd-container uidmap
+
 snap install syft --classic && wait
 snap install grype --classic && wait
-snap remove docker --purge && wait
-snap install docker --revision=$docker_ver && wait || exit 1
-snap stop docker && wait \
-&& systemctl stop docker* --all && wait
-networkctl delete docker0
+snap remove docker --purge && wait || echo "Failed to remove Docker" && exit 1
+networkctl delete docker0 2>/dev/null
+snap install docker --revision=$docker_ver && wait || echo "Failed to install Docker" && exit 1
+
+snap stop docker && wait
+systemctl stop docker* --all && wait
+networkctl delete docker0 2>/dev/null
 
 rm -r -f /home/root/*
 rm -r -f /root/snap/docker/
 rm -r -f /run/snap.docker/
 rm -r -f /run/containerd/
-rm -r -f /run/docker/
+rm -r -f /run/docker*
 rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
 rm -r -f /var/lib/snapd/cache/*
 
-groupadd -f docker && wait # Keep docker group for function, but do not add as system group (-r)
+groupadd -f docker && wait # Keep docker group for fumctionality, but do not add as system group (-r)
 usermod -aG docker $run_as && wait
-mkdir -p /home/root && sed -i "s|:/root:|:/home/root:|" /etc/passwd #rootlesskit pseudo root
+mkdir -p /home/root && sed -i "s|:/root:|:/home/root:|" /etc/passwd #rootlesskit fakeroot
+
 mkdir -p /$buildx_path && wait && \
 ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx || exit 1
 
@@ -94,7 +98,7 @@ rm -r -f /home/$run_as/.local/share/docker/
 rm -r -f /home/$run_as/.local/share/rootless*
 rm -r -f /home/$run_as/.local/share/systemd/
 rm -r -f /run/user/$run_id/containerd/
-rm -r -f /run/user/$run_id/docker/
+rm -r -f /run/user/$run_id/docker*
 rm -r -f /run/user/$run_id/runc/
 
 docker login && mkdir -p $docker_data/.docker && wait && \
@@ -105,6 +109,7 @@ mkdir -p $rootless_path/tmp && wait
 
 cat >> $rootless_path.sh << __EOF
 #!/bin/bash
+$debug
 mkdir -p $rootless_path/tmp && wait
 > $rootless_path/env-docker && > $rootless_path/env-rootless && wait
 rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path/tmp /bin/bash -i -c '
@@ -165,18 +170,16 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
 systemctl --user list-units docker* --all && systemctl --user stop docker* --all && wait
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker* --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
-cat $rootless_path/rootless.ctl.log
 
+source $rootless_path/env-rootless
 echo \$DOCKER_HOST test 1
-source $rootless_path/env-rootless.exp
-echo \$DOCKER_HOST test 2
-read -p test_here
 $docker info | grep \"rootless\" > $rootless_path/rootless.status
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
-  read -p test_here
+  echo && echo \"Rootless Docker Failed\" && echo
   exit 1
 else
-  echo && echo \"Rootless Docker Started!\" && echo
+  echo && echo \"Rootless Docker Started\" && echo
+  read -p \"Continue...\"
 fi
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
@@ -187,9 +190,11 @@ git submodule update --init --remote --merge
 if [[ \"\$(gpg-card list)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
   echo && echo \"Signing key 287EE837E6ED2DD3 present\" && echo
 else
-  echo \"Signing key 287EE837E6ED2DD3 missing\!\"
+  echo \"Signing key 287EE837E6ED2DD3 missing\"
   read -p \"Check Yubikey and try again.\"
-  lsusb
+  lsusb && ls -la /dev/hid* && gpg-card list
+  systemctl --user status gpg-agent* --all
+  ls -la $home/.gnupg
   exit 1
 fi
 
@@ -209,7 +214,7 @@ do
     --build-arg REL_DATE=$rel_date \
     --build-arg DEBIAN=$debian \
     --build-arg DEBIAN_SECURITY=$debian_security \
-    --build-arg SOURCE=$source .
+    --build-arg SOURCE=\"$source\" .
     scan_using_grype \$module 0mniteck/\$module:$rel_date
     $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
@@ -228,30 +233,34 @@ git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date
 eval \"\$(ssh-agent -k)\"
 
 systemctl --user stop docker* --all && wait
+rm -r -f /home/$run_as/snap/docker/
 rm -r -f /home/$run_as/.docker/
 rm -r -f /home/$run_as/.local/share/docker/
 rm -r -f /home/$run_as/.local/share/rootless*
 rm -r -f /home/$run_as/.local/share/systemd/
 rm -r -f /run/user/$run_id/containerd/
-rm -r -f /run/user/$run_id/docker/
+rm -r -f /run/user/$run_id/docker*
 rm -r -f /run/user/$run_id/runc/
 systemctl --user daemon-reload
 systemctl --user list-units docker* --all"
 
 snap disable docker
-snap remove docker --purge
-snap remove docker --purge
-networkctl delete docker0
-snap remove syft --purge
+snap remove docker --purge || echo "Failed to remove Docker"
+networkctl delete docker0 2>/dev/null
 snap remove grype --purge
-sed -i "s':/home/root:':/root:'" /etc/passwd
+snap remove syft --purge
+
+sed -i "s|:/home/root:|:/root:|" /etc/passwd
 delgroup docker
+
 rm -r -f /home/root/*
 rm -r -f /root/snap/docker/
 rm -r -f /var/snap/docker/
 rm -r -f /run/snap.docker/
 rm -r -f /run/containerd/
-rm -r -f /run/docker/
+rm -r -f /run/docker*
 rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
 rm -r -f /var/lib/snapd/cache/*
+
+exit 0
