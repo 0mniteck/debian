@@ -1,38 +1,18 @@
 #!/bin/bash
 
-rel_date="01-29-2026"
-date_rel="2026-01-29"
-docker_ver=3380
-
 debug="set -x" # uncomment to enable debugging
+$debug
+
+rel_date="02-01-2026"
+date_rel="2026-02-01"
+docker_ver=3380
 
 debian_security=20260125T223411Z
 debian=20260125T203410Z
-source=debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193
+source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
 
-$debug
 run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
-home=/home/$run_as
-data_dir=$home/.local/share
-sed_ech=$(cat << _EOF__
-\\\\[Service\\\\]\\
-Group=$run_as\\
-Slice=docker.slice\\
-_EOF__
-)
-
-sysusr_path=$data_dir/systemd/user
-rootless_path=$data_dir/rootless
-docker_data=$data_dir/docker
-
-snap_path=snap/docker/current
-docker_path=/$snap_path/bin
-docker=$docker_path/docker
-
-systemd_service=/etc/systemd/system/snap.docker.dockerd.service
-sysusr_service=$sysusr_path/docker.dockerd.service
-buildx_path=usr/libexec/docker/cli-plugins
 
 if [[ "$run_id" == "" ]]; then
   if [[ "$(whoami)" == *root* ]]; then
@@ -47,16 +27,36 @@ if [[ "$run_id" == "" ]]; then
   fi
 fi
 
+home=/home/$run_as
+data_dir=$home/.local/share
+sysusr_path=$data_dir/systemd/user
+rootless_path=$data_dir/rootless
+docker_data=$data_dir/docker
+snap_path=snap/docker/current
+docker_path=/$snap_path/bin
+docker=$docker_path/docker
+systemd_service=/etc/systemd/system/snap.docker.dockerd.service
+sysusr_service=$sysusr_path/docker.dockerd.service
+buildx_path=usr/libexec/docker/cli-plugins
+
+sed_ech=$(cat << _EOF__
+\\\\[Service\\\\]\\
+Group=$run_as\\
+Slice=docker.slice\\
+_EOF__
+)
+
 chown $run_as:$run_as /dev/hidraw*
 
 rm -r -f /home/root/*
-rm -r -f /root/snap/
+rm -r -f /root/snap/docker/
 rm -r -f /var/snap/docker/
-rm -r -f /run/docker*
-rm -r -f /run/snap.docker/*
+rm -r -f /run/snap.docker/
 rm -r -f /run/containerd/
-rm -r -f /var/lib/snapd/cache/*
+rm -r -f /run/docker/
+rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
+rm -r -f /var/lib/snapd/cache/*
 
 apt-get update && apt-get upgrade -y
 apt-get -qq install -y gnupg2 gpg-agent \
@@ -68,17 +68,17 @@ snap install grype --classic && wait
 snap remove docker --purge && wait
 snap install docker --revision=$docker_ver && wait || exit 1
 snap stop docker && wait \
-&& systemctl stop docker* && wait
+&& systemctl stop docker* --all && wait
 networkctl delete docker0
 
 rm -r -f /home/root/*
-rm -r -f /root/snap/
-rm -r -f /var/snap/docker/
-rm -r -f /run/docker*
-rm -r -f /run/snap.docker/*
+rm -r -f /root/snap/docker/
+rm -r -f /run/snap.docker/
 rm -r -f /run/containerd/
-rm -r -f /var/lib/snapd/cache/*
+rm -r -f /run/docker/
+rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
+rm -r -f /var/lib/snapd/cache/*
 
 groupadd -f docker && wait # Keep docker group for function, but do not add as system group (-r)
 usermod -aG docker $run_as && wait
@@ -90,10 +90,11 @@ machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 $debug
 rm -r -f /home/$run_as/.docker/
-rm -r -f /home/$run_as/.local/share/docker
+rm -r -f /home/$run_as/.local/share/docker/
 rm -r -f /home/$run_as/.local/share/rootless*
-rm -r -f /home/$run_as/.local/share/systemd
-rm -r -f /run/user/$run_id/docker*
+rm -r -f /home/$run_as/.local/share/systemd/
+rm -r -f /run/user/$run_id/containerd/
+rm -r -f /run/user/$run_id/docker/
 rm -r -f /run/user/$run_id/runc/
 
 docker login && mkdir -p $docker_data/.docker && wait && \
@@ -161,14 +162,14 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-systemctl --user list-units docker* --all && systemctl --user stop docker* && wait
+systemctl --user list-units docker* --all && systemctl --user stop docker* --all && wait
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
-systemctl --user status docker.dockerd --no-pager -n 10 > $rootless_path/rootless.ctl.log
+systemctl --user status docker* --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
 cat $rootless_path/rootless.ctl.log
 
-echo $DOCKER_HOST test 1
+echo \$DOCKER_HOST test 1
 source $rootless_path/env-rootless.exp
-echo $DOCKER_HOST test 2
+echo \$DOCKER_HOST test 2
 read -p test_here
 $docker info | grep \"rootless\" > $rootless_path/rootless.status
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
@@ -226,12 +227,13 @@ git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
 eval \"\$(ssh-agent -k)\"
 
-systemctl --user stop docker* && wait
+systemctl --user stop docker* --all && wait
 rm -r -f /home/$run_as/.docker/
-rm -r -f /home/$run_as/.local/share/docker
+rm -r -f /home/$run_as/.local/share/docker/
 rm -r -f /home/$run_as/.local/share/rootless*
-rm -r -f /home/$run_as/.local/share/systemd
-rm -r -f /run/user/$run_id/docker*
+rm -r -f /home/$run_as/.local/share/systemd/
+rm -r -f /run/user/$run_id/containerd/
+rm -r -f /run/user/$run_id/docker/
 rm -r -f /run/user/$run_id/runc/
 systemctl --user daemon-reload
 systemctl --user list-units docker* --all"
@@ -245,10 +247,11 @@ snap remove grype --purge
 sed -i "s':/home/root:':/root:'" /etc/passwd
 delgroup docker
 rm -r -f /home/root/*
-rm -r -f /root/snap/
+rm -r -f /root/snap/docker/
 rm -r -f /var/snap/docker/
-rm -r -f /run/docker*
-rm -r -f /run/snap.docker/*
+rm -r -f /run/snap.docker/
 rm -r -f /run/containerd/
-rm -r -f /var/lib/snapd/cache/*
+rm -r -f /run/docker/
+rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
+rm -r -f /var/lib/snapd/cache/*
