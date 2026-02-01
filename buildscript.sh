@@ -172,18 +172,16 @@ systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd 
 systemctl --user status docker* --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
 
 source $rootless_path/env-rootless.exp
-echo \$DOCKER_HOST test 1
 $docker info | grep \"rootless\" > $rootless_path/rootless.status
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
   echo && echo \"Rootless Docker Failed\" && echo
   exit 1
 else
   echo && echo \"Rootless Docker Started\" && echo
-  read -p \"Continue...\"
 fi
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
-systemctl --user restart gpg-agent && wait
+systemctl --user restart gpg-agent* --all && wait
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init --remote --merge
 
@@ -191,7 +189,7 @@ if [[ \"\$(gpg-card list)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; th
   echo && echo \"Signing key 287EE837E6ED2DD3 present\" && echo
 else
   echo \"Signing key 287EE837E6ED2DD3 missing\"
-  read -p \"Check Yubikey and try again.\"
+  echo \"Check Yubikey and try again.\"
   lsusb && ls -la /dev/hid* && gpg-card list
   systemctl --user status gpg-agent* --all
   ls -la $home/.gnupg
