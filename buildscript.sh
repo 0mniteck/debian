@@ -171,7 +171,7 @@ systemctl --user list-units docker* --all && systemctl --user stop docker* --all
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker* --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
 
-source $rootless_path/env-rootless
+source $rootless_path/env-rootless.exp
 echo \$DOCKER_HOST test 1
 $docker info | grep \"rootless\" > $rootless_path/rootless.status
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
