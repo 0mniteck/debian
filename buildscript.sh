@@ -164,16 +164,17 @@ systemctl --user stop docker.dockerd && wait
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker.dockerd --no-pager -n 10 > $rootless_path/rootless.ctl.log
 cat $rootless_path/rootless.ctl.log
+
 echo $DOCKER_HOST test 1
 source $rootless_path/env-rootless.exp
 echo $DOCKER_HOST test 2
 read -p test_here
-$docker info | grep "rootless" > $rootless_path/rootless.status
+$docker info | grep \"rootless\" > $rootless_path/rootless.status
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
   read -p test_here
   exit 1
 else
-  echo && echo "Rootless Docker Started!" && echo
+  echo && echo \"Rootless Docker Started!\" && echo
 fi
 
 eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
@@ -224,7 +225,7 @@ git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
 eval \"\$(ssh-agent -k)\"
 
-systemctl --user stop docker.docker && wait
+systemctl --user stop docker.dockerd && wait
 rm -r -f /home/$run_as/.docker/
 rm -r -f /home/$run_as/.local/share/docker
 rm -r -f /home/$run_as/.local/share/rootless*
