@@ -66,9 +66,10 @@ apt-get -qq install -y gnupg2 gpg-agent \
 snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge && wait
-snap install docker --revision=$docker_ver \
-&& wait && snap stop docker && wait \
-&& systemctl stop docker.dockerd && wait
+snap install docker --revision=$docker_ver && wait || exit 1
+snap stop docker && wait \
+&& systemctl stop docker* && wait
+networkctl delete docker0
 
 rm -r -f /home/root/*
 rm -r -f /root/snap/
@@ -160,7 +161,7 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-systemctl --user stop docker.dockerd && wait
+systemctl --user list-units docker* --all && systemctl --user stop docker* && wait
 systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker.dockerd --no-pager -n 10 > $rootless_path/rootless.ctl.log
 cat $rootless_path/rootless.ctl.log
@@ -225,14 +226,15 @@ git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
 eval \"\$(ssh-agent -k)\"
 
-systemctl --user stop docker.dockerd && wait
+systemctl --user stop docker* && wait
 rm -r -f /home/$run_as/.docker/
 rm -r -f /home/$run_as/.local/share/docker
 rm -r -f /home/$run_as/.local/share/rootless*
 rm -r -f /home/$run_as/.local/share/systemd
 rm -r -f /run/user/$run_id/docker*
 rm -r -f /run/user/$run_id/runc/
-systemctl --user daemon-reload"
+systemctl --user daemon-reload
+systemctl --user list-units docker* --all"
 
 snap disable docker
 snap remove docker --purge
