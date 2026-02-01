@@ -16,7 +16,7 @@ run_as=$(id -u $run_id -n)
 
 if [[ "$run_id" == "" ]]; then
   if [[ "$(whoami)" == *root* ]]; then
-    echo && echo "DO NOT run with sudo or su!"
+    echo && echo "DO NOT run with sudo or su root"
     echo "Instead Use: ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
     exit 1
   else
