@@ -20,7 +20,7 @@ if [[ "$run_id" == "" ]]; then
     echo "Instead Use: ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
     exit 1
   else
-    echo && echo "Super user is required for installation steps!"
+    echo && echo "Pkexec is required for installation steps"
     echo "Using ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
     exec pkexec --keep-cwd "$0" "$@"
     exit 0
