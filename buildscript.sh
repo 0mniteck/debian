@@ -107,6 +107,7 @@ DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
+sed -i.exp 's/^/export -- /g' $rootless_path/env-rootless
 \$(echo \"echo echo $\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless \
 --userland-proxy-path=$docker_path/docker-proxy --init-path=$docker_path/docker-init \
 --feature cdi=false --group docker) | /bin/bash | /bin/bash 2>> $rootless_path/rootless.log'
@@ -155,9 +156,10 @@ systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd 
 systemctl --user status docker.dockerd --no-pager -n 10 > $rootless_path/rootless.ctl.log
 cat $rootless_path/rootless.ctl.log
 
-source $rootless_path/env-rootless 
+source $rootless_path/env-rootless.exp
 $docker info | grep "rootless" > $rootless_path/rootless.status
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
+  read -p test_here
   exit 1
 else
   echo && echo "Rootless Docker Started!" && echo
