@@ -71,7 +71,9 @@ networkctl delete docker0 2>/dev/null
 snap install docker --revision=$docker_snap_ver && wait || echo "Failed to install Docker"
 
 snap stop docker && wait
-systemctl stop docker* --all && wait
+systemctl reset-failed && wait
+systemctl stop snap.docker* --all && wait
+systemctl mask snap.docker.dockerd --runtime --now && wait
 networkctl delete docker0 2>/dev/null
 
 rm -r -f /home/root/*
@@ -167,8 +169,11 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-systemctl --user list-units docker* --all && systemctl --user stop docker* --all && wait
-systemctl --user daemon-reload && wait && systemctl --user start docker.dockerd && sleep 10
+systemctl --user reset-failed && wait
+systemctl --user stop docker* --all && wait
+systemctl --user daemon-reload && wait
+systemctl --user list-units docker* --all
+systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker* --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
 
 source $rootless_path/env-rootless.exp
@@ -232,6 +237,7 @@ git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
 ssh-add -D && eval \"\$(ssh-agent -k)\"
 
+systemctl --user reset-failed && wait
 systemctl --user stop docker* --all && wait
 rm -r -f /home/$run_as/snap/docker/
 rm -r -f /home/$run_as/.docker/
@@ -244,6 +250,7 @@ rm -r -f /run/user/$run_id/runc/
 systemctl --user daemon-reload
 systemctl --user list-units docker* --all"
 
+systemctl unmask snap.docker.dockerd --runtime
 snap disable docker
 snap remove docker --purge || echo "Failed to remove Docker"
 networkctl delete docker0 2>/dev/null
