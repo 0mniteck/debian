@@ -3,12 +3,12 @@
 # debug="set -x" # uncomment to enable debugging
 $debug
 
-rel_date="02-01-2026"
-date_rel="2026-02-01"
-docker_ver=3380
+rel_date=$(date -d "$(date)" +"%m-%d-%Y")
+date_rel=$(date -d "$(date)" +"%Y-%m-%d")
 
-debian_security=20260125T223411Z
-debian=20260125T203410Z
+docker_snap_ver=3380
+debian_security=20260201T214338Z
+debian=20260202T022019Z
 source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
 
 run_id=$PKEXEC_UID
@@ -68,7 +68,7 @@ snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge && wait || echo "Failed to remove Docker"
 networkctl delete docker0 2>/dev/null
-snap install docker --revision=$docker_ver && wait || echo "Failed to install Docker"
+snap install docker --revision=$docker_snap_ver && wait || echo "Failed to install Docker"
 
 snap stop docker && wait
 systemctl stop docker* --all && wait
@@ -178,9 +178,11 @@ if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
   exit 1
 else
   echo && echo \"Rootless Docker Started\" && echo
+  echo \"Rootless Docker Started\" > $rootless_path/rootless.status
 fi
 
-eval \"\$(ssh-agent -s)\" && ssh-add $home/.ssh/id_ecdsa_s*[!.pub]
+eval \"\$(ssh-agent -s)\"
+ssh-add -l -L -t 1D -h git@github.com $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent* --all && wait
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git submodule update --init --remote --merge
@@ -228,7 +230,7 @@ done
 $docker logout && cat ./*/*.digest > image.digests && git status && git add -A && git status
 git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-upstream origin builder
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
-eval \"\$(ssh-agent -k)\"
+ssh-add -D && eval \"\$(ssh-agent -k)\"
 
 systemctl --user stop docker* --all && wait
 rm -r -f /home/$run_as/snap/docker/
