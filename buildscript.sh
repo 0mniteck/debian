@@ -41,7 +41,6 @@ chown $run_as:$run_as /dev/hidraw*
 
 DEVICE=$(lsusb -d 1050:0407 | grep -o Device.... - | grep -o [0-9][0-9][0-9])
 BUS=$(lsusb -d 1050:0407 | grep -o Bus.... - | grep -o [0-9][0-9][0-9])
-getfacl /dev/bus/usb/$BUS/$DEVICE
 setfacl -m u:$run_as:rw /dev/bus/usb/$BUS/$DEVICE
 
 home=/home/$run_as
