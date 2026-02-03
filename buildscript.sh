@@ -201,9 +201,8 @@ else
 fi
 
 eval \"\$(ssh-agent -s)\"
-ssh-add -l -t 1D -h git@github.com $home/.ssh/id_ecdsa_s*[!.pub]
+ssh-add -t 1D -h git@github.com $home/.ssh/id_ecdsa_s*[!.pub] && ssh-add -l
 systemctl --user restart gpg-agent* --all && wait
-git submodule update --init --remote --merge
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git config --global user.email 10482171+0mniteck@users.noreply.github.com
@@ -220,6 +219,8 @@ else
   ls -la $home/.gnupg
   exit 1
 fi
+
+git submodule update --init --remote --merge
 
 mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 for module in debian-slim debian debian-extra
@@ -287,4 +288,5 @@ rm -r -f /run/docker*
 rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
 rm -r -f /var/lib/snapd/cache/*
+
 exit 0
