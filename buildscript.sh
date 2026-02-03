@@ -86,7 +86,7 @@ snap install docker --revision=$docker_snap_ver && wait || echo "Failed to insta
 
 snap stop docker && wait
 systemctl reset-failed && wait
-systemctl stop snap.docker* --all && wait
+systemctl stop snap.docker.* --all && wait
 systemctl mask snap.docker.dockerd --runtime --now && wait
 networkctl delete docker0 2>/dev/null
 systemctl daemon-reload
@@ -185,7 +185,6 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
 }
 
 systemctl --user reset-failed && wait
-systemctl --user daemon-reload
 systemctl --user stop docker* --all && wait
 systemctl --user list-units docker* --all
 systemctl --user start docker.dockerd && sleep 10
