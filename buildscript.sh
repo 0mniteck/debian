@@ -27,6 +27,23 @@ if [[ "$run_id" == "" ]]; then
   fi
 fi
 
+if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep $run_as)" != *$run_as* ]]; then
+  sed -i "s/\"1050\", ATTR{idProduct}==\"040.\", /&MODE=\"0660\", GROUP=\"$run_as\", /g" \
+  /lib/udev/rules.d/60-scdaemon.rules
+  udevadm control --reload-rules && udevadm trigger
+fi
+
+while [[ "$(lsusb | grep Yubikey)" != *Yubikey* ]]; do
+  printf "\rPlease insert yubikey...\033[K"
+done && sleep 1 && echo
+
+chown $run_as:$run_as /dev/hidraw*
+
+DEVICE=$(lsusb -d 1050:0407 | grep -o Device.... - | grep -o [0-9][0-9][0-9])
+BUS=$(lsusb -d 1050:0407 | grep -o Bus.... - | grep -o [0-9][0-9][0-9])
+getfacl /dev/bus/usb/$BUS/$DEVICE
+setfacl -m u:$run_as:rw /dev/bus/usb/$BUS/$DEVICE
+
 home=/home/$run_as
 data_dir=$home/.local/share
 sysusr_path=$data_dir/systemd/user
@@ -45,8 +62,6 @@ Group=$run_as\\
 Slice=docker.slice\\
 _EOF__
 )
-
-chown $run_as:$run_as /dev/hidraw*
 
 rm -r -f /home/root/*
 rm -r -f /root/snap/docker/
