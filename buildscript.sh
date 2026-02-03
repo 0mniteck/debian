@@ -210,12 +210,12 @@ git config --global user.email 10482171+0mniteck@users.noreply.github.com
 git config --global user.name "Shant Patrick Tchatalbachian"
 git config --global user.signingkey 287EE837E6ED2DD3
 
-if [[ \"\$(gpg-card list)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
+if [[ \"\$(gpg-card list - openpgp)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
   echo && echo \"Signing key 287EE837E6ED2DD3 present\" && echo
 else
   echo \"Signing key 287EE837E6ED2DD3 missing\"
   echo \"Check Yubikey and try again.\"
-  lsusb && ls -la /dev/hid* && gpg-card list
+  lsusb && ls -la /dev/hid* && gpg-card list - openpgp
   systemctl --user status gpg-agent* --all
   ls -la $home/.gnupg
   exit 1
@@ -287,5 +287,4 @@ rm -r -f /run/docker*
 rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
 rm -r -f /var/lib/snapd/cache/*
-
 exit 0
