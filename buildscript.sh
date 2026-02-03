@@ -89,7 +89,7 @@ systemctl reset-failed && wait
 systemctl stop snap.docker* --all && wait
 systemctl mask snap.docker.dockerd --runtime --now && wait
 networkctl delete docker0 2>/dev/null
-systemctl --user daemon-reload
+systemctl daemon-reload
 
 rm -r -f /home/root/*
 rm -r -f /root/snap/docker/
