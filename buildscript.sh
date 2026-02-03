@@ -98,6 +98,9 @@ rm -r -f /run/docker*
 rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
 rm -r -f /var/lib/snapd/cache/*
+rm -r -f /run/user/$run_id/containerd/
+rm -r -f /run/user/$run_id/docker*
+rm -r -f /run/user/$run_id/runc/
 
 groupadd -f docker && wait # Keep docker group for fumctionality, but do not add as system group (-r)
 usermod -aG docker $run_as && wait
@@ -113,9 +116,6 @@ rm -r -f /home/$run_as/.docker/
 rm -r -f /home/$run_as/.local/share/docker/
 rm -r -f /home/$run_as/.local/share/rootless*
 rm -r -f /home/$run_as/.local/share/systemd/
-rm -r -f /run/user/$run_id/containerd/
-rm -r -f /run/user/$run_id/docker*
-rm -r -f /run/user/$run_id/runc/
 
 docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
@@ -263,9 +263,7 @@ rm -r -f /home/$run_as/.docker/
 rm -r -f /home/$run_as/.local/share/docker/
 rm -r -f /home/$run_as/.local/share/rootless*
 rm -r -f /home/$run_as/.local/share/systemd/
-rm -r -f /run/user/$run_id/containerd/
-rm -r -f /run/user/$run_id/docker*
-rm -r -f /run/user/$run_id/runc/
+
 systemctl --user daemon-reload
 systemctl --user list-units docker* --all"
 
@@ -288,5 +286,8 @@ rm -r -f /run/docker*
 rm -r -f /run/runc/
 rm -r -f /usr/libexec/docker/
 rm -r -f /var/lib/snapd/cache/*
+rm -r -f /run/user/$run_id/containerd/
+rm -r -f /run/user/$run_id/docker*
+rm -r -f /run/user/$run_id/runc/
 
 exit 0
