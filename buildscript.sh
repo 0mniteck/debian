@@ -201,7 +201,7 @@ else
 fi
 
 eval \"\$(ssh-agent -s)\"
-ssh-add -l -L -t 1D -h git@github.com $home/.ssh/id_ecdsa_s*[!.pub]
+ssh-add -l -t 1D -h git@github.com $home/.ssh/id_ecdsa_s*[!.pub]
 systemctl --user restart gpg-agent* --all && wait
 git submodule update --init --remote --merge
 
