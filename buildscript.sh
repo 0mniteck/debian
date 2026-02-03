@@ -89,6 +89,7 @@ systemctl reset-failed && wait
 systemctl stop snap.docker* --all && wait
 systemctl mask snap.docker.dockerd --runtime --now && wait
 networkctl delete docker0 2>/dev/null
+systemctl --user daemon-reload
 
 rm -r -f /home/root/*
 rm -r -f /root/snap/docker/
@@ -184,8 +185,8 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
 }
 
 systemctl --user reset-failed && wait
+systemctl --user daemon-reload
 systemctl --user stop docker* --all && wait
-systemctl --user daemon-reload && wait
 systemctl --user list-units docker* --all
 systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker* --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
@@ -263,8 +264,6 @@ rm -r -f /home/$run_as/.docker/
 rm -r -f /home/$run_as/.local/share/docker/
 rm -r -f /home/$run_as/.local/share/rootless*
 rm -r -f /home/$run_as/.local/share/systemd/
-
-systemctl --user daemon-reload
 systemctl --user list-units docker* --all"
 
 systemctl unmask snap.docker.dockerd --runtime
@@ -290,4 +289,5 @@ rm -r -f /run/user/$run_id/containerd/
 rm -r -f /run/user/$run_id/docker*
 rm -r -f /run/user/$run_id/runc/
 
+systemctl daemon-reload
 exit 0
