@@ -102,6 +102,7 @@ rm -r -f /var/lib/snapd/cache/*
 rm -r -f /run/user/$run_id/containerd/
 rm -r -f /run/user/$run_id/docker*
 rm -r -f /run/user/$run_id/runc/
+rm -r -f /home/$run_as/.local/share/docker/
 
 groupadd -f docker && wait # Keep docker group for fumctionality, but do not add as system group (-r)
 usermod -aG docker $run_as && wait
@@ -114,7 +115,6 @@ machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 $debug
 rm -r -f /home/$run_as/.docker/
-rm -r -f /home/$run_as/.local/share/docker/
 rm -r -f /home/$run_as/.local/share/rootless*
 rm -r -f /home/$run_as/.local/share/systemd/
 
@@ -261,7 +261,6 @@ systemctl --user reset-failed && wait
 systemctl --user stop docker* --all && wait
 rm -r -f /home/$run_as/snap/docker/
 rm -r -f /home/$run_as/.docker/
-rm -r -f /home/$run_as/.local/share/docker/
 rm -r -f /home/$run_as/.local/share/rootless*
 rm -r -f /home/$run_as/.local/share/systemd/
 systemctl --user list-units docker* --all"
@@ -288,6 +287,7 @@ rm -r -f /var/lib/snapd/cache/*
 rm -r -f /run/user/$run_id/containerd/
 rm -r -f /run/user/$run_id/docker*
 rm -r -f /run/user/$run_id/runc/
+rm -r -f /home/$run_as/.local/share/docker/
 
 systemctl daemon-reload
 exit 0
