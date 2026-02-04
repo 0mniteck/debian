@@ -203,7 +203,6 @@ fi
 
 eval \"\$(ssh-agent -s)\"
 ssh-add -t 1D -h git@github.com $home/.ssh/id_ecdsa_s*[!.pub] && ssh-add -l
-systemctl --user restart gpg-agent.service && wait
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git config --global user.email 10482171+0mniteck@users.noreply.github.com
