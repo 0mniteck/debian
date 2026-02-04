@@ -1,6 +1,6 @@
 #!/bin/bash
 
-debug="set -x" # uncomment to enable debugging
+# debug="set -x" # uncomment to enable debugging
 $debug
 
 rel_date=$(date -d "$(date)" +"%m-%d-%Y")
