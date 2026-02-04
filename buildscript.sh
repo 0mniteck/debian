@@ -187,8 +187,9 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
 systemctl --user reset-failed && wait
 systemctl --user stop docker* --all && wait
 systemctl --user list-units docker* --all
+systemctl --user daemon-reload
 systemctl --user start docker.dockerd && sleep 10
-systemctl --user status docker* --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
+systemctl --user status docker.dockerd --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
 
 source $rootless_path/env-rootless.exp
 $docker info | grep \"rootless\" > $rootless_path/rootless.status
