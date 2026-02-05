@@ -208,7 +208,7 @@ systemctl --user restart gpg-agent.service && wait
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git config --global user.email 10482171+0mniteck@users.noreply.github.com
 git config --global user.name \"Shant Patrick Tchatalbachian\"
-git config --global user.signingkey 287EE837E6ED2DD3
+git config --global user.signingkey 42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3
 
 if [[ \"\$(gpg-card list - openpgp)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
   echo && echo \"Signing key 287EE837E6ED2DD3 present\" && echo
