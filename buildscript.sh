@@ -255,7 +255,7 @@ do
   popd
 done
 
-$docker logout && cat ./*/*.digest > image.digests && git status && git add -A && git status
+docker logout && cat ./*/*.digest > image.digests && git status && git add -A && git status
 git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-upstream origin builder
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
 ssh-add -D && eval \"\$(ssh-agent -k)\"
