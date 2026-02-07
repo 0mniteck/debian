@@ -120,7 +120,8 @@ rm -r -f /home/$run_as/.local/share/systemd/
 
 docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
-cat $home/.syft_pub | syft login registry-1.docker.io -u 0mniteck42 --password-stdin
+syft login registry-1.docker.io -u 0mniteck42
+# cat $home/.syft_pub | syft login registry-1.docker.io -u 0mniteck42 --password-stdin
 
 mkdir -p $rootless_path/tmp && wait
 > $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && chmod +x $rootless_path.sh && wait
