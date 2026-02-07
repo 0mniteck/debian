@@ -9,7 +9,7 @@ date_rel=$(date -d "$(date)" +"%Y-%m-%d")
 docker_snap_ver=3380
 debian_security=20260201T214338Z
 debian=20260202T022019Z
-source="debian:trixie-20260112-slim@sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193"
+source="debian:trixie-20260202-slim@sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1"
 
 run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
