@@ -205,6 +205,7 @@ fi
 eval \"\$(ssh-agent -s)\"
 ssh-add -t 1D -h git@github.com $home/.ssh/id_ecdsa_s*[!.pub] && ssh-add -l
 systemctl --user restart gpg-agent.service && wait
+export GPG_TTY=\$(tty)
 
 git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
 git config --global user.email 10482171+0mniteck@users.noreply.github.com
@@ -241,13 +242,10 @@ do
     --build-arg DEBIAN=$debian \
     --build-arg DEBIAN_SECURITY=$debian_security \
     --build-arg SOURCE=\"$source\" .
-    df -h # checking space
     $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
     $docker buildx ls && $docker buildx prune -f -a
-    df -h
     scan_using_grype \$module 0mniteck/\$module:$rel_date
-    df -h
     echo '# '0mniteck/\$module:$rel_date > \$module.image.digest
     cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> \$module.image.digest
     echo '## ' >> readme.md && cat \$module.image.digest >> readme.md && cat readme.md
