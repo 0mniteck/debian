@@ -1,6 +1,6 @@
-#### ✔ Scanned for vulnerabilities [799 vulnerability matches] 
-#### ├── by severity: 7 critical, 58 high, 176 medium, 47 low, 658 negligible (191 unknown)
-#### └── by status: 20 fixed, 1117 not-fixed, 338 ignored 
+#### ✔ Scanned for vulnerabilities [906 vulnerability matches] 
+#### ├── by severity: 1 critical, 77 high, 261 medium, 47 low, 665 negligible (67 unknown)
+#### └── by status: 27 fixed, 1091 not-fixed, 212 ignored 
 ## 
-0mniteck/debian:1-22-2026
-1-22-2026: digest: sha256:cf2886b05b2b7eaecd415651f33f4ca5497f59b21c1cc2b5a4ece3b0d6581fcf size: 3236
+# 0mniteck/debian:02-12-2026
+sha256:c43dfc2ca8b1b69c0668418f033f12cc0d3ddbc0bf3162f3f9312a1446d10641
