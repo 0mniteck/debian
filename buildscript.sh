@@ -3,13 +3,32 @@
 # debug="set -x" # uncomment to enable debugging
 $debug
 
-rel_date=$(date -d "$(date)" +"%m-%d-%Y")
-date_rel=$(date -d "$(date)" +"%Y-%m-%d")
-
 docker_snap_ver=3380
 debian_security=20260212T194631Z
 debian=20260212T204405Z
 source="debian:trixie-20260202-slim@sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1"
+
+rel_date=$(date -d "$(date)" +"%m-%d-%Y")
+date_rel=$(date -d "$(date)" +"%Y-%m-%d")
+
+if [[ "$EPOCH" == "" ]]; then
+  EPOCH="today"
+fi
+source_date_epoch=1
+if [[ "$EPOCH" == "today" ]]; then
+  timestamp=$(date -d $(date +%D) +%s);
+  if [[ "${timestamp}" != "" ]]; then
+    echo "Setting SOURCE_DATE_EPOCH from today's date: $(date +%D) = @$timestamp";
+    source_date_epoch=$((timestamp));
+  else
+    echo "Can't get timestamp. Defaulting to 1.";
+    source_date_epoch=1;
+  fi
+elif [[ "$EPOCH" != 0 ]]; then
+  echo "Using override timestamp $EPOCH for SOURCE_DATE_EPOCH."
+  source_date_epoch=$(($EPOCH))
+fi
+SOURCE_DATE_EPOCH=$source_date_epoch
 
 run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
@@ -119,6 +138,7 @@ ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx || exit
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 $debug
+SOURCE_DATE_EPOCH=$source_date_epoch
 
 clean_some() {
   rm -r -f /home/$run_as/.docker/
@@ -148,6 +168,7 @@ DOCKER_CONFIG=$docker_data/.docker
 DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
+SOURCE_DATE_EPOCH=$source_date_epoch
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
 sed \"s/^/export -- /g\" $rootless_path/env-rootless > $rootless_path/env-rootless.exp
 \$(echo \"echo echo $\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless \
@@ -246,6 +267,7 @@ do
     --tag 0mniteck/\$module:$rel_date \
     --metadata-file \$module.meta.json \
     --attest \"type=provenance,mode=max\" \
+    --build-arg SOURCE_DATE_EPOCH=$source_date_epoch \
     --build-arg REL_DATE=$rel_date \
     --build-arg DEBIAN=$debian \
     --build-arg DEBIAN_SECURITY=$debian_security \
