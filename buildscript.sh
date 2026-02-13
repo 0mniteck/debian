@@ -166,6 +166,8 @@ DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
 SOURCE_DATE_EPOCH=$source_date_epoch
+SYFT_CACHE_DIR=$docker_data/syft
+GRYPE_DB_CACHE_DIR=$docker_data/grype
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
 sed \"s/^/export -- /g\" $rootless_path/env-rootless > $rootless_path/env-rootless.exp
 \$(echo \"echo echo $\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless \
@@ -182,10 +184,10 @@ sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" $sysu
 
 scan_using_grype() { # $1 = Name, $2 = Name:tag
   grype config > $docker_data/.grype.yaml
-  TMPDIR=$docker_data/syft SYFT_CACHE_DIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json || \
-  TMPDIR=$docker_data/syft SYFT_CACHE_DIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json
+  TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json || \
+  TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json
   rm -f -r $docker_data/syft/* && wait
-  script -q -c \"TMPDIR=$docker_data/grype GRYPE_DB_CACHE_DIR=$docker_data/grype grype sbom:\$1.spdx.json \
+  script -q -c \"TMPDIR=$docker_data/grype grype sbom:\$1.spdx.json \
   -c $docker_data/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
   rm -f -r $docker_data/grype/* && wait
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
@@ -276,29 +278,29 @@ do
     --name \$module-builder --buildkitd-flags \"--oci-worker-rootless=true\" \
     --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
     $docker buildx build --push \
-    --tag 0mniteck/\$module:$rel_date \
+    --tag 0mniteck/\$module:\$rel_date \
     --metadata-file \$module.meta.json \
     --attest \"type=provenance,mode=max\" \
     --build-arg SOURCE_DATE_EPOCH=$source_date_epoch \
     --build-arg DEBIAN_SECURITY=$debian_security \
     --build-arg DEBIAN=$debian \
-    --build-arg REL_DATE=$rel_date \
+    --build-arg REL_DATE=\$rel_date \
     --build-arg SOURCE=\"$source\" .
     $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
     $docker buildx prune -f -a && wait
-    scan_using_grype \$module 0mniteck/\$module:$rel_date
-    echo '# '0mniteck/\$module:$rel_date > \$module.image.digest
+    scan_using_grype \$module 0mniteck/\$module:\$rel_date
+    echo '# '0mniteck/\$module:\$rel_date > \$module.image.digest
     cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> \$module.image.digest
     echo '## ' >> readme.md && echo '\`\`\`' >> readme.md && cat \$module.image.digest >> readme.md && cat readme.md
     git status && git add -A && git status
-    git commit -a -S -m \"Successful Build of \$module:$rel_date\" && git push --set-upstream origin HEAD:\$module
+    git commit -a -S -m \"Successful Build of \$module:\$rel_date\" && git push --set-upstream origin HEAD:\$module
   popd
 done
 
 cat ./*/*.digest > image.digests && git status && git add -A && git status
-git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-upstream origin builder
-git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
+git commit -a -S -m \"Successful Build of Release \$date_rel\" && git push --set-upstream origin builder
+git tag -a \$date_rel -s -m \"Tagged Release \$date_rel\" && git push origin \$date_rel
 ssh-add -D && eval \"\$(ssh-agent -k)\"
 
 systemctl --user reset-failed && wait
