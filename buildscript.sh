@@ -24,7 +24,7 @@ if [[ "$run_id" == "" ]]; then
   fi
 fi
 
-if [[ "$EPOCH" == ** ]]; then
+if [[ "$EPOCH" == "" ]]; then
   EPOCH="today"
 fi
 source_date_epoch=1
@@ -248,24 +248,25 @@ else
   echo \"Signing key 287EE837E6ED2DD3 missing\"
   echo \"Check Yubikey and try again.\"
   lsusb && ls -la /dev/hid* && gpg-card list - openpgp
-  systemctl --user status gpg-agent* --all
+  systemctl --user status gpg-agent* --all --no-pager
   ls -la $home/.gnupg
   exit 1
 fi
 
 git submodule update --init --remote --merge
 
-unset subver
+unset rel_date date_rel rel_ver sub_ver
 rel_date=\$(date -d \"\$(date)\" +\"%m-%d-%Y\")
 date_rel=\$(date -d \"\$(date)\" +\"%Y-%m-%d\")
-subver=\$(git submodule --quiet foreach \"git log --pretty=reference --grep=debian-slim:\$rel_date\" | wc -l)
+rel_ver=\$(git log --pretty=reference --grep=Successful\\ Build\\ of\\ Release\\ \$date_rel | wc -l)
+sub_ver=\$(git submodule --quiet foreach \"git log --pretty=reference --grep=debian-slim:\$rel_date\" | wc -l)
 
-if [[ \"\$(git log --pretty=reference --grep=Successful\\ Build\\ of\\ Release\\ \$date_rel)\" == ** ]]; then
+if [[ \"\$rel_ver\" -lt 1 ]]; then
   wait
-elif [[ \"\$subver\" -ge 1 ]]; then
-  rel_date=\$(date -d \$(date) +\"%m-%d-%Y-00\$subver\")
-  date_rel=\$(date -d \$(date) +\"%Y-%m-%d-00\$subver\")
-  echo && echo \"Build Subversion: 00\$subver\" && echo 
+elif [[ \"\$sub_ver\" -ge 1 ]]; then
+  rel_date=\$(date -d \"\$(date)\" +\"%m-%d-%Y-00\$sub_ver\")
+  date_rel=\$(date -d \"\$(date)\" +\"%Y-%m-%d-00\$sub_ver\")
+  echo && echo \"Build Subversion: 00\$sub_ver\" && echo 
 fi
 
 mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
