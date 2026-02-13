@@ -15,9 +15,7 @@ https://github.com/0mniteck/Debian/blob/6a0bbd2a3708aa0936f05e598f5ece959d26c107
 
 ## Grype Status at Buildtime
 https://github.com/0mniteck/Debian/blob/3fcdccd50110dbc780356a02d5e09aaa5a3c30f4/readme.md?plain=1#L1-L5
-
 https://github.com/0mniteck/Debian/blob/ce800ac65b99895fc6055c874c900fd2dfcb9c3a/readme.md?plain=1#L1-L5
-
 https://github.com/0mniteck/Debian/blob/ce52934f82926299dc0de566c8391bbd9a3a1a9c/readme.md?plain=1#L1-L5
 
 ## Currently Supported Tagged Images/Snapshots
@@ -54,9 +52,9 @@ sha256:c2242b938e28bd6f39c0372db589cfbb3a448fa593509f42ef887616e83d7047`
 
 Yubikey with CCID enabled required for signing
 
-`--remote` updates the submodules
+Fork and edit the `.identity` and `.gitmodules`
 
-`./buildscript.sh --remote`
+`pkexec --keep-cwd ./buildscript.sh`
 
 ## Included Packages
 debian-slim: `build-essential curl git git-lfs libasound2-dev libgtk-3-dev libnss3-dev libpulse-dev lsb-release rubygems wget xauth xvfb`
