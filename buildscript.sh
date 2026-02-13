@@ -148,7 +148,7 @@ clean_some() {
 
 clean_some && docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
-echo && syft login registry-1.docker.io -u 0mniteck42 && echo 'Logged in to syft'
+echo && syft login registry-1.docker.io -u 0mniteck42 && echo 'Logged in to syft' && echo
 
 mkdir -p $rootless_path/tmp && wait
 > $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && chmod +x $rootless_path.sh && wait
@@ -295,8 +295,7 @@ systemctl --user reset-failed && wait
 systemctl --user stop docker* --all && wait
 systemctl --user list-units docker* --all
 
-clean_some
-docker logout"
+clean_some"
 
 systemctl unmask snap.docker.dockerd --runtime
 snap disable docker
