@@ -278,7 +278,7 @@ do
     scan_using_grype \$module 0mniteck/\$module:$rel_date
     echo '# '0mniteck/\$module:$rel_date > \$module.image.digest
     cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> \$module.image.digest
-    echo '## ' >> readme.md && cat \$module.image.digest >> readme.md && cat readme.md
+    echo '## ' >> readme.md && echo '```' >> readme.md && cat \$module.image.digest >> readme.md && cat readme.md
     git status && git add -A && git status
     git commit -a -S -m \"Successful Build of \$module:$rel_date\" && git push --set-upstream origin HEAD:\$module
   popd
