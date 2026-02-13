@@ -192,6 +192,7 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   -c $docker_data/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
   rm -f -r $docker_data/grype/* && wait
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
+    unset \"wright\$2\"
     grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
     tr -d '\000-\037\177' < \$1.grype.status.\$2 | sed '/^$/d' > \$1.grype.status.\$2.tmp
     line1=\$(cat \$1.grype.status.\$2)
