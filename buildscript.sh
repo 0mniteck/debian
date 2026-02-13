@@ -1,6 +1,6 @@
 #!/bin/bash
 
-debug="set -x" # uncomment to enable debugging
+# debug="set -x" # uncomment to enable debugging
 $debug
 
 run_id=$PKEXEC_UID
@@ -234,19 +234,19 @@ else
   echo \"Rootless Docker Started\" > $rootless_path/rootless.status
 fi
 
-eval \"\$(ssh-agent -s)\"
-ssh-add -t 1D -h git@github.com $home/.ssh/id_ecdsa_s*[!.pub] && ssh-add -l
-systemctl --user restart gpg-agent.service && wait
-export GPG_TTY=\$(tty)
-
-git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
 ssh_conf=\$(<$home/.ssh/config)
 if [[ \"\$ssh_conf\" != *Debian* ]]; then
-  echo \"Host Debian
+  echo \"
+Host Debian
   Hostname github.com
   IdentityFile $home/\$IDENTITY_FILE
-  IdentitiesOnly yes\" >> $home/.ssh/config
+  IdentitiesOnly yes
+\" >> $home/.ssh/config
 fi
+eval \"\$(ssh-agent -s)\" && wait
+ssh-add -t 1D -h git@github.com $home/\$IDENTITY_FILE && ssh-add -l
+systemctl --user restart gpg-agent.service && wait
+export GPG_TTY=\$(tty)
 
 if [[ \"\$(gpg-card list - openpgp)\" == *\$SIGNING_KEY* ]]; then
   echo && echo \"Signing key present\" && echo
@@ -259,6 +259,7 @@ else
   exit 1
 fi
 
+git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
 git submodule update --init --remote --merge
 
 unset rel_date date_rel rel_ver sub_ver
