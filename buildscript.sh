@@ -62,15 +62,31 @@ Slice=docker.slice\\
 _EOF__
 )
 
-rm -r -f /home/root/*
-rm -r -f /root/snap/docker/
-rm -r -f /var/snap/docker/
-rm -r -f /run/snap.docker/
-rm -r -f /run/containerd/
-rm -r -f /run/docker*
-rm -r -f /run/runc/
-rm -r -f /usr/libexec/docker/
-rm -r -f /var/lib/snapd/cache/*
+clean_most() {
+  rm -r -f /home/root/*
+  rm -r -f /root/snap/docker/
+  rm -r -f /run/snap.docker/
+  rm -r -f /run/containerd/
+  rm -r -f /run/docker*
+  rm -r -f /run/runc/
+  rm -r -f /usr/libexec/docker/
+  rm -r -f /var/lib/snapd/cache/*
+  rm -r -f /run/user/$run_id/containerd/
+  rm -r -f /run/user/$run_id/docker*
+  rm -r -f /run/user/$run_id/runc/
+  rm -r -f /home/$run_as/.local/share/docker/
+}
+
+clean_all() {
+  rm -r -f /var/snap/docker/
+  rm -r -f /home/$run_as/snap/docker/
+  rm -r -f /home/$run_as/.docker/
+  rm -r -f /home/$run_as/.local/share/rootless*
+  rm -r -f /home/$run_as/.local/share/systemd/
+  clean_most
+}
+
+clean_all
 
 apt-get -qq update && apt-get -qq upgrade -y
 apt-get -qq install -y gnupg2 gpg-agent \
@@ -91,18 +107,7 @@ systemctl mask snap.docker.dockerd --runtime --now && wait
 networkctl delete docker0 2>/dev/null
 systemctl daemon-reload
 
-rm -r -f /home/root/*
-rm -r -f /root/snap/docker/
-rm -r -f /run/snap.docker/
-rm -r -f /run/containerd/
-rm -r -f /run/docker*
-rm -r -f /run/runc/
-rm -r -f /usr/libexec/docker/
-rm -r -f /var/lib/snapd/cache/*
-rm -r -f /run/user/$run_id/containerd/
-rm -r -f /run/user/$run_id/docker*
-rm -r -f /run/user/$run_id/runc/
-rm -r -f /home/$run_as/.local/share/docker/
+clean_most
 
 groupadd -f docker && wait # Keep docker group for fumctionality, but do not add as system group (-r)
 usermod -aG docker $run_as && wait
@@ -120,7 +125,7 @@ rm -r -f /home/$run_as/.local/share/systemd/
 
 docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
-syft login registry-1.docker.io -u 0mniteck42 && echo 'Logged in to syft'
+echo && syft login registry-1.docker.io -u 0mniteck42 && echo 'Logged in to syft'
 
 mkdir -p $rootless_path/tmp && wait
 > $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && chmod +x $rootless_path.sh && wait
@@ -230,7 +235,7 @@ for module in debian-slim debian debian-extra
 do
   pushd \$module/
     git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
-    rm -f \$module.* digest readme.md
+    rm -f \$module.* readme.md
     $docker buildx create \
     --name \$module-builder --buildkitd-flags \"--oci-worker-rootless=true\" \
     --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
@@ -244,7 +249,7 @@ do
     --build-arg SOURCE=\"$source\" .
     $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
-    $docker buildx ls && $docker buildx prune -f -a
+    $docker buildx prune -f -a && wait
     scan_using_grype \$module 0mniteck/\$module:$rel_date
     echo '# '0mniteck/\$module:$rel_date > \$module.image.digest
     cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> \$module.image.digest
@@ -254,18 +259,18 @@ do
   popd
 done
 
-docker logout && cat ./*/*.digest > image.digests && git status && git add -A && git status
+cat ./*/*.digest > image.digests && git status && git add -A && git status
 git commit -a -S -m \"Successful Build of Release $date_rel\" && git push --set-upstream origin builder
 git tag -a $date_rel -s -m \"Tagged Release $date_rel\" && git push origin $date_rel
 ssh-add -D && eval \"\$(ssh-agent -k)\"
 
 systemctl --user reset-failed && wait
 systemctl --user stop docker* --all && wait
-rm -r -f /home/$run_as/snap/docker/
-rm -r -f /home/$run_as/.docker/
+rm -r -f /home/$run_as/.docker
 rm -r -f /home/$run_as/.local/share/rootless*
 rm -r -f /home/$run_as/.local/share/systemd/
-systemctl --user list-units docker* --all"
+systemctl --user list-units docker* --all
+docker logout"
 
 systemctl unmask snap.docker.dockerd --runtime
 snap disable docker
@@ -277,19 +282,7 @@ snap remove syft --purge
 sed -i "s|:/home/root:|:/root:|" /etc/passwd
 delgroup docker
 
-rm -r -f /home/root/*
-rm -r -f /root/snap/docker/
-rm -r -f /var/snap/docker/
-rm -r -f /run/snap.docker/
-rm -r -f /run/containerd/
-rm -r -f /run/docker*
-rm -r -f /run/runc/
-rm -r -f /usr/libexec/docker/
-rm -r -f /var/lib/snapd/cache/*
-rm -r -f /run/user/$run_id/containerd/
-rm -r -f /run/user/$run_id/docker*
-rm -r -f /run/user/$run_id/runc/
-rm -r -f /home/$run_as/.local/share/docker/
+clean_all
 
 systemctl daemon-reload
 exit 0
