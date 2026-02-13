@@ -3,7 +3,9 @@ Tagged releases of debian docker images for reproducible build environments.
 
 Built: ephemerally - rootlessly - attestably
 
-Scanned: syft - grype - scout (base images)
+Scanned: syft - grype - scout (slim/base images)
+
+Signed: yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) - in-toto (attestation) - docker provenance (attestation)
 ## 
 
 ## Push Digests
