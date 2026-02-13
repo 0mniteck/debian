@@ -96,7 +96,7 @@ apt-get -qq install -y gnupg2 gpg-agent \
 
 snap install syft --classic && wait
 snap install grype --classic && wait
-snap remove docker --purge && wait || echo "Failed to remove Docker"
+snap remove docker --purge 2>/dev/null && wait || echo "Failed to remove Docker"
 networkctl delete docker0 2>/dev/null
 snap install docker --revision=$docker_snap_ver && wait || echo "Failed to install Docker"
 
