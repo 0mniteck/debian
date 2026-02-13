@@ -240,6 +240,13 @@ export GPG_TTY=\$(tty)
 source .identity
 git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
 
+if [[ \"\$(<$home/.ssh/config)\" != *Debian* ]]; then
+  echo \"Host Debian
+  Hostname github.com
+  IdentityFile $home/\$IDENTITY_FILE
+  IdentitiesOnly yes\" >> $home/.ssh/config
+fi
+
 if [[ \"\$(gpg-card list - openpgp)\" == *\$SIGNING_KEY* ]]; then
   echo && echo \"Signing key present\" && echo
 else
