@@ -268,9 +268,9 @@ do
     --metadata-file \$module.meta.json \
     --attest \"type=provenance,mode=max\" \
     --build-arg SOURCE_DATE_EPOCH=$source_date_epoch \
-    --build-arg REL_DATE=$rel_date \
-    --build-arg DEBIAN=$debian \
     --build-arg DEBIAN_SECURITY=$debian_security \
+    --build-arg DEBIAN=$debian \
+    --build-arg REL_DATE=$rel_date \
     --build-arg SOURCE=\"$source\" .
     $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
