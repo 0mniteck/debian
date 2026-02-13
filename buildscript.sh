@@ -8,6 +8,22 @@ debian_security=20260212T194631Z
 debian=20260213T023117Z
 source="debian:trixie-20260202-slim@sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1"
 
+run_id=$PKEXEC_UID
+run_as=$(id -u $run_id -n)
+
+if [[ "$run_id" == "" ]]; then
+  if [[ "$(whoami)" == *root* ]]; then
+    echo && echo "DO NOT run with sudo or su root"
+    echo "Instead Use: ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
+    exit 1
+  else
+    echo && echo "Pkexec is required for installation steps"
+    echo "Using: ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
+    exec pkexec --keep-cwd "$0" "$@"
+    exit 0
+  fi
+fi
+
 rel_date=$(date -d "$(date)" +"%m-%d-%Y")
 date_rel=$(date -d "$(date)" +"%Y-%m-%d")
 
@@ -29,22 +45,6 @@ elif [[ "$EPOCH" != 0 ]]; then
   source_date_epoch=$(($EPOCH))
 fi
 SOURCE_DATE_EPOCH=$source_date_epoch
-
-run_id=$PKEXEC_UID
-run_as=$(id -u $run_id -n)
-
-if [[ "$run_id" == "" ]]; then
-  if [[ "$(whoami)" == *root* ]]; then
-    echo && echo "DO NOT run with sudo or su root"
-    echo "Instead Use: ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
-    exit 1
-  else
-    echo && echo "Pkexec is required for installation steps"
-    echo "Using: ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
-    exec pkexec --keep-cwd "$0" "$@"
-    exit 0
-  fi
-fi
 
 if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep $run_as)" != *$run_as* ]]; then
   sed -i "s/\"1050\", ATTR{idProduct}==\"040.\", /&MODE=\"0660\", GROUP=\"$run_as\", /g" \
