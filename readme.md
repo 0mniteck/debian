@@ -1,5 +1,5 @@
 # [Debian-Dev Docker Images](https://hub.docker.com/r/0mniteck/)
-Tagged releases of debian docker images for reproducible build environments.
+Tagged releases of debian-dev docker images for reproducible build environments.
 
 Built: ephemerally - rootlessly - attestably
 
