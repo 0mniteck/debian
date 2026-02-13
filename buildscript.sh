@@ -5,7 +5,7 @@ $debug
 
 docker_snap_ver=3380
 debian_security=20260212T194631Z
-debian=20260212T204405Z
+debian=20260213T023117Z
 source="debian:trixie-20260202-slim@sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1"
 
 rel_date=$(date -d "$(date)" +"%m-%d-%Y")
