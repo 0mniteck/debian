@@ -130,8 +130,9 @@ mkdir -p /$buildx_path && wait && \
 ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx || exit 1
 
 machinectl shell $run_as@ /bin/bash -c "
-cd $(echo $PWD)
 $debug
+cd $(echo $PWD)
+source .identity
 SOURCE_DATE_EPOCH=$source_date_epoch
 
 clean_some() {
@@ -149,7 +150,7 @@ sys_ctl_common() {
 
 clean_some && docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
-echo && syft login registry-1.docker.io && echo 'Logged in to syft' && echo
+echo && syft login registry-1.docker.io -u \$USERNAME && echo 'Logged in to syft' && echo
 
 mkdir -p $rootless_path/tmp && wait
 > $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && chmod +x $rootless_path.sh && wait
@@ -238,7 +239,6 @@ ssh-add -t 1D -h git@github.com $home/.ssh/id_ecdsa_s*[!.pub] && ssh-add -l
 systemctl --user restart gpg-agent.service && wait
 export GPG_TTY=\$(tty)
 
-source .identity
 git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
 
 if [[ \"\$(<$home/.ssh/config)\" != *Debian* ]]; then
