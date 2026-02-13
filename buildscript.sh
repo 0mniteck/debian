@@ -24,10 +24,7 @@ if [[ "$run_id" == "" ]]; then
   fi
 fi
 
-rel_date=$(date -d "$(date)" +"%m-%d-%Y")
-date_rel=$(date -d "$(date)" +"%Y-%m-%d")
-
-if [[ "$EPOCH" == "" ]]; then
+if [[ "$EPOCH" == ** ]]; then
   EPOCH="today"
 fi
 source_date_epoch=1
@@ -255,6 +252,19 @@ else
 fi
 
 git submodule update --init --remote --merge
+
+unset subver
+rel_date=$(date -d \"$(date)\" +\"%m-%d-%Y\")
+date_rel=$(date -d \"$(date)\" +\"%Y-%m-%d\")
+subver=$(git submodule --quiet foreach \"git log --grep=debian-slim:\$rel_date --pretty=reference\" | wc -l)
+
+if [[ \"$(git log --grep=\$date_rel)\" == ** ]]; then
+  wait
+elif [[ \"\$subver\" >= 1 ]]; then
+  rel_date=$(date -d \"$(date)\" +\"%m-%d-%Y-00\$subver\")
+  date_rel=$(date -d \"$(date)\" +\"%Y-%m-%d-00\$subver\")
+  echo && echo \"Build Subversion: 00\$subver\" && echo 
+fi
 
 mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 for module in debian-slim debian debian-extra
