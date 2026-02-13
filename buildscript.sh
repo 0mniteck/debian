@@ -240,8 +240,8 @@ systemctl --user restart gpg-agent.service && wait
 export GPG_TTY=\$(tty)
 
 git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
-
-if [[ \"\$(<$home/.ssh/config)\" != *Debian* ]]; then
+ssh_conf=\$(<$home/.ssh/config)
+if [[ \"\$ssh_conf\" != *Debian* ]]; then
   echo \"Host Debian
   Hostname github.com
   IdentityFile $home/\$IDENTITY_FILE
