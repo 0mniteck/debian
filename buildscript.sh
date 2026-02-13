@@ -3,11 +3,6 @@
 debug="set -x" # uncomment to enable debugging
 $debug
 
-docker_snap_ver=3380
-debian_security=20260212T194631Z
-debian=20260213T023117Z
-source="debian:trixie-20260202-slim@sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1"
-
 run_id=$PKEXEC_UID
 run_as=$(id -u $run_id -n)
 
@@ -70,6 +65,7 @@ docker=$docker_path/docker
 systemd_service=/etc/systemd/system/snap.docker.dockerd.service
 sysusr_service=$sysusr_path/docker.dockerd.service
 buildx_path=usr/libexec/docker/cli-plugins
+source .pinned_ver
 
 sed_ech=$(cat << _EOF__
 \\\\[Service\\\\]\\
@@ -143,9 +139,16 @@ clean_some() {
   rm -r -f /home/$run_as/.local/share/systemd/
 }
 
+sys_ctl_common() {
+  systemctl --user daemon-reload && wait
+  systemctl --user reset-failed && wait
+  systemctl --user stop docker* --all && wait
+  systemctl --user list-units docker* --all
+}
+
 clean_some && docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
-echo && syft login registry-1.docker.io -u 0mniteck42 && echo 'Logged in to syft' && echo
+echo && syft login registry-1.docker.io && echo 'Logged in to syft' && echo
 
 mkdir -p $rootless_path/tmp && wait
 > $rootless_path.sh && > $rootless_path/env-docker && > $rootless_path/env-rootless && chmod +x $rootless_path.sh && wait
@@ -215,10 +218,7 @@ scan_using_grype() { # $1 = Name, $2 = Name:tag
   sed -i '1,3s/^/#### /g' readme.md
 }
 
-systemctl --user reset-failed && wait
-systemctl --user stop docker* --all && wait
-systemctl --user list-units docker* --all
-systemctl --user daemon-reload && wait
+sys_ctl_common
 systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker.dockerd --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
 
@@ -237,16 +237,14 @@ ssh-add -t 1D -h git@github.com $home/.ssh/id_ecdsa_s*[!.pub] && ssh-add -l
 systemctl --user restart gpg-agent.service && wait
 export GPG_TTY=\$(tty)
 
-git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
-git config --global user.email 10482171+0mniteck@users.noreply.github.com
-git config --global user.name \"Shant Patrick Tchatalbachian\"
-git config --global user.signingkey 42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3
+source .identity
+git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
 
-if [[ \"\$(gpg-card list - openpgp)\" == *42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3* ]]; then
-  echo && echo \"Signing key 287EE837E6ED2DD3 present\" && echo
+if [[ \"\$(gpg-card list - openpgp)\" == *\$SIGNING_KEY* ]]; then
+  echo && echo \"Signing key present\" && echo
 else
-  echo \"Signing key 287EE837E6ED2DD3 missing\"
-  echo \"Check Yubikey and try again.\"
+  echo && echo \"Signing key \$SIGNING_KEY missing\"
+  echo \"Check Yubikey and .identity file\" && echo
   lsusb && ls -la /dev/hid* && gpg-card list - openpgp
   systemctl --user status gpg-agent* --all --no-pager
   ls -la $home/.gnupg
@@ -273,13 +271,13 @@ mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 for module in debian-slim debian debian-extra
 do
   pushd \$module/
-    git remote remove origin && git remote add origin git@Debian:0mniteck/Debian.git
+    git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
     rm -f \$module.* readme.md
     $docker buildx create \
     --name \$module-builder --buildkitd-flags \"--oci-worker-rootless=true\" \
     --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
     $docker buildx build --push \
-    --tag 0mniteck/\$module:\$rel_date \
+    --tag \$REPO/\$module:\$rel_date \
     --metadata-file \$module.meta.json \
     --attest \"type=provenance,mode=max\" \
     --build-arg SOURCE_DATE_EPOCH=$source_date_epoch \
@@ -290,8 +288,8 @@ do
     $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
     $docker buildx prune -f -a && wait
-    scan_using_grype \$module 0mniteck/\$module:\$rel_date
-    echo '# '0mniteck/\$module:\$rel_date > \$module.image.digest
+    scan_using_grype \$module \$REPO/\$module:\$rel_date
+    echo '# '\$REPO/\$module:\$rel_date > \$module.image.digest
     cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> \$module.image.digest
     echo '## ' >> readme.md && echo '\`\`\`' >> readme.md && cat \$module.image.digest >> readme.md && cat readme.md
     git status && git add -A && git status
@@ -304,11 +302,8 @@ git commit -a -S -m \"Successful Build of Release \$date_rel\" && git push --set
 git tag -a \$date_rel -s -m \"Tagged Release \$date_rel\" && git push origin \$date_rel
 ssh-add -D && eval \"\$(ssh-agent -k)\"
 
-systemctl --user reset-failed && wait
-systemctl --user stop docker* --all && wait
-systemctl --user list-units docker* --all
-
-clean_some"
+clean_some
+sys_ctl_common"
 
 systemctl unmask snap.docker.dockerd --runtime
 snap disable docker
