@@ -1,6 +1,6 @@
 #!/bin/bash
 
-debug="set -x" # uncomment to enable debugging
+# debug="set -x" # uncomment to enable debugging
 $debug
 
 docker_snap_ver=3380
