@@ -1,3 +1,3 @@
-✔ Scanned for vulnerabilities [906 vulnerability matches] 
-├── by severity: 1 critical, 77 high, 261 medium, 47 low, 665 negligible (67 unknown)
-└── by status: 27 fixed, 1091 not-fixed, 212 ignored 
+✔ Scanned for vulnerabilities [965 vulnerability matches] 
+├── by severity: 1 critical, 82 high, 265 medium, 56 low, 706 negligible (69 unknown)
+└── by status: 27 fixed, 1152 not-fixed, 214 ignored 
