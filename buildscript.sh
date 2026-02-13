@@ -262,7 +262,7 @@ subver=\$(git submodule --quiet foreach \"git log --grep=debian-slim:\$rel_date 
 
 if [[ \"\$(git log --grep=\$date_rel)\" == ** ]]; then
   wait
-elif [[ \"\$subver\" >= 1 ]]; then
+elif [[ \"\$subver\" -ge 1 ]]; then
   rel_date=\$(date -d \$(date) +\"%m-%d-%Y-00\$subver\")
   date_rel=\$(date -d \$(date) +\"%Y-%m-%d-00\$subver\")
   echo && echo \"Build Subversion: 00\$subver\" && echo 
