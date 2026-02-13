@@ -1,6 +1,7 @@
-#### ✔ Scanned for vulnerabilities [965 vulnerability matches] 
-#### ├── by severity: 1 critical, 82 high, 265 medium, 56 low, 706 negligible (67 unknown)
-#### └── by status: 27 fixed, 1150 not-fixed, 212 ignored 
+#### ✔ Scanned for vulnerabilities [906 vulnerability matches] 
+#### ├── by severity: 1 critical, 77 high, 261 medium, 47 low, 665 negligible (67 unknown)
+#### └── by status: 27 fixed, 1091 not-fixed, 212 ignored 
 ## 
-# 0mniteck/debian-extra:02-12-2026
-sha256:07a03fe5625cfaa2c91c3dfb0c54badb2a584e344579dcd3efcd636759cb4377
+```
+# 0mniteck/debian-extra:02-13-2026
+sha256:de08209ba4abbad1d1023d3dae528b3a772358700612d7ef414694702dba2250
