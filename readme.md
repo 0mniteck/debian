@@ -6,7 +6,14 @@ Built: ephemerally - rootlessly - attestably
 Scanned: syft - grype - scout (slim/base images)
 
 Signed: yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) - in-toto (attestation) - docker provenance (attestation)
-## 
+
+## Usage
+
+Yubikey with CCID enabled required for signing
+
+Fork and edit the `.identity` and `.gitmodules`
+
+`pkexec --keep-cwd ./buildscript.sh`
 
 ## Push Digests
 https://github.com/0mniteck/Debian/blob/6a0bbd2a3708aa0936f05e598f5ece959d26c107/image.digests#L3-L4
@@ -46,15 +53,6 @@ sha256:c2242b938e28bd6f39c0372db589cfbb3a448fa593509f42ef887616e83d7047`
 `https://snapshot.debian.org/archive/debian/20251016T204015Z`
 
 `https://snapshot.debian.org/archive/debian-security/20251016T202337Z`
-
-
-## Usage
-
-Yubikey with CCID enabled required for signing
-
-Fork and edit the `.identity` and `.gitmodules`
-
-`pkexec --keep-cwd ./buildscript.sh`
 
 ## Included Packages
 debian-slim: `build-essential curl git git-lfs libasound2-dev libgtk-3-dev libnss3-dev libpulse-dev lsb-release rubygems wget xauth xvfb`
