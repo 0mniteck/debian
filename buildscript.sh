@@ -119,11 +119,14 @@ ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx || exit
 machinectl shell $run_as@ /bin/bash -c "
 cd $(echo $PWD)
 $debug
-rm -r -f /home/$run_as/.docker/
-rm -r -f /home/$run_as/.local/share/rootless*
-rm -r -f /home/$run_as/.local/share/systemd/
 
-docker login && mkdir -p $docker_data/.docker && wait && \
+clean_some() {
+  rm -r -f /home/$run_as/.docker/
+  rm -r -f /home/$run_as/.local/share/rootless*
+  rm -r -f /home/$run_as/.local/share/systemd/
+}
+
+clean_some && docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
 echo && syft login registry-1.docker.io -u 0mniteck42 && echo 'Logged in to syft'
 
@@ -266,10 +269,9 @@ ssh-add -D && eval \"\$(ssh-agent -k)\"
 
 systemctl --user reset-failed && wait
 systemctl --user stop docker* --all && wait
-rm -r -f /home/$run_as/.docker
-rm -r -f /home/$run_as/.local/share/rootless*
-rm -r -f /home/$run_as/.local/share/systemd/
 systemctl --user list-units docker* --all
+
+clean_some
 docker logout"
 
 systemctl unmask snap.docker.dockerd --runtime
