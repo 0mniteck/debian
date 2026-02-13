@@ -256,11 +256,11 @@ fi
 git submodule update --init --remote --merge
 
 unset subver
-rel_date=\$(date -d \$(date) +'%m-%d-%Y')
-date_rel=\$(date -d \$(date) +'%Y-%m-%d')
-subver=\$(git submodule --quiet foreach \"git log --grep=debian-slim:\$rel_date --pretty=reference\" | wc -l)
+rel_date=\$(date -d \"\$(date)\" +\"%m-%d-%Y\")
+date_rel=\$(date -d \"\$(date)\" +\"%Y-%m-%d\")
+subver=\$(git submodule --quiet foreach \"git log --pretty=reference --grep=debian-slim:\$rel_date\" | wc -l)
 
-if [[ \"\$(git log --grep=Successful\\ Build\\ of\\ Release \$date_rel)\" == ** ]]; then
+if [[ \"\$(git log --pretty=reference --grep=Successful\\ Build\\ of\\ Release\\ \$date_rel)\" == ** ]]; then
   wait
 elif [[ \"\$subver\" -ge 1 ]]; then
   rel_date=\$(date -d \$(date) +\"%m-%d-%Y-00\$subver\")
