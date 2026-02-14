@@ -259,10 +259,9 @@ else
 fi
 
 git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
-git config submodule.debian-slim.url git@Debian:\$REPO/Debian.git
-git config submodule.debian.url git@Debian:\$REPO/Debian.git
-git config submodule.debian-extra.url git@Debian:\$REPO/Debian.git
-git submodule update --init --remote --merge
+git submodule --quiet foreach \"cd .. && git config submodule.\$name.url git@Debian:\$REPO/Debian.git\"
+git submodule update --init --remote --merge && echo
+git submodule --quiet foreach \"git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git\"
 
 unset rel_date date_rel rel_ver sub_ver
 rel_date=\$(date -d \"\$(date)\" +\"%m-%d-%Y\")
@@ -275,15 +274,13 @@ if [[ \"\$rel_ver\" -lt 1 ]]; then
 elif [[ \"\$sub_ver\" -ge 1 ]]; then
   rel_date=\$(date -d \"\$(date)\" +\"%m-%d-%Y-00\$sub_ver\")
   date_rel=\$(date -d \"\$(date)\" +\"%Y-%m-%d-00\$sub_ver\")
-  echo && echo \"Build Subversion: 00\$sub_ver\" && echo 
+  echo \"Build Subversion: 00\$sub_ver\" && echo 
 fi
 
 mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 for module in debian-slim debian debian-extra
 do
-  
   pushd \$module/
-    git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
     rm -f \$module.* readme.md
     $docker buildx create \
     --name \$module-builder --buildkitd-flags \"--oci-worker-rootless=true\" \
