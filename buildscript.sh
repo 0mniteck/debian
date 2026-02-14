@@ -52,8 +52,8 @@ chown $run_as:$run_as /dev/hidraw*
 
 DEVICE=$(lsusb -d 1050:0407 | grep -o Device.... - | grep -o [0-9][0-9][0-9])
 BUS=$(lsusb -d 1050:0407 | grep -o Bus.... - | grep -o [0-9][0-9][0-9])
-set_facl="setfacl -m u:$run_as:rw /dev/bus/usb/$BUS/$DEVICE"
-$set_facl || $set_facl || exit 1
+set_facl=$(echo "setfacl -m u:$run_as:rw /dev/bus/usb/$BUS/$DEVICE")
+echo $set_facl | bash || echo $set_facl | bash || exit 1
 
 home=/home/$run_as
 data_dir=$home/.local/share
@@ -189,8 +189,8 @@ sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" $sysu
 
 scan_using_grype() { # $1 = Name, $2 = Name:tag
   grype config > $docker_data/.grype.yaml
-  syft_run=\"TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json\"
-  \$syft_run || \$syft_run || exit 1 && rm -f -r $docker_data/syft/* && wait
+  syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json\")
+  echo \$syft_run | bash || echo \$syft_run | bash || exit 1 && rm -f -r $docker_data/syft/* && wait
   script -q -c \"TMPDIR=$docker_data/grype grype sbom:\$1.spdx.json \
   -c $docker_data/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
   rm -f -r $docker_data/grype/* && wait
@@ -281,6 +281,7 @@ fi
 mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 for module in debian-slim debian debian-extra
 do
+  
   pushd \$module/
     git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
     rm -f \$module.* readme.md
