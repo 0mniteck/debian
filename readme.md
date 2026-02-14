@@ -26,15 +26,15 @@ Requirements:
 
 Build using `pkexec --keep-cwd ./buildscript.sh`
 
-## Push Digests
-https://github.com/0mniteck/Debian/blob/6a0bbd2a3708aa0936f05e598f5ece959d26c107/image.digests#L3-L4
-https://github.com/0mniteck/Debian/blob/6a0bbd2a3708aa0936f05e598f5ece959d26c107/image.digests#L5-L6
-https://github.com/0mniteck/Debian/blob/6a0bbd2a3708aa0936f05e598f5ece959d26c107/image.digests#L1-L2
+## Push Digests and Grype Status
+https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/image.digests#L3-L4
+https://github.com/0mniteck/Debian/blob/6ee9b6bc2501e86e2df290e24282a8a7530f77a3/readme.md?plain=1#L1-L3
 
-## Grype Status at Buildtime
-https://github.com/0mniteck/Debian/blob/3fcdccd50110dbc780356a02d5e09aaa5a3c30f4/readme.md?plain=1#L1-L5
-https://github.com/0mniteck/Debian/blob/ce800ac65b99895fc6055c874c900fd2dfcb9c3a/readme.md?plain=1#L1-L5
-https://github.com/0mniteck/Debian/blob/ce52934f82926299dc0de566c8391bbd9a3a1a9c/readme.md?plain=1#L1-L5
+https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/image.digests#L5-L6
+https://github.com/0mniteck/Debian/blob/16e7b1508378018b8278bc9dc1874aee1b7c4640/readme.md?plain=1#L1-L3
+
+https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/image.digests#L1-L2
+https://github.com/0mniteck/Debian/blob/7ee312f0ccccb9aca63bb8912b258860f9b0646f/readme.md?plain=1#L1-L3
 
 ## Currently Supported Tagged Images/Snapshots
 
