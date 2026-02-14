@@ -189,9 +189,8 @@ sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" $sysu
 
 scan_using_grype() { # $1 = Name, $2 = Name:tag
   grype config > $docker_data/.grype.yaml
-  TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json || \
-  TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json
-  rm -f -r $docker_data/syft/* && wait
+  syft_run=\"TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json\"
+  syft_run || syft_run || exit 1 && rm -f -r $docker_data/syft/* && wait
   script -q -c \"TMPDIR=$docker_data/grype grype sbom:\$1.spdx.json \
   -c $docker_data/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
   rm -f -r $docker_data/grype/* && wait
