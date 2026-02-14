@@ -239,8 +239,7 @@ if [[ \"\$ssh_conf\" != *Debian* ]]; then
 Host Debian
   Hostname github.com
   IdentityFile $home/\$IDENTITY_FILE
-  IdentitiesOnly yes
-\" >> $home/.ssh/config
+  IdentitiesOnly yes\" >> $home/.ssh/config
 fi
 eval \"\$(ssh-agent -s)\" && wait
 ssh-add -t 1D -h git@github.com $home/\$IDENTITY_FILE && ssh-add -l
