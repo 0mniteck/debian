@@ -1,19 +1,28 @@
 # [Debian-Dev Docker Images](https://hub.docker.com/r/0mniteck/)
 Tagged releases of debian-dev docker images for reproducible build environments.
 
-Built: ephemerally - rootlessly - attestably
-
-Scanned: syft - grype - scout (slim/base images)
-
-Signed: yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) - in-toto (TSA attestation) - docker provenance (attestation)
+  |     Built     |    |         Scanned         |    |                 Signed                  |
+  | ------------- | -- | ----------------------- | -- | --------------------------------------- |
+  |               |    |                         |    |                                         |
+  | ephemerally   |    | syft                    |    | yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) |
+  | rootlessly    |    | grype                   |    | in-toto (TSA attestation)               |
+  | attestably    |    | scout (slim/base images)|    | docker provenance (attestation)         |
 
 ## Usage
 
-Yubikey with CCID enabled is required for signing
+### Use It!
+ - #### Find pull instructions in the [Docker Hub](https://hub.docker.com/r/0mniteck/)
+ - #### See other examples [0mniteck](https://github.com/0mniteck)
+### Fork It!
+ - A. Create a Docker Hub
+ - B. Fork and edit the `.identity` file
+ - C. Bump versions using the `.pinned_ver` file
 
-Fork and edit the `.identity` file
-
-Bump versions using the `.pinned_ver` file
+### Build It!
+Requirements:
+ - aarch64/armv8/arm64 (rootless builds can't be CC'd)
+ - Yubikey with CCID enabled is required for signing
+ - Ubuntu 25.10 (will run on any debian distro with minor changes)
 
 Build using `pkexec --keep-cwd ./buildscript.sh`
 
