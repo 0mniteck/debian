@@ -9,13 +9,13 @@ Signed: yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) - in-toto (TSA attestation) - do
 
 ## Usage
 
-Yubikey with CCID enabled required for signing
+Yubikey with CCID enabled is required for signing
 
 Fork and edit the `.identity` file
 
 Bump versions using the `.pinned_ver` file
 
-`pkexec --keep-cwd ./buildscript.sh`
+Build using `pkexec --keep-cwd ./buildscript.sh`
 
 ## Push Digests
 https://github.com/0mniteck/Debian/blob/6a0bbd2a3708aa0936f05e598f5ece959d26c107/image.digests#L3-L4
@@ -28,6 +28,15 @@ https://github.com/0mniteck/Debian/blob/ce800ac65b99895fc6055c874c900fd2dfcb9c3a
 https://github.com/0mniteck/Debian/blob/ce52934f82926299dc0de566c8391bbd9a3a1a9c/readme.md?plain=1#L1-L5
 
 ## Currently Supported Tagged Images/Snapshots
+
+02/14/26:
+
+`debian:trixie-20260202-slim
+sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1`
+
+`https://snapshot.debian.org/archive/debian/20260213T203004Z`
+
+`https://snapshot.debian.org/archive/debian-security/20260213T190147Z`
 
 02/12/26:
 
@@ -46,15 +55,6 @@ sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193`
 `https://snapshot.debian.org/archive/debian/20260121T202109Z`
 
 `https://snapshot.debian.org/archive/debian-security/20260120T213558Z`
-
-10/16/25:
-
-`debian:trixie-20250929-slim
-sha256:c2242b938e28bd6f39c0372db589cfbb3a448fa593509f42ef887616e83d7047`
-
-`https://snapshot.debian.org/archive/debian/20251016T204015Z`
-
-`https://snapshot.debian.org/archive/debian-security/20251016T202337Z`
 
 ## Included Packages
 debian-slim: `build-essential curl git git-lfs libasound2-dev libgtk-3-dev libnss3-dev libpulse-dev lsb-release rubygems wget xauth xvfb`
