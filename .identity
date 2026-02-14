@@ -5,7 +5,7 @@ export -- SIGNING_KEY=42E2DDF1E31B370F8BFFEE03287EE837E6ED2DD3
 git config --global user.email 10482171+0mniteck@users.noreply.github.com
 git config --global user.name 'Shant Patrick Tchatalbachian'
 git config --global user.signingkey $SIGNING_KEY
-echo "-----BEGIN PGP PUBLIC KEY BLOCK-----
+echo '-----BEGIN PGP PUBLIC KEY BLOCK-----
 
 mQENBGUR6+QBCADbwEILdDDXamhAQbL7KlgFzoP3NI8+I2bCHHAUPYbpaCax0plM
 MMAQZTJa9/iOFRfWOVL7yCHNdDA78rjjn6JBH3qoKvEQV+HKGmtYqgJrayY/jr8H
@@ -47,4 +47,4 @@ v1JudnO5WDlqbsw0Yu9IXw4x6LOnE8qsAuEaghfXrqKzjxdbQMp8bYte7n9sOYGB
 sdDit5ObEgmXy1wjB6Pf0wojUqmKK0z20/OFF4GgPzRTC0pIam8ZRmCQETfWEW3/
 vh+kBBRXedt07zPnJz/lkpRse8j9bPKBSxlVF6mQbljnFr8tWgR/QXPKULxNP91P
 =fLyV
------END PGP PUBLIC KEY BLOCK-----" | gpg --import
+-----END PGP PUBLIC KEY BLOCK-----' | gpg --import
