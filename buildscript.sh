@@ -26,7 +26,7 @@ source_date_epoch=1
 if [[ "$EPOCH" == "today" ]]; then
   timestamp=$(date -d $(date +%D) +%s);
   if [[ "${timestamp}" != "" ]]; then
-    echo "Setting SOURCE_DATE_EPOCH from today's date: $(date +%D) = @$timestamp";
+    echo && echo "Setting SOURCE_DATE_EPOCH from today's date: $(date +%D) = @$timestamp";
     source_date_epoch=$((timestamp));
   else
     echo "Can't get timestamp. Defaulting to 1.";
@@ -145,7 +145,7 @@ sys_ctl_common() {
   systemctl --user daemon-reload && wait
   systemctl --user reset-failed && wait
   systemctl --user stop docker* --all && wait
-  systemctl --user list-units docker* --all
+  systemctl --user list-units docker* --all && echo
 }
 
 clean_some && docker login && mkdir -p $docker_data/.docker && wait && \
@@ -190,7 +190,9 @@ sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" $sysu
 scan_using_grype() { # $1 = Name, $2 = Name:tag
   grype config > $docker_data/.grype.yaml
   syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json\")
+  echo && echo 'Starting Syft...'
   echo \$syft_run | bash || echo \$syft_run | bash || exit 1 && rm -f -r $docker_data/syft/* && wait
+  echo && echo 'Starting Grype...' && echo
   script -q -c \"TMPDIR=$docker_data/grype grype sbom:\$1.spdx.json \
   -c $docker_data/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
   rm -f -r $docker_data/grype/* && wait
@@ -295,12 +297,12 @@ do
     --build-arg SOURCE=\"$source\" .
     $docker buildx stop \$module-builder && wait
     $docker buildx rm -f --all-inactive && wait
-    $docker buildx prune -f -a && wait
+    $docker buildx prune -f -a && wait && echo
     scan_using_grype \$module \$REPO/\$module:\$rel_date
     echo '# '\$REPO/\$module:\$rel_date > \$module.image.digest
     cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> \$module.image.digest
     echo '## ' >> readme.md && echo '\`\`\`' >> readme.md && cat \$module.image.digest >> readme.md && cat readme.md
-    git status && git add -A && git status
+    git status && git add -A && git status && echo && read -p 'Press enter to launch pinentry'
     git commit -a -S -m \"Successful Build of \$module:\$rel_date\" && git push --set-upstream origin HEAD:\$module
   popd
 done
@@ -324,6 +326,5 @@ sed -i "s|:/home/root:|:/root:|" /etc/passwd
 delgroup docker
 
 clean_all
-
 systemctl daemon-reload
 exit 0
