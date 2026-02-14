@@ -5,13 +5,15 @@ Built: ephemerally - rootlessly - attestably
 
 Scanned: syft - grype - scout (slim/base images)
 
-Signed: yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) - in-toto (attestation) - docker provenance (attestation)
+Signed: yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) - in-toto (TSA attestation) - docker provenance (attestation)
 
 ## Usage
 
 Yubikey with CCID enabled required for signing
 
-Fork and edit the `.identity` and `.gitmodules`
+Fork and edit the `.identity` file
+
+Bump versions using the `.pinned_ver` file
 
 `pkexec --keep-cwd ./buildscript.sh`
 
