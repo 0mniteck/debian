@@ -132,8 +132,11 @@ ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx || exit
 machinectl shell $run_as@ /bin/bash -c "
 $debug
 cd $(echo $PWD)
-source .identity
 SOURCE_DATE_EPOCH=$source_date_epoch
+
+systemctl --user restart gpg-agent.service && wait
+export GPG_TTY=\$(tty)
+source .identity
 
 clean_some() {
   rm -r -f /home/$run_as/.docker/
@@ -245,8 +248,6 @@ Host Debian
 fi
 eval \"\$(ssh-agent -s)\" && wait
 ssh-add -t 1D -h git@github.com $home/\$IDENTITY_FILE && ssh-add -l
-systemctl --user restart gpg-agent.service && wait
-export GPG_TTY=\$(tty)
 
 if [[ \"\$(gpg-card list - openpgp)\" == *\$SIGNING_KEY* ]]; then
   echo && echo \"Signing key present\" && echo
