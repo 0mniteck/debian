@@ -193,7 +193,7 @@ sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" $sysu
 scan_using_grype() { # $1 = Name, $2 = Name:tag
   grype config > $docker_data/.grype.yaml
   syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json\")
-  echo && echo 'Starting Syft...'
+  echo 'Starting Syft...'
   echo \$syft_run | bash || echo \$syft_run | bash || exit 1 && rm -f -r $docker_data/syft/* && wait
   echo && echo 'Starting Grype...' && echo
   script -q -c \"TMPDIR=$docker_data/grype grype sbom:\$1.spdx.json \
@@ -303,7 +303,7 @@ do
     echo '# '\$REPO/\$module:\$rel_date > \$module.image.digest
     cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> \$module.image.digest
     echo '## ' >> readme.md && echo '\`\`\`' >> readme.md && cat \$module.image.digest >> readme.md && cat readme.md
-    git status && git add -A && git status && echo && read -p 'Press enter to launch pinentry'
+    git status && git add -A && git status && read -p 'Press enter to launch pinentry'
     git commit -a -S -m \"Successful Build of \$module:\$rel_date\" && git push --set-upstream origin HEAD:\$module
   popd
 done
