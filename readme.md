@@ -11,8 +11,8 @@ Tagged releases of debian-dev docker images for reproducible build environments.
 ## Usage
 
 ### Use It!
- - #### Find pull instructions in the [Docker Hub](https://hub.docker.com/r/0mniteck/)
- - #### See other examples [0mniteck](https://github.com/0mniteck)
+ - #### Find pull instructions in the → [Docker Hub](https://hub.docker.com/r/0mniteck/)
+ - #### See other examples → [0mniteck](https://github.com/0mniteck)
 ### Fork It!
  - A. Create a Docker Hub
  - B. Fork and edit the `.identity` file
