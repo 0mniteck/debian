@@ -254,6 +254,7 @@ Host \$PROJECT
   IdentitiesOnly yes\" >> $home/.ssh/config
 fi
 eval \"\$(ssh-agent -s)\" && wait
+ssh -T git@github.com 2> /dev/null
 ssh-add -t 1D -h git@github.com $home/\$IDENTITY_FILE && ssh-add -l
 
 if [[ \"\$(gpg-card list - openpgp)\" == *\$SIGNING_KEY* ]]; then
