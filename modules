@@ -1,1 +1,27 @@
-tmp
+for module in debian-slim debian debian-extra
+do
+  pushd $module/
+    rm -f $module.* readme.md
+    $docker buildx create \
+    --name $module-builder --buildkitd-flags "--oci-worker-rootless=true" \
+    --driver docker-container --driver-opt "network=host,default-load=true" --bootstrap --use
+    $docker buildx build --push \
+    --tag $REPO/$module:$rel_date \
+    --metadata-file $module.meta.json \
+    --attest "type=provenance,mode=max" \
+    --build-arg SOURCE_DATE_EPOCH=$source_date_epoch \
+    --build-arg DEBIAN_SECURITY=$debian_security \
+    --build-arg DEBIAN=$debian \
+    --build-arg REL_DATE=$rel_date \
+    --build-arg SOURCE="$source" .
+    $docker buildx stop $module-builder && wait
+    $docker buildx rm -f --all-inactive && wait
+    $docker buildx prune -f -a && wait && echo
+    scan_using_grype $module $REPO/$module:$rel_date
+    echo '# '$REPO/$module:$rel_date > $module.image.digest
+    cat $module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> $module.image.digest
+    echo '## ' >> readme.md && echo '\`\`\`' >> readme.md && cat $module.image.digest >> readme.md && cat readme.md
+    git status && git add -A && git status && read -p 'Press enter to launch pinentry'
+    git commit -a -S -m "Successful Build of $module:$rel_date" && git push --set-upstream origin HEAD:$module
+  popd
+done
