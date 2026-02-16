@@ -45,7 +45,7 @@ docker_path=/$snap_path/bin
 docker=$docker_path/docker
 systemd_service=/etc/systemd/system/snap.docker.dockerd.service
 sysusr_service=$sysusr_path/docker.dockerd.service
-buildx_path=usr/libexec/docker/cli-plugins
+plugins_path=usr/libexec/docker/cli-plugins
 source .pinned_ver
 
 sed_ech=$(cat << _EOF__
@@ -106,8 +106,9 @@ groupadd -f docker && wait # Keep docker group for fumctionality, but do not add
 usermod -aG docker $run_as && wait
 mkdir -p /home/root && sed -i "s|:/root:|:/home/root:|" /etc/passwd #rootlesskit fakeroot
 
-mkdir -p /$buildx_path && wait && \
-ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx || exit 1
+mkdir -p /$plugins_path && wait
+ln -s /$snap_path/$plugins_path/docker-buildx /$plugins_path/docker-buildx || exit 1
+ln -s /$snap_path/$plugins_path/docker-compose /$plugins_path/docker-compose || exit 1
 
 machinectl shell $run_as@ /bin/bash -c "
 $debug
