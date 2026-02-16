@@ -1,6 +1,6 @@
 #!/bin/bash
 
-debug="set -x" # uncomment to enable debugging
+# debug="set -x" # uncomment to enable debugging
 $debug
 
 run_id=$PKEXEC_UID
@@ -139,7 +139,7 @@ if [[ \"\$EPOCH\" == *today* ]]; then
     source_date_epoch=1;
   fi
 elif [[ \"\$EPOCH\" != 0 ]]; then
-  echo && echo "Using override timestamp \$EPOCH for SOURCE_DATE_EPOCH."
+  echo && echo \"Using override timestamp \$EPOCH for SOURCE_DATE_EPOCH.\"
   source_date_epoch=\$((\$EPOCH))
 fi
 SOURCE_DATE_EPOCH=\$source_date_epoch
