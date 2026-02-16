@@ -219,11 +219,10 @@ scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-cataloger
     TMPDIR=$docker_data/syft syft attest --output spdx-json docker.io/\$REPO/\$1:\$3
   fi
   echo 'Starting Syft...'
-  echo && echo 'Progress Bar of Doom!'
   functitup & echo \$! > .pid && pid=\$(<\.pid) && rm -f .pid
   echo \$syft_run | bash || echo \$syft_run | bash || exit 1 && rm -f -r $docker_data/syft/* && wait
   trap '[[ \$pid ]] && kill \$pid; exit' EXIT && echo
-  echo && echo 'Starting Grype...' && echo
+  echo && echo 'Starting Grype...'
   functitup & echo \$! > .pid && pid=\$(<\.pid) && rm -f .pid
   script -q -c \"TMPDIR=$docker_data/grype grype sbom:\$1.spdx.json \
   -c $docker_data/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
