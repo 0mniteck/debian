@@ -116,7 +116,7 @@ HOME=$home
 
 mkdir -p $home/.ssh && chmod 0700 $home/.ssh && \
 touch $home/.ssh/config && chmod 0644 $home/.ssh/config
-ssh_conf=\$(\<$home/.ssh/config)
+ssh_conf=\$(<\$home/.ssh/config)
 
 systemctl --user restart gpg-agent.service && wait
 export GPG_TTY=\$(tty)
