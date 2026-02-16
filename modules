@@ -11,8 +11,10 @@ cur_deb_sec=$(cat .pinned_ver | grep debian_security= | cut -d'=' -f2)
 if [[ "$curl_cur_deb" == *$cur_deb* ]]; then
   export -- debian=$curl_deb
   export -- debian_security=$curl_deb_sec
-  sed -i 's/$cur_deb/$curl_deb/' .pinned_ver
-  sed -i 's/$cur_deb_sec/$curl_deb_sec/' .pinned_ver
+  sed -i 's/$cur_deb/$curl_deb/g' .pinned_ver
+  sed -i 's/$cur_deb_sec/$curl_deb_sec/g' .pinned_ver
+  sed -i 's/$cur_deb/$curl_deb/g' readme.md
+  sed -i 's/$cur_deb_sec/$curl_deb_sec/g' readme.md
   echo "Pinned Version Updated to deb:$curl_deb and deb_sec:$curl_deb_sec" && echo
 fi
 
@@ -38,8 +40,8 @@ do
     scan_using_grype $module $REPO/$module:$rel_date
     echo '# '$REPO/$module:$rel_date > $module.image.digest
     cat $module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> $module.image.digest
-    echo '## ' >> readme.md && echo '\`\`\`' >> readme.md && cat $module.image.digest >> readme.md && cat readme.md
-    git status && git add -A && git status && read -p 'Press enter to launch pinentry'
+    echo '## ' >> readme.md && echo '```' >> readme.md && cat $module.image.digest >> readme.md && cat readme.md
+    echo && git status && git add -A && git status && read -p 'Press enter to launch pinentry'
     git commit -a -S -m "Successful Build of $module:$rel_date" && git push --set-upstream origin HEAD:$module
-  popd
+  popd && echo
 done
