@@ -241,9 +241,9 @@ else
 fi
 
 ssh_conf=\$(<$home/.ssh/config)
-if [[ \"\$ssh_conf\" != *Debian* ]]; then
+if [[ \"\$ssh_conf\" != *\$PROJECT* ]]; then
   echo \"
-Host Debian
+Host \$PROJECT
   Hostname github.com
   IdentityFile $home/\$IDENTITY_FILE
   IdentitiesOnly yes\" >> $home/.ssh/config
@@ -262,16 +262,16 @@ else
   exit 1
 fi
 
-git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git
-git submodule --quiet foreach \"cd .. && git config submodule.\$name.url git@Debian:\$REPO/Debian.git\"
+git remote remove origin && git remote add origin git@\$PROJECT:\$REPO/\$PROJECT.git
+git submodule --quiet foreach \"cd .. && git config submodule.\$name.url git@\$PROJECT:\$REPO/\$PROJECT.git\"
 git submodule update --init --remote --merge && echo
-git submodule --quiet foreach \"git remote remove origin && git remote add origin git@Debian:\$REPO/Debian.git\"
+git submodule --quiet foreach \"git remote remove origin && git remote add origin git@\$PROJECT:\$REPO/\$PROJECT.git\"
 
 unset rel_date date_rel rel_ver sub_ver
 rel_date=\$(date -d \"\$(date)\" +\"%m-%d-%Y\")
 date_rel=\$(date -d \"\$(date)\" +\"%Y-%m-%d\")
 rel_ver=\$(git log --pretty=reference --grep=Successful\\ Build\\ of\\ Release\\ \$date_rel | wc -l)
-sub_ver=\$(git submodule --quiet foreach \"git log --pretty=reference --grep=debian-slim:\$rel_date\" | wc -l)
+sub_ver=\$(git submodule --quiet foreach \"git log --pretty=reference --grep=\$PROJECT-slim:\$rel_date\" | wc -l)
 
 if [[ \"\$rel_ver\" -lt 1 ]]; then
   wait
