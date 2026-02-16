@@ -82,7 +82,7 @@ clean_all() {
 clean_all
 
 apt-get -qq update && apt-get -qq upgrade -y
-apt-get -qq install -y gnupg2 gpg-agent \
+apt-get -qq install -y cosign gnupg2 gpg-agent \
                jq pkexec rootlesskit \
                scdaemon slirp4netns snapd \
                systemd-container uidmap
