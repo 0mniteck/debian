@@ -38,6 +38,10 @@ do
     $docker buildx rm -f --all-inactive && wait
     $docker buildx prune -f -a && wait && echo
     scan_using_grype $module $REPO/$module:$rel_date $rel_date
+    cosign verify-attestation docker.io/\$REPO/\$module:\$rel_date \
+    --certificate-oidc-issuer https://github.com/login/oauth \
+    --certificate-identity tiger-varsity-alto@duck.com \
+    --type spdxjson > $module.image.attested
     echo '# '$REPO/$module:$rel_date > $module.image.digest
     cat $module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> $module.image.digest
     echo '## ' >> readme.md && echo '```' >> readme.md && cat $module.image.digest >> readme.md && cat readme.md
