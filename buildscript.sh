@@ -125,13 +125,13 @@ source .identity
 source .pinned_ver
 chmod 0600 $home/\$IDENTITY_FILE && chmod 0644 $home/\$IDENTITY_FILE.pub
 
-if [[ \"\$EPOCH\" == "" ]]; then
+if [[ \"\$EPOCH\" == \"\" ]]; then
   EPOCH=\"today\"
 fi
 source_date_epoch=1
 if [[ \"\$EPOCH\" == *today* ]]; then
   timestamp=\$(date -d \$(date +%D) +%s);
-  if [[ \"\$timestamp\" != "" ]]; then
+  if [[ \"\$timestamp\" != \"\" ]]; then
     echo && echo \"Setting SOURCE_DATE_EPOCH from today's date: \$(date +%D) = @\$timestamp\";
     source_date_epoch=\$((timestamp));
   else
