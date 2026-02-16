@@ -116,6 +116,7 @@ HOME=$home
 
 ssh_conf=\$(<$home/.ssh/config) || mkdir -p $home/.ssh && touch $home/.ssh/config && \
 chmod 0644 $home/.ssh/config && chmod 0700 $home/.ssh
+
 systemctl --user restart gpg-agent.service && wait
 export GPG_TTY=\$(tty)
 
@@ -303,6 +304,7 @@ snap remove syft --purge
 
 sed -i "s|:/home/root:|:/root:|" /etc/passwd
 delgroup docker
+
 clean_all
 systemctl daemon-reload
 exit 0
