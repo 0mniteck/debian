@@ -1,12 +1,12 @@
 # [Debian-Dev Docker Images](https://hub.docker.com/r/0mniteck/)
 Tagged releases of debian-dev docker images for reproducible build environments.
 
-  |     Built     |    |         Scanned         |    |                 Signed                  |
-  | ------------- | -- | ----------------------- | -- | --------------------------------------- |
-  | attestably    |    | scout (slim/base images)|    | cosign  (keyless attestation via OIDC)  |
-  | ephemerally   |    | syft                    |    | yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) |
-  | rootlessly    |    | grype                   |    | in-toto (TSA attestation)               |
-  |               |    |                         |    | docker provenance (attestation)         |
+  |     Built     |    |                 Signed                  |    |         Scanned         |
+  | ------------- | -- | --------------------------------------- | -- | ----------------------- |
+  | attestably    |    | cosign  (keyless attestation via OIDC)  |    | scout (slim/base images)|
+  | ephemerally   |    | yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) |    | syft                    |
+  | rootlessly    |    | in-toto (TSA attestation)               |    | grype                   |
+  |               |    | docker provenance (attestation)         |    |                         |
 
 ## Usage
 
