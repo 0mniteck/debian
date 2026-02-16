@@ -3,7 +3,7 @@ Tagged releases of debian-dev docker images for reproducible build environments.
 
   |     Built     |    |         Scanned         |    |                 Signed                  |
   | ------------- | -- | ----------------------- | -- | --------------------------------------- |
-  |               |    |                         |    |                                         |
+  |               |    |                         |    | cosign  (keyless attestation via OIDC)  |
   | ephemerally   |    | syft                    |    | yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) |
   | rootlessly    |    | grype                   |    | in-toto (TSA attestation)               |
   | attestably    |    | scout (slim/base images)|    | docker provenance (attestation)         |
