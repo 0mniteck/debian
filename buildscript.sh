@@ -300,7 +300,6 @@ snap remove syft --purge
 
 sed -i "s|:/home/root:|:/root:|" /etc/passwd
 delgroup docker
-
 clean_all
 systemctl daemon-reload
 exit 0
