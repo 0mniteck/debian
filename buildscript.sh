@@ -113,7 +113,7 @@ ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx || exit
 machinectl shell $run_as@ /bin/bash -c "
 $debug
 cd $(echo $PWD)
-
+HOME=$home
 systemctl --user restart gpg-agent.service && wait
 export GPG_TTY=\$(tty)
 source .identity
