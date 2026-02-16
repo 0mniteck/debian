@@ -199,16 +199,33 @@ sed -z -i \"s|\[Service\]\nEnv|$(printf \"%s\\\\n\" $(echo $sed_ech))Env|\" $sys
 sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" $sysusr_service
 sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" $sysusr_service
 
+functitup() {
+tcols=\$(tput cols); size=\$tcols; i=0
+spin=\"�￹ºk�￹7l�￹û²�￹�￹bn�￹á�￹�￹&¾ì £￹�￹¦¸cv�￹¯»((�￹&é®￹�￹²kî�￹1�￹ºk�￹7l�￹û²�￹�￹bn�￹á�￹�￹&¾ì £￹�￹¦¸cv�￹¯»((�￹&é®￹�￹²kî�￹1�￹ºk�￹7l�￹û²�￹�￹bn�￹á�￹�￹&¾ì £￹�￹¦¸cv�￹¯»((�￹&é®￹�￹²kî�￹1�￹ºk�￹7l�￹û²�￹�￹bn�￹á�￹�￹&¾ì £￹�￹¦¸cv\"
+len=\${#spin}
+while :; do
+  i=\$(( (i+size) % len))
+  printf '%s\r'  \"\${spin:\$i:\$size}\"
+  sleep .05
+  size=\$(shuf -i1-\$tcols -n1 --random-source=/dev/random)
+done
+}
+
 mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-catalogers debian
   grype config > $docker_data/.grype.yaml
   syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json\")
   echo 'Starting Syft...'
+  echo && echo 'Progress Bar of Doom!'
+  functitup & echo \$! > .pid && pid=\$(<\.pid) && rm -f .pid
   echo \$syft_run | bash || echo \$syft_run | bash || exit 1 && rm -f -r $docker_data/syft/* && wait
+  trap '[[ \$pid ]] && kill \$pid; exit' EXIT && echo
   echo && echo 'Starting Grype...' && echo
+  functitup & echo \$! > .pid && pid=\$(<\.pid) && rm -f .pid
   script -q -c \"TMPDIR=$docker_data/grype grype sbom:\$1.spdx.json \
   -c $docker_data/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
   rm -f -r $docker_data/grype/* && wait
+  trap '[[ \$pid ]] && kill \$pid; exit' EXIT && echo
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     unset \"wright\$2\"
     grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
