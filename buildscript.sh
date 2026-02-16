@@ -114,7 +114,7 @@ $debug
 cd $(echo $PWD)
 HOME=$home
 
-ssh_conf=\$(<$home/.ssh/config) || mkdir -p $home/.ssh && touch $home/.ssh/config
+ssh_conf=\$(<$home/.ssh/config) || mkdir -p $home/.ssh && touch $home/.ssh/config && chmod 0700 .ssh
 systemctl --user restart gpg-agent.service && wait
 export GPG_TTY=\$(tty)
 source .identity
