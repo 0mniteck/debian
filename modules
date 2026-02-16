@@ -2,6 +2,7 @@ url_deb='https://snapshot.debian.org/archive/debian/?year='$(date +%Y)'&month='$
 curl_deb=$(curl -s $url_deb | grep '<a href="'$(date +%Y%m) | tail -n 1 - | cut -d'"' -f2 | cut -d'/' -f1)
 url_deb_sec='https://snapshot.debian.org/archive/debian-security/?year='$(date +%Y)'&month='$(date +%-m)
 curl_deb_sec=$(curl -s $url_deb_sec | grep '<a href="'$(date +%Y%m) | tail -n 1 - | cut -d'"' -f2 | cut -d'/' -f1)
+
 url_src='https://raw.githubusercontent.com/'$REPO'/'$PROJECT'/refs/heads/builder/.pinned_ver'
 curl_cur_deb=$(curl -s $url_src | grep debian= | cut -d'=' -f2)
 curl_cur_deb_sec=$(curl -s $url_src | grep debian_security= | cut -d'=' -f2)
@@ -21,8 +22,7 @@ do
     rm -f $module.* readme.md
     $docker buildx create \
     --name $module-builder --buildkitd-flags "--oci-worker-rootless=true" \
-    --14
-driver docker-container --driver-opt "network=host,default-load=true" --bootstrap --use
+    --driver docker-container --driver-opt "network=host,default-load=true" --bootstrap --use
     $docker buildx build --push \
     --tag $REPO/$module:$rel_date \
     --metadata-file $module.meta.json \
