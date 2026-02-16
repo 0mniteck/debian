@@ -214,10 +214,10 @@ done
 mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-catalogers debian, $3 = Attest Tag
   grype config > $docker_data/.grype.yaml
-  if [[ "$3" != "" ]]; then
+  syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json\")
+  if [[ \"\$3\" != \"\" ]]; then
     TMPDIR=$docker_data/syft syft attest --output spdx-json docker.io/\$REPO/\$1:\$3
   fi
-  syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json\")
   echo 'Starting Syft...'
   echo && echo 'Progress Bar of Doom!'
   functitup & echo \$! > .pid && pid=\$(<\.pid) && rm -f .pid
