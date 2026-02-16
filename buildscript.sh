@@ -19,25 +19,6 @@ if [[ "$run_id" == "" ]]; then
   fi
 fi
 
-if [[ "$EPOCH" == "" ]]; then
-  EPOCH="today"
-fi
-source_date_epoch=1
-if [[ "$EPOCH" == "today" ]]; then
-  timestamp=$(date -d $(date +%D) +%s);
-  if [[ "${timestamp}" != "" ]]; then
-    echo && echo "Setting SOURCE_DATE_EPOCH from today's date: $(date +%D) = @$timestamp";
-    source_date_epoch=$((timestamp));
-  else
-    echo "Can't get timestamp. Defaulting to 1.";
-    source_date_epoch=1;
-  fi
-elif [[ "$EPOCH" != 0 ]]; then
-  echo "Using override timestamp $EPOCH for SOURCE_DATE_EPOCH."
-  source_date_epoch=$(($EPOCH))
-fi
-SOURCE_DATE_EPOCH=$source_date_epoch
-
 if [[ "$(cat /lib/udev/rules.d/60-scdaemon.rules | grep $run_as)" != *$run_as* ]]; then
   sed -i "s/\"1050\", ATTR{idProduct}==\"040.\", /&MODE=\"0660\", GROUP=\"$run_as\", /g" \
   /lib/udev/rules.d/60-scdaemon.rules
@@ -132,11 +113,30 @@ ln -s /$snap_path/$buildx_path/docker-buildx /$buildx_path/docker-buildx || exit
 machinectl shell $run_as@ /bin/bash -c "
 $debug
 cd $(echo $PWD)
-SOURCE_DATE_EPOCH=$source_date_epoch
 
 systemctl --user restart gpg-agent.service && wait
 export GPG_TTY=\$(tty)
 source .identity
+source .pinned_ver
+
+if [[ \"\$EPOCH\" == ** ]]; then
+  EPOCH=\"today\"
+fi
+source_date_epoch=1
+if [[ \"\$EPOCH\" == *today* ]]; then
+  timestamp=\$(date -d \$(date +%D) +%s);
+  if [[ \"\${timestamp}\" != ** ]]; then
+    echo && echo \"Setting SOURCE_DATE_EPOCH from today\'s date: \$(date +%D) = @\$timestamp\";
+    source_date_epoch=\$((timestamp));
+  else
+    echo \"Can\'t get timestamp. Defaulting to 1.\";
+    source_date_epoch=1;
+  fi
+elif [[ \"\$EPOCH\" != 0 ]]; then
+  echo && echo "Using override timestamp \$EPOCH for SOURCE_DATE_EPOCH."
+  source_date_epoch=\$((\$EPOCH))
+fi
+SOURCE_DATE_EPOCH=\$source_date_epoch
 
 clean_some() {
   rm -r -f /home/$run_as/.docker/
@@ -168,12 +168,13 @@ env > $rootless_path/env-docker && grep ROOTLESS $rootless_path/env-docker > $ro
 echo \"HOME=$home
 XDG_CONFIG_HOME=$home
 XDG_RUNTIME_DIR=/run/user/$run_id
+docker=$docker
 DOCKER_TMPDIR=$docker_data/tmp
 DOCKER_CONFIG=$docker_data/.docker
 DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
-SOURCE_DATE_EPOCH=$source_date_epoch
+SOURCE_DATE_EPOCH=\$source_date_epoch
 SYFT_CACHE_DIR=$docker_data/syft
 GRYPE_DB_CACHE_DIR=$docker_data/grype
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
@@ -190,6 +191,7 @@ sed -z -i \"s|\[Service\]\nEnv|$(printf \"%s\\\\n\" $(echo $sed_ech))Env|\" $sys
 sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" $sysusr_service
 sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" $sysusr_service
 
+mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 scan_using_grype() { # $1 = Name, $2 = Name:tag
   grype config > $docker_data/.grype.yaml
   syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json\")
@@ -229,7 +231,7 @@ systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker.dockerd --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
 
 source $rootless_path/env-rootless.exp
-$docker info | grep \"rootless\" > $rootless_path/rootless.status
+\$docker info | grep \"rootless\" > $rootless_path/rootless.status
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
   echo && echo \"Rootless Docker Failed\" && echo
   exit 1
@@ -279,34 +281,7 @@ elif [[ \"\$sub_ver\" -ge 1 ]]; then
   echo \"Build Subversion: 00\$sub_ver\" && echo 
 fi
 
-mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
-for module in debian-slim debian debian-extra
-do
-  pushd \$module/
-    rm -f \$module.* readme.md
-    $docker buildx create \
-    --name \$module-builder --buildkitd-flags \"--oci-worker-rootless=true\" \
-    --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
-    $docker buildx build --push \
-    --tag \$REPO/\$module:\$rel_date \
-    --metadata-file \$module.meta.json \
-    --attest \"type=provenance,mode=max\" \
-    --build-arg SOURCE_DATE_EPOCH=$source_date_epoch \
-    --build-arg DEBIAN_SECURITY=$debian_security \
-    --build-arg DEBIAN=$debian \
-    --build-arg REL_DATE=\$rel_date \
-    --build-arg SOURCE=\"$source\" .
-    $docker buildx stop \$module-builder && wait
-    $docker buildx rm -f --all-inactive && wait
-    $docker buildx prune -f -a && wait && echo
-    scan_using_grype \$module \$REPO/\$module:\$rel_date
-    echo '# '\$REPO/\$module:\$rel_date > \$module.image.digest
-    cat \$module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> \$module.image.digest
-    echo '## ' >> readme.md && echo '\`\`\`' >> readme.md && cat \$module.image.digest >> readme.md && cat readme.md
-    git status && git add -A && git status && read -p 'Press enter to launch pinentry'
-    git commit -a -S -m \"Successful Build of \$module:\$rel_date\" && git push --set-upstream origin HEAD:\$module
-  popd
-done
+source modules
 
 cat ./*/*.digest > image.digests && git status && git add -A && git status
 git commit -a -S -m \"Successful Build of Release \$date_rel\" && git push --set-upstream origin builder
