@@ -271,7 +271,7 @@ unset rel_date date_rel rel_ver sub_ver
 rel_date=\$(date -d \"\$(date)\" +\"%m-%d-%Y\")
 date_rel=\$(date -d \"\$(date)\" +\"%Y-%m-%d\")
 rel_ver=\$(git log --pretty=reference --grep=Successful\\ Build\\ of\\ Release\\ \$date_rel | wc -l)
-sub_ver=\$(git submodule --quiet foreach \"git log --pretty=reference --grep=\$PROJECT-slim:\$rel_date\" | wc -l)
+sub_ver=\$(git submodule --quiet foreach \"git log --pretty=reference --grep=debian-slim:\$rel_date\" | wc -l)
 
 if [[ \"\$rel_ver\" -lt 1 ]]; then
   wait
