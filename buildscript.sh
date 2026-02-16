@@ -171,10 +171,11 @@ mkdir -p $rootless_path/tmp && wait
 > $rootless_path/env-docker && > $rootless_path/env-rootless && wait
 rootlesskit --copy-up=/etc --copy-up=/run --net=slirp4netns --disable-host-loopback --state-dir $rootless_path/tmp /bin/bash -i -c '
 env > $rootless_path/env-docker && grep ROOTLESS $rootless_path/env-docker > $rootless_path/env-rootless && rm -f $rootless_path/env-docker
-echo \"HOME=$home
+
+echo \"docker=$docker
+HOME=$home
 XDG_CONFIG_HOME=$home
 XDG_RUNTIME_DIR=/run/user/$run_id
-docker=$docker
 DOCKER_TMPDIR=$docker_data/tmp
 DOCKER_CONFIG=$docker_data/.docker
 DOCKER_HOST=unix:///run/user/$run_id/docker.sock
@@ -184,6 +185,7 @@ SOURCE_DATE_EPOCH=\$source_date_epoch
 SYFT_CACHE_DIR=$docker_data/syft
 GRYPE_DB_CACHE_DIR=$docker_data/grype
 PATH=/usr/sbin:/usr/bin:/snap/bin:$docker_path\" >> $rootless_path/env-rootless
+
 sed \"s/^/export -- /g\" $rootless_path/env-rootless > $rootless_path/env-rootless.exp
 \$(echo \"echo echo $\(\<$rootless_path/env-rootless\)\" $(echo $docker)d --rootless \
 --userland-proxy-path=$docker_path/docker-proxy --init-path=$docker_path/docker-init \
@@ -198,9 +200,9 @@ sed -i \"s|EnvironmentFile.*|EnvironmentFile=-$rootless_path/env-rootless|\" $sy
 sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" $sysusr_service
 
 mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
-scan_using_grype() { # $1 = Name, $2 = Name:tag
+scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-catalogers debian
   grype config > $docker_data/.grype.yaml
-  syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 --from docker -o spdx-json=\$1.spdx.json\")
+  syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json\")
   echo 'Starting Syft...'
   echo \$syft_run | bash || echo \$syft_run | bash || exit 1 && rm -f -r $docker_data/syft/* && wait
   echo && echo 'Starting Grype...' && echo
@@ -289,11 +291,12 @@ fi
 
 source modules
 
-cat ./*/*.digest > image.digests && git status && git add -A && git status
+mkdir -p Results && pushd Results && scan_using_grype ubuntu \"/ --select-catalogers debian\" && popd
+cat ./*/*.digest > Results/image.digests && git status && git add -A && git status
 git commit -a -S -m \"Successful Build of Release \$date_rel\" && git push --set-upstream origin builder
 git tag -a \$date_rel -s -m \"Tagged Release \$date_rel\" && git push origin \$date_rel
-ssh-add -D && eval \"\$(ssh-agent -k)\"
 
+ssh-add -D && eval \"\$(ssh-agent -k)\"
 clean_some
 sys_ctl_common"
 
