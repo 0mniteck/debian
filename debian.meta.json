@@ -3,9 +3,9 @@
     "buildType": "https://mobyproject.org/buildkit@v1",
     "materials": [
       {
-        "uri": "pkg:docker/0mniteck/debian-slim@02-16-2026?platform=linux%2Farm64",
+        "uri": "pkg:docker/0mniteck/debian-slim@02-16-2026-001?platform=linux%2Farm64",
         "digest": {
-          "sha256": "87994b7d52884e8506306b2c56c076c8661a8c3662eaaabdbac0ee0f24c7e8e6"
+          "sha256": "e97e74bd0e5eb7b4311b8d233d65550d605676fcdff907c347d028c53861d106"
         }
       }
     ],
@@ -16,9 +16,9 @@
       "parameters": {
         "frontend": "dockerfile.v0",
         "args": {
-          "build-arg:DEBIAN": "20260216T022554Z",
-          "build-arg:DEBIAN_SECURITY": "20260215T214616Z",
-          "build-arg:REL_DATE": "02-16-2026",
+          "build-arg:DEBIAN": "20260216T082402Z",
+          "build-arg:DEBIAN_SECURITY": "20260216T100331Z",
+          "build-arg:REL_DATE": "02-16-2026-001",
           "build-arg:SOURCE": "debian:trixie-20260202-slim@sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1",
           "build-arg:SOURCE_DATE_EPOCH": "1771200000"
         },
@@ -42,7 +42,7 @@
           "op": {
             "Op": {
               "source": {
-                "identifier": "docker-image://docker.io/0mniteck/debian-slim:02-16-2026@sha256:87994b7d52884e8506306b2c56c076c8661a8c3662eaaabdbac0ee0f24c7e8e6"
+                "identifier": "docker-image://docker.io/0mniteck/debian-slim:02-16-2026-001@sha256:e97e74bd0e5eb7b4311b8d233d65550d605676fcdff907c347d028c53861d106"
               }
             },
             "platform": {
@@ -98,15 +98,15 @@
         }
       ],
       "digestMapping": {
-        "sha256:712900f9e3749c50991fe5a5715bfeb59417f334b804c61b1cb3661cfa0e759a": "step0",
-        "sha256:85fe62768a915427a8221c605390bf6e6ca7f743c5795876a4769300c66ac583": "step1",
-        "sha256:fc08795ec72014c5af04278b35095127294600aee8ddc2d8e75938ae3cb5a27e": "step2"
+        "sha256:24aeb6e3e8f4726a9622fabee526bf3f95cfcee19283c10bd595e3796e18b849": "step0",
+        "sha256:79f700f06a41acb9c01545447d588d1d658c8b98425b00955f2a4e023c3e8080": "step2",
+        "sha256:eeacaaea2bb089d15d44aba3c3bd6993237b968b7ac6a2d47f6ea950b36eedb8": "step1"
       }
     },
     "metadata": {
-      "buildInvocationID": "j6rcjje3os7fmfcyxq16tadv7",
-      "buildStartedOn": "2026-02-16T08:12:28.036431149Z",
-      "buildFinishedOn": "2026-02-16T08:19:18.365586643Z",
+      "buildInvocationID": "crh0jpdy5hrnki2x73rax8i7w",
+      "buildStartedOn": "2026-02-16T10:48:12.862898856Z",
+      "buildFinishedOn": "2026-02-16T10:54:49.11066977Z",
       "completeness": {
         "parameters": true,
         "environment": true,
@@ -117,7 +117,7 @@
         "vcs": {
           "localdir:context": ".",
           "localdir:dockerfile": ".",
-          "revision": "16e7b1508378018b8278bc9dc1874aee1b7c4640",
+          "revision": "ee8c4e6873730484d472cce7da7f30ab5c434533",
           "source": "git@Debian:0mniteck/Debian.git"
         },
         "source": {
@@ -188,8 +188,8 @@
                 }
               ],
               "digestMapping": {
-                "sha256:0649bb37cfa9f96639e0ce99bc1b66671fb4912fb889a243cb16051b2f6cea85": "step0",
-                "sha256:ccdba97116b10778f364c148077ac8e392d81384fded107d9f0d0025f5aa77d9": "step1"
+                "sha256:060a00c7e81c78f04431e95a0dab1da530612d82f2de925696aadd23fbb73774": "step0",
+                "sha256:78823fc61145002ca31f8f8cc6cf16880b035d69bffccf7ee56ba86570978342": "step1"
               }
             }
           ]
@@ -204,63 +204,63 @@
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:bb46d1b299ec0e5209404d4d918f64b269c62cfb74138dd0050aec1592d1dfcf",
+                "digest": "sha256:b73edce6f2951e5448de6479a01807d9595f5f4b9fc7e64b41c53b1adf8f756b",
                 "size": 96
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:da998bda0950def09e7390962029be23833c384bd6be5872b84618f33dce4d5a",
+                "digest": "sha256:8e3596547b86178ea3430f5b50361febd318164cb9d575b8012de5890555889c",
                 "size": 349
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:ba4a375012efe52d5b5fd42a2f5df3f32cdc8cb0a8adce708bb37f9f3105ed15",
+                "digest": "sha256:3c218dbdcf43b71a92ec246a147b758a428ed00de1fb0b8465545f469709449a",
                 "size": 350
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:91d49893cdbb58d13446d7d1810c4a0bb26d459946a91416a57032c2da4a628f",
-                "size": 220
+                "digest": "sha256:3d3c7a90c8a911db4b7077780151c9e0111d8641a0fe0db9fd81af1d2b883903",
+                "size": 223
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:9fb40a117623001830fab0c1e4edb88077be5216588c8bd590749701f862cffc",
-                "size": 241
+                "digest": "sha256:195760d238195b3ebfbbf4be6cab935bbbf7efb72788faecc42cd206a8ca5c57",
+                "size": 237
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:a3c1d13fe2c116c1e7820d948cef955805ad2bcd61234ac5342a027aee6f6585",
-                "size": 279
+                "digest": "sha256:67a5aab60956df473a0b0e4e077fd2960a89f70195df159a029415ae2da881f3",
+                "size": 274
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:993581da7190650713bce136344a77ea552ad2714ebe7c2f952ab4d5dc461b75",
-                "size": 297
+                "digest": "sha256:86f65ddb81144e618b0d7a02fa2929cbcb54a3bb96028031d09c4e64a092413e",
+                "size": 295
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:f86f87d01a15c0b26c0c20270e4e075a28e2266f5e9eb29358ac056902f4248f",
-                "size": 312
+                "digest": "sha256:6933ca02ee46d677c110991b73355edd67cde715503b269e9427be93a88422cc",
+                "size": 311
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:98a58640199af7bbefc8a7cf1acc39000754ee9208841c7920bea42d8150777a",
-                "size": 17568549
+                "digest": "sha256:86b1d5f37672b45e8eaa62231a58a4de6cfc7b26ba7777823dc63ccbb7bedc52",
+                "size": 17568507
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:64c8e872581ced52f9ce5c8e664fdb21578bcfe32b28238484bc2e14494e3f78",
-                "size": 348
+                "digest": "sha256:01fae9309fdaf57e9375f92e3e5d12e447e3ee52fb9ba0f794e74687fc4121c2",
+                "size": 350
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:23e9828493823204a7132d26cf53e0a1a9d87c6de8015256d3fb71b50c2e6c0e",
-                "size": 352
+                "digest": "sha256:10198c2f7ffe7b47222f3de5274c0c46e5e38118038f94aa094588cb60304ac1",
+                "size": 354
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:3d96d8873ed678fa978324e396cf13b49e3ce9640f5044b5edbca5857e5c78a2",
-                "size": 305138759
+                "digest": "sha256:13187f9632e4a32951e26a145e59f3cfd249c12c6ceefa609d099ef3ffcba1bc",
+                "size": 305139142
               }
             ]
           ],
@@ -273,111 +273,111 @@
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:bb46d1b299ec0e5209404d4d918f64b269c62cfb74138dd0050aec1592d1dfcf",
+                "digest": "sha256:b73edce6f2951e5448de6479a01807d9595f5f4b9fc7e64b41c53b1adf8f756b",
                 "size": 96
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:da998bda0950def09e7390962029be23833c384bd6be5872b84618f33dce4d5a",
+                "digest": "sha256:8e3596547b86178ea3430f5b50361febd318164cb9d575b8012de5890555889c",
                 "size": 349
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:ba4a375012efe52d5b5fd42a2f5df3f32cdc8cb0a8adce708bb37f9f3105ed15",
+                "digest": "sha256:3c218dbdcf43b71a92ec246a147b758a428ed00de1fb0b8465545f469709449a",
                 "size": 350
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:91d49893cdbb58d13446d7d1810c4a0bb26d459946a91416a57032c2da4a628f",
-                "size": 220
+                "digest": "sha256:3d3c7a90c8a911db4b7077780151c9e0111d8641a0fe0db9fd81af1d2b883903",
+                "size": 223
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:9fb40a117623001830fab0c1e4edb88077be5216588c8bd590749701f862cffc",
-                "size": 241
+                "digest": "sha256:195760d238195b3ebfbbf4be6cab935bbbf7efb72788faecc42cd206a8ca5c57",
+                "size": 237
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:a3c1d13fe2c116c1e7820d948cef955805ad2bcd61234ac5342a027aee6f6585",
-                "size": 279
+                "digest": "sha256:67a5aab60956df473a0b0e4e077fd2960a89f70195df159a029415ae2da881f3",
+                "size": 274
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:993581da7190650713bce136344a77ea552ad2714ebe7c2f952ab4d5dc461b75",
-                "size": 297
+                "digest": "sha256:86f65ddb81144e618b0d7a02fa2929cbcb54a3bb96028031d09c4e64a092413e",
+                "size": 295
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:f86f87d01a15c0b26c0c20270e4e075a28e2266f5e9eb29358ac056902f4248f",
-                "size": 312
+                "digest": "sha256:6933ca02ee46d677c110991b73355edd67cde715503b269e9427be93a88422cc",
+                "size": 311
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:98a58640199af7bbefc8a7cf1acc39000754ee9208841c7920bea42d8150777a",
-                "size": 17568549
+                "digest": "sha256:86b1d5f37672b45e8eaa62231a58a4de6cfc7b26ba7777823dc63ccbb7bedc52",
+                "size": 17568507
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:64c8e872581ced52f9ce5c8e664fdb21578bcfe32b28238484bc2e14494e3f78",
-                "size": 348
+                "digest": "sha256:01fae9309fdaf57e9375f92e3e5d12e447e3ee52fb9ba0f794e74687fc4121c2",
+                "size": 350
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:23e9828493823204a7132d26cf53e0a1a9d87c6de8015256d3fb71b50c2e6c0e",
-                "size": 352
+                "digest": "sha256:10198c2f7ffe7b47222f3de5274c0c46e5e38118038f94aa094588cb60304ac1",
+                "size": 354
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:3d96d8873ed678fa978324e396cf13b49e3ce9640f5044b5edbca5857e5c78a2",
-                "size": 305138759
+                "digest": "sha256:13187f9632e4a32951e26a145e59f3cfd249c12c6ceefa609d099ef3ffcba1bc",
+                "size": 305139142
               },
               {
                 "mediaType": "application/vnd.oci.image.layer.v1.tar+gzip",
-                "digest": "sha256:49a1bf73ceadbcdca199dc9f8fa4228ae1e2d3ed2877b848d23b5e8ec2887365",
-                "size": 181793364
+                "digest": "sha256:c23aabe9d2b8c8a3988c12456e8275c48a66b665f6380d282b8134342124109b",
+                "size": 181793480
               }
             ]
           ]
         },
         "sysUsage": [
           {
-            "timestamp": "2026-02-16T08:12:29.943912976Z",
+            "timestamp": "2026-02-16T10:48:14.763504573Z",
             "cpuStat": {
-              "user": 969.48,
+              "user": 3115.3,
               "nice": 0,
-              "system": 698.71,
-              "idle": 20359.52,
-              "iowait": 858.07,
+              "system": 2510.2,
+              "idle": 66913.58,
+              "iowait": 5254.93,
               "irq": 0,
-              "softirq": 50.21,
+              "softirq": 166.68,
               "steal": 0,
               "guest": 0,
               "guestNice": 0
             },
             "procStat": {
-              "contextSwitches": 12757311,
-              "processCreated": 17008,
+              "contextSwitches": 45330813,
+              "processCreated": 43036,
               "processesRunning": 1
             },
             "memoryStat": {
               "total": 3891908,
-              "free": 2406188,
-              "available": 3314228,
-              "buffers": 28812,
-              "cached": 881556,
-              "active": 619992,
-              "inactive": 519760,
+              "free": 2399528,
+              "available": 3324868,
+              "buffers": 78816,
+              "cached": 847828,
+              "active": 602604,
+              "inactive": 527000,
               "swap": 1048572,
-              "dirty": 204,
+              "dirty": 220,
               "writeback": 0,
-              "slab": 236844
+              "slab": 240340
             },
             "cpuPressure": {
               "some": {
-                "avg10": 1.91,
-                "avg60": 0.47,
-                "avg300": 0.99,
-                "total": 69698665
+                "avg10": 1.83,
+                "avg60": 0.43,
+                "avg300": 0.22,
+                "total": 218976258
               },
               "full": {
                 "avg10": 0,
@@ -391,368 +391,68 @@
                 "avg10": 0,
                 "avg60": 0,
                 "avg300": 0,
-                "total": 339687
+                "total": 26479402
               },
               "full": {
                 "avg10": 0,
                 "avg60": 0,
                 "avg300": 0,
-                "total": 321186
+                "total": 25610820
               }
             },
             "ioPressure": {
               "some": {
-                "avg10": 2.37,
-                "avg60": 0.74,
-                "avg300": 12.51,
-                "total": 237142063
+                "avg10": 1.9,
+                "avg60": 0.41,
+                "avg300": 2.34,
+                "total": 1352626173
               },
               "full": {
-                "avg10": 1.92,
-                "avg60": 0.61,
-                "avg300": 11.47,
-                "total": 219509796
+                "avg10": 1.63,
+                "avg60": 0.34,
+                "avg300": 2.14,
+                "total": 1277401127
               }
             }
           },
           {
-            "timestamp": "2026-02-16T08:13:33.960874929Z",
+            "timestamp": "2026-02-16T10:49:18.7775154Z",
             "cpuStat": {
-              "user": 985.07,
+              "user": 3130.64,
               "nice": 0,
-              "system": 734.44,
-              "idle": 20653.47,
-              "iowait": 867.18,
+              "system": 2545.71,
+              "idle": 67207.46,
+              "iowait": 5265.02,
               "irq": 0,
-              "softirq": 56.31,
+              "softirq": 172.59,
               "steal": 0,
               "guest": 0,
               "guestNice": 0
             },
             "procStat": {
-              "contextSwitches": 13617027,
-              "processCreated": 17098,
-              "processesRunning": 5
-            },
-            "memoryStat": {
-              "total": 3891908,
-              "free": 1997000,
-              "available": 3259660,
-              "buffers": 34068,
-              "cached": 1226564,
-              "active": 631392,
-              "inactive": 869732,
-              "swap": 1048572,
-              "dirty": 24,
-              "writeback": 102400,
-              "slab": 242720
-            },
-            "cpuPressure": {
-              "some": {
-                "avg10": 2.7,
-                "avg60": 2.49,
-                "avg300": 1.53,
-                "total": 72464977
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 0
-              }
-            },
-            "memoryPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 339687
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 321186
-              }
-            },
-            "ioPressure": {
-              "some": {
-                "avg10": 0.79,
-                "avg60": 2.18,
-                "avg300": 10.66,
-                "total": 239272405
-              },
-              "full": {
-                "avg10": 0.7,
-                "avg60": 1.89,
-                "avg300": 9.74,
-                "total": 221336109
-              }
-            }
-          },
-          {
-            "timestamp": "2026-02-16T08:14:37.980826877Z",
-            "cpuStat": {
-              "user": 1008.71,
-              "nice": 0,
-              "system": 771.87,
-              "idle": 20904.14,
-              "iowait": 915.27,
-              "irq": 0,
-              "softirq": 59.21,
-              "steal": 0,
-              "guest": 0,
-              "guestNice": 0
-            },
-            "procStat": {
-              "contextSwitches": 14474787,
-              "processCreated": 17140,
-              "processesRunning": 2
-            },
-            "memoryStat": {
-              "total": 3891908,
-              "free": 1109456,
-              "available": 3285692,
-              "buffers": 41520,
-              "cached": 2079960,
-              "active": 637536,
-              "inactive": 1730436,
-              "swap": 1048572,
-              "dirty": 299388,
-              "writeback": 22608,
-              "slab": 297784
-            },
-            "cpuPressure": {
-              "some": {
-                "avg10": 2.35,
-                "avg60": 2.95,
-                "avg300": 1.88,
-                "total": 74772043
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 0
-              }
-            },
-            "memoryPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 339687
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 321186
-              }
-            },
-            "ioPressure": {
-              "some": {
-                "avg10": 50.63,
-                "avg60": 16.96,
-                "avg300": 12.39,
-                "total": 251891955
-              },
-              "full": {
-                "avg10": 46.08,
-                "avg60": 15.06,
-                "avg300": 11.21,
-                "total": 232440919
-              }
-            }
-          },
-          {
-            "timestamp": "2026-02-16T08:15:42.009993882Z",
-            "cpuStat": {
-              "user": 1022.1,
-              "nice": 0,
-              "system": 789.93,
-              "idle": 21160.52,
-              "iowait": 1003.65,
-              "irq": 0,
-              "softirq": 59.53,
-              "steal": 0,
-              "guest": 0,
-              "guestNice": 0
-            },
-            "procStat": {
-              "contextSwitches": 14772830,
-              "processCreated": 17200,
-              "processesRunning": 2
-            },
-            "memoryStat": {
-              "total": 3891908,
-              "free": 835520,
-              "available": 3258116,
-              "buffers": 53216,
-              "cached": 2298708,
-              "active": 703404,
-              "inactive": 1960768,
-              "swap": 1048572,
-              "dirty": 3160,
-              "writeback": 0,
-              "slab": 316992
-            },
-            "cpuPressure": {
-              "some": {
-                "avg10": 0.62,
-                "avg60": 1.65,
-                "avg300": 1.72,
-                "total": 75741182
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 0
-              }
-            },
-            "memoryPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 339687
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 321186
-              }
-            },
-            "ioPressure": {
-              "some": {
-                "avg10": 22.11,
-                "avg60": 32.49,
-                "avg300": 18.48,
-                "total": 279388065
-              },
-              "full": {
-                "avg10": 21.65,
-                "avg60": 30.56,
-                "avg300": 17.06,
-                "total": 258485562
-              }
-            }
-          },
-          {
-            "timestamp": "2026-02-16T08:16:46.045068193Z",
-            "cpuStat": {
-              "user": 1027.96,
-              "nice": 0,
-              "system": 802.13,
-              "idle": 21513.43,
-              "iowait": 1004.7,
-              "irq": 0,
-              "softirq": 61.75,
-              "steal": 0,
-              "guest": 0,
-              "guestNice": 0
-            },
-            "procStat": {
-              "contextSwitches": 14949558,
-              "processCreated": 17234,
-              "processesRunning": 1
-            },
-            "memoryStat": {
-              "total": 3891908,
-              "free": 736424,
-              "available": 3255740,
-              "buffers": 53292,
-              "cached": 2392832,
-              "active": 700672,
-              "inactive": 2054788,
-              "swap": 1048572,
-              "dirty": 0,
-              "writeback": 12744,
-              "slab": 319824
-            },
-            "cpuPressure": {
-              "some": {
-                "avg10": 2.26,
-                "avg60": 1.46,
-                "avg300": 1.6,
-                "total": 76784025
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 0
-              }
-            },
-            "memoryPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 339687
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 321186
-              }
-            },
-            "ioPressure": {
-              "some": {
-                "avg10": 0.16,
-                "avg60": 11.28,
-                "avg300": 14.85,
-                "total": 279702018
-              },
-              "full": {
-                "avg10": 0.1,
-                "avg60": 10.58,
-                "avg300": 13.7,
-                "total": 258752833
-              }
-            }
-          },
-          {
-            "timestamp": "2026-02-16T08:17:50.076414068Z",
-            "cpuStat": {
-              "user": 1060.03,
-              "nice": 0,
-              "system": 823.91,
-              "idle": 21775,
-              "iowait": 1064.12,
-              "irq": 0,
-              "softirq": 62.54,
-              "steal": 0,
-              "guest": 0,
-              "guestNice": 0
-            },
-            "procStat": {
-              "contextSwitches": 15238861,
-              "processCreated": 17804,
+              "contextSwitches": 46181103,
+              "processCreated": 43123,
               "processesRunning": 4
             },
             "memoryStat": {
               "total": 3891908,
-              "free": 491316,
-              "available": 3182228,
-              "buffers": 58484,
-              "cached": 2555884,
-              "active": 599012,
-              "inactive": 2363700,
+              "free": 2097708,
+              "available": 3359960,
+              "buffers": 82580,
+              "cached": 1177448,
+              "active": 615300,
+              "inactive": 860152,
               "swap": 1048572,
-              "dirty": 217840,
+              "dirty": 83008,
               "writeback": 0,
-              "slab": 332836
+              "slab": 244304
             },
             "cpuPressure": {
               "some": {
-                "avg10": 1.37,
-                "avg60": 1.66,
-                "avg300": 1.63,
-                "total": 78237524
+                "avg10": 3.12,
+                "avg60": 2.51,
+                "avg300": 0.91,
+                "total": 221705707
               },
               "full": {
                 "avg10": 0,
@@ -763,71 +463,71 @@
             },
             "memoryPressure": {
               "some": {
-                "avg10": 0.03,
-                "avg60": 0.04,
+                "avg10": 0,
+                "avg60": 0,
                 "avg300": 0,
-                "total": 413996
+                "total": 26479402
               },
               "full": {
-                "avg10": 0.03,
-                "avg60": 0.04,
+                "avg10": 0,
+                "avg60": 0,
                 "avg300": 0,
-                "total": 388573
+                "total": 25610820
               }
             },
             "ioPressure": {
               "some": {
-                "avg10": 55.28,
-                "avg60": 27.05,
-                "avg300": 17.62,
-                "total": 297161590
+                "avg10": 1.53,
+                "avg60": 2.67,
+                "avg300": 2.64,
+                "total": 1355192715
               },
               "full": {
-                "avg10": 53.68,
-                "avg60": 25.89,
-                "avg300": 16.45,
-                "total": 275499649
+                "avg10": 1.35,
+                "avg60": 2.3,
+                "avg300": 2.37,
+                "total": 1279631253
               }
             }
           },
           {
-            "timestamp": "2026-02-16T08:18:54.10648459Z",
+            "timestamp": "2026-02-16T10:50:22.793472331Z",
             "cpuStat": {
-              "user": 1108.21,
+              "user": 3153.26,
               "nice": 0,
-              "system": 838.92,
-              "idle": 22065.16,
-              "iowait": 1087.09,
+              "system": 2583.18,
+              "idle": 67484.36,
+              "iowait": 5286.51,
               "irq": 0,
-              "softirq": 62.97,
+              "softirq": 176.03,
               "steal": 0,
               "guest": 0,
               "guestNice": 0
             },
             "procStat": {
-              "contextSwitches": 15488815,
-              "processCreated": 18185,
+              "contextSwitches": 47041599,
+              "processCreated": 43163,
               "processesRunning": 3
             },
             "memoryStat": {
               "total": 3891908,
-              "free": 399292,
-              "available": 3317016,
-              "buffers": 65424,
-              "cached": 2769072,
-              "active": 498124,
-              "inactive": 2575008,
+              "free": 1130532,
+              "available": 3265300,
+              "buffers": 86944,
+              "cached": 2002456,
+              "active": 616072,
+              "inactive": 1689276,
               "swap": 1048572,
-              "dirty": 7732,
-              "writeback": 0,
-              "slab": 339704
+              "dirty": 334104,
+              "writeback": 58816,
+              "slab": 290340
             },
             "cpuPressure": {
               "some": {
-                "avg10": 1.05,
-                "avg60": 1.44,
-                "avg300": 1.59,
-                "total": 79505710
+                "avg10": 3.69,
+                "avg60": 3.18,
+                "avg300": 1.42,
+                "total": 224155387
               },
               "full": {
                 "avg10": 0,
@@ -839,70 +539,295 @@
             "memoryPressure": {
               "some": {
                 "avg10": 0,
-                "avg60": 0.01,
+                "avg60": 0,
                 "avg300": 0,
-                "total": 413996
+                "total": 26479402
               },
               "full": {
                 "avg10": 0,
-                "avg60": 0.01,
+                "avg60": 0,
                 "avg300": 0,
-                "total": 388573
+                "total": 25610820
               }
             },
             "ioPressure": {
               "some": {
-                "avg10": 3.39,
-                "avg60": 14.28,
-                "avg300": 15.99,
-                "total": 303695206
+                "avg10": 36.63,
+                "avg60": 10.43,
+                "avg300": 4.3,
+                "total": 1361967046
               },
               "full": {
-                "avg10": 3.06,
-                "avg60": 13.59,
-                "avg300": 14.96,
-                "total": 281714252
+                "avg10": 30.35,
+                "avg60": 8.49,
+                "avg300": 3.67,
+                "total": 1285155499
               }
             }
           },
           {
-            "timestamp": "2026-02-16T08:19:58.133932939Z",
+            "timestamp": "2026-02-16T10:51:26.823736116Z",
             "cpuStat": {
-              "user": 1132.68,
+              "user": 3167.39,
               "nice": 0,
-              "system": 844.03,
-              "idle": 22410.01,
-              "iowait": 1088.84,
+              "system": 2604.82,
+              "idle": 67718.98,
+              "iowait": 5391.43,
               "irq": 0,
-              "softirq": 63.44,
+              "softirq": 176.38,
               "steal": 0,
               "guest": 0,
               "guestNice": 0
             },
             "procStat": {
-              "contextSwitches": 15618288,
-              "processCreated": 18218,
+              "contextSwitches": 47388990,
+              "processCreated": 43223,
+              "processesRunning": 3
+            },
+            "memoryStat": {
+              "total": 3891908,
+              "free": 847692,
+              "available": 3283432,
+              "buffers": 100324,
+              "cached": 2265084,
+              "active": 683960,
+              "inactive": 1965240,
+              "swap": 1048572,
+              "dirty": 3164,
+              "writeback": 0,
+              "slab": 318472
+            },
+            "cpuPressure": {
+              "some": {
+                "avg10": 1.09,
+                "avg60": 1.83,
+                "avg300": 1.37,
+                "total": 225250436
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 0
+              }
+            },
+            "memoryPressure": {
+              "some": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 26479402
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 25610820
+              }
+            },
+            "ioPressure": {
+              "some": {
+                "avg10": 40.79,
+                "avg60": 35.14,
+                "avg300": 13.12,
+                "total": 1393822103
+              },
+              "full": {
+                "avg10": 39.86,
+                "avg60": 33.17,
+                "avg300": 12.16,
+                "total": 1315471859
+              }
+            }
+          },
+          {
+            "timestamp": "2026-02-16T10:52:30.856710692Z",
+            "cpuStat": {
+              "user": 3174.31,
+              "nice": 0,
+              "system": 2616.89,
+              "idle": 68071.42,
+              "iowait": 5392.29,
+              "irq": 0,
+              "softirq": 178.52,
+              "steal": 0,
+              "guest": 0,
+              "guestNice": 0
+            },
+            "procStat": {
+              "contextSwitches": 47561469,
+              "processCreated": 43260,
+              "processesRunning": 6
+            },
+            "memoryStat": {
+              "total": 3891908,
+              "free": 744012,
+              "available": 3274452,
+              "buffers": 100400,
+              "cached": 2357360,
+              "active": 683932,
+              "inactive": 2057560,
+              "swap": 1048572,
+              "dirty": 204,
+              "writeback": 20852,
+              "slab": 321428
+            },
+            "cpuPressure": {
+              "some": {
+                "avg10": 2.27,
+                "avg60": 1.52,
+                "avg300": 1.32,
+                "total": 226254595
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 0
+              }
+            },
+            "memoryPressure": {
+              "some": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 26479402
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 25610820
+              }
+            },
+            "ioPressure": {
+              "some": {
+                "avg10": 1.38,
+                "avg60": 12.37,
+                "avg300": 10.58,
+                "total": 1394092695
+              },
+              "full": {
+                "avg10": 1.19,
+                "avg60": 11.66,
+                "avg300": 9.81,
+                "total": 1315708725
+              }
+            }
+          },
+          {
+            "timestamp": "2026-02-16T10:53:34.885593768Z",
+            "cpuStat": {
+              "user": 3213.5,
+              "nice": 0,
+              "system": 2644.4,
+              "idle": 68310.27,
+              "iowait": 5459.76,
+              "irq": 0,
+              "softirq": 179.46,
+              "steal": 0,
+              "guest": 0,
+              "guestNice": 0
+            },
+            "procStat": {
+              "contextSwitches": 47930865,
+              "processCreated": 44144,
               "processesRunning": 2
             },
             "memoryStat": {
               "total": 3891908,
-              "free": 270756,
-              "available": 3302832,
-              "buffers": 65776,
-              "cached": 2882436,
-              "active": 505172,
-              "inactive": 2688624,
+              "free": 426532,
+              "available": 3256948,
+              "buffers": 103828,
+              "cached": 2637844,
+              "active": 374236,
+              "inactive": 2647560,
               "swap": 1048572,
-              "dirty": 16,
-              "writeback": 0,
-              "slab": 341264
+              "dirty": 185160,
+              "writeback": 36864,
+              "slab": 339024
             },
             "cpuPressure": {
               "some": {
-                "avg10": 0.03,
-                "avg60": 0.73,
-                "avg300": 1.36,
-                "total": 80184199
+                "avg10": 2.12,
+                "avg60": 1.82,
+                "avg300": 1.45,
+                "total": 227786054
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 0
+              }
+            },
+            "memoryPressure": {
+              "some": {
+                "avg10": 0,
+                "avg60": 0.03,
+                "avg300": 0,
+                "total": 26544939
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0.03,
+                "avg300": 0,
+                "total": 25671795
+              }
+            },
+            "ioPressure": {
+              "some": {
+                "avg10": 17.33,
+                "avg60": 24.53,
+                "avg300": 14.45,
+                "total": 1413361636
+              },
+              "full": {
+                "avg10": 16.22,
+                "avg60": 23.4,
+                "avg300": 13.56,
+                "total": 1334227746
+              }
+            }
+          },
+          {
+            "timestamp": "2026-02-16T10:54:38.917077191Z",
+            "cpuStat": {
+              "user": 3266.74,
+              "nice": 0,
+              "system": 2653.06,
+              "idle": 68609.81,
+              "iowait": 5476.87,
+              "irq": 0,
+              "softirq": 179.71,
+              "steal": 0,
+              "guest": 0,
+              "guestNice": 0
+            },
+            "procStat": {
+              "contextSwitches": 48091564,
+              "processCreated": 44209,
+              "processesRunning": 3
+            },
+            "memoryStat": {
+              "total": 3891908,
+              "free": 357288,
+              "available": 3356028,
+              "buffers": 104176,
+              "cached": 2803236,
+              "active": 315916,
+              "inactive": 2803736,
+              "swap": 1048572,
+              "dirty": 3328,
+              "writeback": 0,
+              "slab": 341800
+            },
+            "cpuPressure": {
+              "some": {
+                "avg10": 1.37,
+                "avg60": 1.39,
+                "avg300": 1.39,
+                "total": 228857420
               },
               "full": {
                 "avg10": 0,
@@ -916,293 +841,293 @@
                 "avg10": 0,
                 "avg60": 0,
                 "avg300": 0,
-                "total": 413996
+                "total": 26545230
               },
               "full": {
                 "avg10": 0,
                 "avg60": 0,
                 "avg300": 0,
-                "total": 388573
+                "total": 25672086
               }
             },
             "ioPressure": {
               "some": {
-                "avg10": 0.08,
-                "avg60": 5.27,
-                "avg300": 12.95,
-                "total": 304193955
+                "avg10": 3.82,
+                "avg60": 11.67,
+                "avg300": 12.82,
+                "total": 1417730457
               },
               "full": {
-                "avg10": 0.07,
-                "avg60": 4.99,
-                "avg300": 12.11,
-                "total": 282171600
+                "avg10": 3.45,
+                "avg60": 11.12,
+                "avg300": 12.06,
+                "total": 1338442788
               }
             }
           },
           {
-            "timestamp": "2026-02-16T08:21:02.158503645Z",
+            "timestamp": "2026-02-16T10:55:42.94367536Z",
             "cpuStat": {
-              "user": 1134.44,
+              "user": 3278.2,
               "nice": 0,
-              "system": 847.47,
-              "idle": 22779.16,
-              "iowait": 1088.99,
+              "system": 2658.44,
+              "idle": 68964.21,
+              "iowait": 5478.13,
               "irq": 0,
-              "softirq": 64.01,
+              "softirq": 180.55,
               "steal": 0,
               "guest": 0,
               "guestNice": 0
             },
             "procStat": {
-              "contextSwitches": 15703921,
-              "processCreated": 18251,
-              "processesRunning": 1
+              "contextSwitches": 48217531,
+              "processCreated": 44248,
+              "processesRunning": 5
             },
             "memoryStat": {
               "total": 3891908,
-              "free": 231240,
-              "available": 3299492,
-              "buffers": 65808,
-              "cached": 2918900,
-              "active": 505332,
-              "inactive": 2724888,
+              "free": 215408,
+              "available": 3335576,
+              "buffers": 104232,
+              "cached": 2926472,
+              "active": 321540,
+              "inactive": 2926960,
+              "swap": 1048572,
+              "dirty": 32,
+              "writeback": 0,
+              "slab": 340632
+            },
+            "cpuPressure": {
+              "some": {
+                "avg10": 0,
+                "avg60": 0.6,
+                "avg300": 1.17,
+                "total": 229414293
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 0
+              }
+            },
+            "memoryPressure": {
+              "some": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 26545230
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 25672086
+              }
+            },
+            "ioPressure": {
+              "some": {
+                "avg10": 0.01,
+                "avg60": 4.12,
+                "avg300": 10.33,
+                "total": 1418021668
+              },
+              "full": {
+                "avg10": 0.01,
+                "avg60": 3.94,
+                "avg300": 9.72,
+                "total": 1338703789
+              }
+            }
+          },
+          {
+            "timestamp": "2026-02-16T10:56:46.970105604Z",
+            "cpuStat": {
+              "user": 3280.22,
+              "nice": 0,
+              "system": 2662.13,
+              "idle": 69331.01,
+              "iowait": 5478.14,
+              "irq": 0,
+              "softirq": 181.21,
+              "steal": 0,
+              "guest": 0,
+              "guestNice": 0
+            },
+            "procStat": {
+              "contextSwitches": 48306227,
+              "processCreated": 44281,
+              "processesRunning": 2
+            },
+            "memoryStat": {
+              "total": 3891908,
+              "free": 211640,
+              "available": 3331816,
+              "buffers": 104232,
+              "cached": 2926480,
+              "active": 321856,
+              "inactive": 2926968,
               "swap": 1048572,
               "dirty": 28,
               "writeback": 0,
-              "slab": 342056
+              "slab": 341808
             },
             "cpuPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0.24,
-                "avg300": 1.08,
-                "total": 80508873
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 0
-              }
-            },
-            "memoryPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 413996
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 388573
-              }
-            },
-            "ioPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 1.81,
-                "avg300": 10.39,
-                "total": 304226150
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 1.71,
-                "avg300": 9.72,
-                "total": 282202654
-              }
-            }
-          },
-          {
-            "timestamp": "2026-02-16T08:22:06.185077848Z",
-            "cpuStat": {
-              "user": 1136.29,
-              "nice": 0,
-              "system": 850.72,
-              "idle": 23148.58,
-              "iowait": 1089.03,
-              "irq": 0,
-              "softirq": 64.48,
-              "steal": 0,
-              "guest": 0,
-              "guestNice": 0
-            },
-            "procStat": {
-              "contextSwitches": 15789182,
-              "processCreated": 18291,
-              "processesRunning": 1
-            },
-            "memoryStat": {
-              "total": 3891908,
-              "free": 231856,
-              "available": 3300124,
-              "buffers": 65864,
-              "cached": 2918932,
-              "active": 505384,
-              "inactive": 2724904,
-              "swap": 1048572,
-              "dirty": 24,
-              "writeback": 0,
-              "slab": 341888
-            },
-            "cpuPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0.08,
-                "avg300": 0.86,
-                "total": 80838951
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 0
-              }
-            },
-            "memoryPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 413996
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 388573
-              }
-            },
-            "ioPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0.62,
-                "avg300": 8.34,
-                "total": 304232262
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0.58,
-                "avg300": 7.79,
-                "total": 282208240
-              }
-            }
-          },
-          {
-            "timestamp": "2026-02-16T08:23:10.214680282Z",
-            "cpuStat": {
-              "user": 1138.04,
-              "nice": 0,
-              "system": 853.8,
-              "idle": 23518.8,
-              "iowait": 1089.06,
-              "irq": 0,
-              "softirq": 64.93,
-              "steal": 0,
-              "guest": 0,
-              "guestNice": 0
-            },
-            "procStat": {
-              "contextSwitches": 15868162,
-              "processCreated": 18325,
-              "processesRunning": 1
-            },
-            "memoryStat": {
-              "total": 3891908,
-              "free": 229396,
-              "available": 3297800,
-              "buffers": 65912,
-              "cached": 2918952,
-              "active": 505804,
-              "inactive": 2725040,
-              "swap": 1048572,
-              "dirty": 16,
-              "writeback": 0,
-              "slab": 342212
-            },
-            "cpuPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0.02,
-                "avg300": 0.68,
-                "total": 81137621
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 0
-              }
-            },
-            "memoryPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 413996
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 388573
-              }
-            },
-            "ioPressure": {
               "some": {
                 "avg10": 0,
                 "avg60": 0.2,
-                "avg300": 6.69,
-                "total": 304239156
+                "avg300": 0.93,
+                "total": 229765163
               },
               "full": {
                 "avg10": 0,
-                "avg60": 0.19,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 0
+              }
+            },
+            "memoryPressure": {
+              "some": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 26545230
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 25672086
+              }
+            },
+            "ioPressure": {
+              "some": {
+                "avg10": 0,
+                "avg60": 1.41,
+                "avg300": 8.29,
+                "total": 1418024649
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 1.35,
+                "avg300": 7.8,
+                "total": 1338706304
+              }
+            }
+          },
+          {
+            "timestamp": "2026-02-16T10:57:50.996091864Z",
+            "cpuStat": {
+              "user": 3282.16,
+              "nice": 0,
+              "system": 2665.82,
+              "idle": 69698.11,
+              "iowait": 5478.15,
+              "irq": 0,
+              "softirq": 181.88,
+              "steal": 0,
+              "guest": 0,
+              "guestNice": 0
+            },
+            "procStat": {
+              "contextSwitches": 48394417,
+              "processCreated": 44319,
+              "processesRunning": 2
+            },
+            "memoryStat": {
+              "total": 3891908,
+              "free": 212120,
+              "available": 3332304,
+              "buffers": 104240,
+              "cached": 2926484,
+              "active": 321932,
+              "inactive": 2926976,
+              "swap": 1048572,
+              "dirty": 28,
+              "writeback": 0,
+              "slab": 340856
+            },
+            "cpuPressure": {
+              "some": {
+                "avg10": 0,
+                "avg60": 0.06,
+                "avg300": 0.74,
+                "total": 230118787
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 0
+              }
+            },
+            "memoryPressure": {
+              "some": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 26545230
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0,
+                "avg300": 0,
+                "total": 25672086
+              }
+            },
+            "ioPressure": {
+              "some": {
+                "avg10": 0,
+                "avg60": 0.48,
+                "avg300": 6.65,
+                "total": 1418027756
+              },
+              "full": {
+                "avg10": 0,
+                "avg60": 0.46,
                 "avg300": 6.25,
-                "total": 282214195
+                "total": 1338708780
               }
             }
           },
           {
-            "timestamp": "2026-02-16T08:24:14.241401686Z",
+            "timestamp": "2026-02-16T10:58:55.023129305Z",
             "cpuStat": {
-              "user": 1139.72,
+              "user": 3284.03,
               "nice": 0,
-              "system": 856.83,
-              "idle": 23889.43,
-              "iowait": 1089.08,
+              "system": 2669.44,
+              "idle": 70065.45,
+              "iowait": 5478.18,
               "irq": 0,
-              "softirq": 65.33,
+              "softirq": 182.48,
               "steal": 0,
               "guest": 0,
               "guestNice": 0
             },
             "procStat": {
-              "contextSwitches": 15948764,
-              "processCreated": 18361,
+              "contextSwitches": 48484185,
+              "processCreated": 44354,
               "processesRunning": 1
             },
             "memoryStat": {
               "total": 3891908,
-              "free": 233348,
-              "available": 3301756,
-              "buffers": 65940,
-              "cached": 2918952,
-              "active": 501236,
-              "inactive": 2725044,
+              "free": 219568,
+              "available": 3339776,
+              "buffers": 104244,
+              "cached": 2926500,
+              "active": 318408,
+              "inactive": 2927000,
               "swap": 1048572,
-              "dirty": 0,
+              "dirty": 4,
               "writeback": 0,
-              "slab": 341848
+              "slab": 339956
             },
             "cpuPressure": {
               "some": {
                 "avg10": 0,
-                "avg60": 0,
-                "avg300": 0.54,
-                "total": 81441203
+                "avg60": 0.01,
+                "avg300": 0.58,
+                "total": 230477021
               },
               "full": {
                 "avg10": 0,
@@ -1216,218 +1141,68 @@
                 "avg10": 0,
                 "avg60": 0,
                 "avg300": 0,
-                "total": 413996
+                "total": 26545230
               },
               "full": {
                 "avg10": 0,
                 "avg60": 0,
                 "avg300": 0,
-                "total": 388573
+                "total": 25672086
               }
             },
             "ioPressure": {
               "some": {
                 "avg10": 0,
-                "avg60": 0.06,
-                "avg300": 5.36,
-                "total": 304241465
+                "avg60": 0.16,
+                "avg300": 5.33,
+                "total": 1418032545
               },
               "full": {
                 "avg10": 0,
-                "avg60": 0.06,
+                "avg60": 0.15,
                 "avg300": 5.01,
-                "total": 282216313
+                "total": 1338712755
               }
             }
           },
           {
-            "timestamp": "2026-02-16T08:25:18.264611496Z",
+            "timestamp": "2026-02-16T10:59:40.333535041Z",
             "cpuStat": {
-              "user": 1141.47,
+              "user": 3285.41,
               "nice": 0,
-              "system": 860.09,
-              "idle": 24258.75,
-              "iowait": 1089.1,
+              "system": 2671.89,
+              "idle": 70325.73,
+              "iowait": 5478.19,
               "irq": 0,
-              "softirq": 65.85,
+              "softirq": 182.91,
               "steal": 0,
               "guest": 0,
               "guestNice": 0
             },
             "procStat": {
-              "contextSwitches": 16033100,
-              "processCreated": 18395,
-              "processesRunning": 2
-            },
-            "memoryStat": {
-              "total": 3891908,
-              "free": 241468,
-              "available": 3309940,
-              "buffers": 65964,
-              "cached": 2918964,
-              "active": 501256,
-              "inactive": 2725108,
-              "swap": 1048572,
-              "dirty": 0,
-              "writeback": 0,
-              "slab": 340272
-            },
-            "cpuPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0.43,
-                "total": 81770395
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 0
-              }
-            },
-            "memoryPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 413996
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 388573
-              }
-            },
-            "ioPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0.01,
-                "avg300": 4.3,
-                "total": 304244450
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0.01,
-                "avg300": 4.01,
-                "total": 282219003
-              }
-            }
-          },
-          {
-            "timestamp": "2026-02-16T08:26:22.290929695Z",
-            "cpuStat": {
-              "user": 1143.2,
-              "nice": 0,
-              "system": 863.36,
-              "idle": 24627.88,
-              "iowait": 1089.11,
-              "irq": 0,
-              "softirq": 66.33,
-              "steal": 0,
-              "guest": 0,
-              "guestNice": 0
-            },
-            "procStat": {
-              "contextSwitches": 16117993,
-              "processCreated": 18428,
-              "processesRunning": 2
-            },
-            "memoryStat": {
-              "total": 3891908,
-              "free": 241180,
-              "available": 3309652,
-              "buffers": 65976,
-              "cached": 2918964,
-              "active": 499140,
-              "inactive": 2725108,
-              "swap": 1048572,
-              "dirty": 20,
-              "writeback": 0,
-              "slab": 340860
-            },
-            "cpuPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0.33,
-                "total": 82084737
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 0
-              }
-            },
-            "memoryPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 413996
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 0,
-                "total": 388573
-              }
-            },
-            "ioPressure": {
-              "some": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 3.44,
-                "total": 304246669
-              },
-              "full": {
-                "avg10": 0,
-                "avg60": 0,
-                "avg300": 3.22,
-                "total": 282221056
-              }
-            }
-          },
-          {
-            "timestamp": "2026-02-16T08:26:32.579056693Z",
-            "cpuStat": {
-              "user": 1143.61,
-              "nice": 0,
-              "system": 863.91,
-              "idle": 24687.45,
-              "iowait": 1089.12,
-              "irq": 0,
-              "softirq": 66.39,
-              "steal": 0,
-              "guest": 0,
-              "guestNice": 0
-            },
-            "procStat": {
-              "contextSwitches": 16134163,
-              "processCreated": 18438,
+              "contextSwitches": 48548217,
+              "processCreated": 44376,
               "processesRunning": 1
             },
             "memoryStat": {
               "total": 3891908,
-              "free": 246704,
-              "available": 3315204,
-              "buffers": 66000,
-              "cached": 2918972,
-              "active": 500200,
-              "inactive": 2725136,
+              "free": 228056,
+              "available": 3348276,
+              "buffers": 104260,
+              "cached": 2926500,
+              "active": 319372,
+              "inactive": 2927012,
               "swap": 1048572,
-              "dirty": 72,
+              "dirty": 0,
               "writeback": 0,
-              "slab": 340148
+              "slab": 339736
             },
             "cpuPressure": {
               "some": {
                 "avg10": 0,
                 "avg60": 0,
-                "avg300": 0.32,
-                "total": 82142204
+                "avg300": 0.5,
+                "total": 230737584
               },
               "full": {
                 "avg10": 0,
@@ -1441,27 +1216,27 @@
                 "avg10": 0,
                 "avg60": 0,
                 "avg300": 0,
-                "total": 413996
+                "total": 26545230
               },
               "full": {
                 "avg10": 0,
                 "avg60": 0,
                 "avg300": 0,
-                "total": 388573
+                "total": 25672086
               }
             },
             "ioPressure": {
               "some": {
                 "avg10": 0,
-                "avg60": 0,
-                "avg300": 3.3,
-                "total": 304249963
+                "avg60": 0.07,
+                "avg300": 4.58,
+                "total": 1418037106
               },
               "full": {
                 "avg10": 0,
-                "avg60": 0,
-                "avg300": 3.08,
-                "total": 282223090
+                "avg60": 0.07,
+                "avg300": 4.3,
+                "total": 1338716062
               }
             }
           }
@@ -1469,12 +1244,12 @@
       }
     }
   },
-  "buildx.build.ref": "debian-builder/debian-builder0/u3s82iovhiftbc9jxntt4r958",
+  "buildx.build.ref": "debian-builder/debian-builder0/xxvwb41eudik3lf0verxapdpr",
   "containerimage.descriptor": {
     "mediaType": "application/vnd.oci.image.index.v1+json",
-    "digest": "sha256:c2a4c63a055f992b646b603743b2a335953a261c6aed3c3cb3aacb9ca796273d",
+    "digest": "sha256:bfb4c84872742081b3518527cada51ce70ff9d94d4b3952c02e5dfd00b1b5175",
     "size": 856
   },
-  "containerimage.digest": "sha256:c2a4c63a055f992b646b603743b2a335953a261c6aed3c3cb3aacb9ca796273d",
-  "image.name": "0mniteck/debian:02-16-2026"
+  "containerimage.digest": "sha256:bfb4c84872742081b3518527cada51ce70ff9d94d4b3952c02e5dfd00b1b5175",
+  "image.name": "0mniteck/debian:02-16-2026-001"
 }
