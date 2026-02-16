@@ -215,14 +215,15 @@ done
 mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-catalogers debian, $3 = Attest Tag
   grype config > $docker_data/.grype.yaml
-  syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json\")
   if [[ \"\$3\" != \"\" ]]; then
+    echo 'Starting Syft...'
     TMPDIR=$docker_data/syft syft attest --output spdx-json docker.io/\$REPO/\$1:\$3
+  else
+    echo 'Starting Syft...'
   fi
-  echo 'Starting Syft...'
-  functitup & echo \$! > .pid && pid=\$(<\.pid) && rm -f .pid
-  echo \$syft_run | bash || echo \$syft_run | bash || exit 1 && rm -f -r $docker_data/syft/* && wait
-  trap '[[ \$pid ]] && kill \$pid; exit' EXIT && echo
+  TMPDIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json || \
+  TMPDIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json || exit 1
+  rm -f -r $docker_data/syft/* && wait
   echo && echo 'Starting Grype...'
   functitup & echo \$! > .pid && pid=\$(<\.pid) && rm -f .pid
   script -q -c \"TMPDIR=$docker_data/grype grype sbom:\$1.spdx.json \
