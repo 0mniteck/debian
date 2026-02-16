@@ -28,7 +28,6 @@ fi
 while [[ "$(lsusb | grep Yubikey)" != *Yubikey* ]]; do
   printf "\rPlease insert yubikey...\033[K"
 done && sleep 1 && echo
-
 chown $run_as:$run_as /dev/hidraw*
 
 DEVICE=$(lsusb -d 1050:0407 | grep -o Device.... - | grep -o [0-9][0-9][0-9])
@@ -114,6 +113,8 @@ machinectl shell $run_as@ /bin/bash -c "
 $debug
 cd $(echo $PWD)
 HOME=$home
+
+ssh_conf=\$(<$home/.ssh/config) || mkdir -p $home/.ssh && touch $home/.ssh/config
 systemctl --user restart gpg-agent.service && wait
 export GPG_TTY=\$(tty)
 source .identity
@@ -240,7 +241,6 @@ else
   echo \"Rootless Docker Started\" > $rootless_path/rootless.status
 fi
 
-ssh_conf=\$(<$home/.ssh/config)
 if [[ \"\$ssh_conf\" != *\$PROJECT* ]]; then
   echo \"
 Host \$PROJECT
