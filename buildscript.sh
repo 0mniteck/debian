@@ -114,15 +114,16 @@ $debug
 cd $(echo $PWD)
 HOME=$home
 
-ssh_conf=\$(<$home/.ssh/config) || mkdir -p $home/.ssh && touch $home/.ssh/config && \
-chmod 0644 $home/.ssh/config && chmod 0700 $home/.ssh
+mkdir -p $home/.ssh && chmod 0700 $home/.ssh && \
+touch $home/.ssh/config && chmod 0644 $home/.ssh/config
+ssh_conf=\$(\<$home/.ssh/config)
 
 systemctl --user restart gpg-agent.service && wait
 export GPG_TTY=\$(tty)
 
 source .identity
 source .pinned_ver
-chmod 0600 $home/.ssh/\$IDENTITY_FILE && chmod 0644 $home/.ssh/\$IDENTITY_FILE.pub
+chmod 0600 $home/\$IDENTITY_FILE && chmod 0644 $home/\$IDENTITY_FILE.pub
 
 if [[ \"\$EPOCH\" == ** ]]; then
   EPOCH=\"today\"
