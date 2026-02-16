@@ -37,6 +37,7 @@ do
     $docker buildx stop $module-builder && wait
     $docker buildx rm -f --all-inactive && wait
     $docker buildx prune -f -a && wait && echo
+    read -p 'Continue to attestation..." && echo
     scan_using_grype $module $REPO/$module:$rel_date $rel_date
     cosign verify-attestation docker.io/\$REPO/\$module:\$rel_date \
     --certificate-oidc-issuer https://github.com/login/oauth \
