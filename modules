@@ -2,7 +2,6 @@ url_deb='https://snapshot.debian.org/archive/debian/?year='$(date +%Y)'&month='$
 curl_deb=$(curl -s $url_deb | grep '<a href="'$(date +%Y%m) | tail -n 1 - | cut -d'"' -f2 | cut -d'/' -f1)
 url_deb_sec='https://snapshot.debian.org/archive/debian-security/?year='$(date +%Y)'&month='$(date +%-m)
 curl_deb_sec=$(curl -s $url_deb_sec | grep '<a href="'$(date +%Y%m) | tail -n 1 - | cut -d'"' -f2 | cut -d'/' -f1)
-
 url_src='https://raw.githubusercontent.com/'$REPO'/'$PROJECT'/refs/heads/builder/.pinned_ver'
 curl_cur_deb=$(curl -s $url_src | grep debian= | cut -d'=' -f2)
 curl_cur_deb_sec=$(curl -s $url_src | grep debian_security= | cut -d'=' -f2)
@@ -14,6 +13,7 @@ if [[ "$curl_cur_deb" == *$cur_deb* ]]; then
   export -- debian_security=$curl_deb_sec
   sed -i 's/$cur_deb/$curl_deb/' .pinned_ver
   sed -i 's/$cur_deb_sec/$curl_deb_sec/' .pinned_ver
+  echo && echo "Pinned Version Updated to deb:$curl_deb and deb_sec:$curl_deb_sec"
 fi
 
 for module in debian-slim debian debian-extra
