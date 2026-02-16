@@ -41,9 +41,9 @@ https://github.com/0mniteck/Debian/blob/7ee312f0ccccb9aca63bb8912b258860f9b0646f
 `debian:trixie-20260202-slim
 sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1`
 
-`https://snapshot.debian.org/archive/debian/20260213T203004Z`
+`https://snapshot.debian.org/archive/debian/20260216T082402Z`
 
-`https://snapshot.debian.org/archive/debian-security/20260213T190147Z`
+`https://snapshot.debian.org/archive/debian-security/20260216T100331Z`
 
 ## Included Packages
 debian-slim: `build-essential curl git git-lfs libasound2-dev libgtk-3-dev libnss3-dev libpulse-dev lsb-release rubygems wget xauth xvfb`
