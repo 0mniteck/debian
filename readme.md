@@ -36,9 +36,7 @@ https://github.com/0mniteck/Debian/blob/16e7b1508378018b8278bc9dc1874aee1b7c4640
 https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/image.digests#L1-L2
 https://github.com/0mniteck/Debian/blob/7ee312f0ccccb9aca63bb8912b258860f9b0646f/readme.md?plain=1#L1-L3
 
-## Currently Supported Tagged Images/Snapshots
-
-02/14/26:
+## Currently Tagged Image/Snapshots
 
 `debian:trixie-20260202-slim
 sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1`
@@ -46,24 +44,6 @@ sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1`
 `https://snapshot.debian.org/archive/debian/20260213T203004Z`
 
 `https://snapshot.debian.org/archive/debian-security/20260213T190147Z`
-
-02/12/26:
-
-`debian:trixie-20260202-slim
-sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1`
-
-`https://snapshot.debian.org/archive/debian/20260212T204405Z`
-
-`https://snapshot.debian.org/archive/debian-security/20260212T194631Z`
-
-01/22/26:
-
-`debian:trixie-20260112-slim
-sha256:5a777b4bb3cfd59d2def8e0db5e3e70a9bfa262d7f5f2251a4b0ee84d7b45193`
-
-`https://snapshot.debian.org/archive/debian/20260121T202109Z`
-
-`https://snapshot.debian.org/archive/debian-security/20260120T213558Z`
 
 ## Included Packages
 debian-slim: `build-essential curl git git-lfs libasound2-dev libgtk-3-dev libnss3-dev libpulse-dev lsb-release rubygems wget xauth xvfb`
