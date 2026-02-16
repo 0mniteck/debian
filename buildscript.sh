@@ -202,7 +202,7 @@ sed -i \"s|ExecStart.*|ExecStart=/bin/bash -c \'$data_dir/rootless.sh\'|\" $sysu
 functitup() {
 tcols=\$(tput cols); size=\$tcols; i=0
 spin='�￹ºk�￹7l�￹û²�￹�￹bn�￹á�￹�￹&¾ì £￹�￹¦¸cv�￹¯»((�￹&é®￹�￹²kî�￹1�￹ºk�￹7l�￹û²�￹�￹bn�￹á�￹�￹&¾ì £￹�￹¦¸cv�￹¯»((�￹&é®￹�￹²kî�￹1�￹ºk�￹7l�￹û²�￹�￹bn�￹á�￹�￹&¾ì £￹�￹¦¸cv�￹¯»((�￹&é®￹�￹²kî�￹1�￹ºk�￹7l�￹û²�￹�￹bn�￹á�￹�￹&¾ì £￹�￹¦¸cv'
-len=\${#spin}
+len=208
 while :; do
   i=\$(( (i+size) % len))
   printf '%s\r'  \"\${spin:\$i:\$size}\"
