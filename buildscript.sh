@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# debug="set -x" # uncomment to enable debugging
+debug="set -x" # uncomment to enable debugging
 $debug
 
 run_id=$PKEXEC_UID
@@ -131,11 +131,11 @@ fi
 source_date_epoch=1
 if [[ \"\$EPOCH\" == *today* ]]; then
   timestamp=\$(date -d \$(date +%D) +%s);
-  if [[ \"\${timestamp}\" != ** ]]; then
-    echo && echo \"Setting SOURCE_DATE_EPOCH from today\'s date: \$(date +%D) = @\$timestamp\";
+  if [[ \"\$timestamp\" != ** ]]; then
+    echo && echo \"Setting SOURCE_DATE_EPOCH from today's date: \$(date +%D) = @\$timestamp\";
     source_date_epoch=\$((timestamp));
   else
-    echo \"Can\'t get timestamp. Defaulting to 1.\";
+    echo \"Can't get timestamp. Defaulting to 1.\";
     source_date_epoch=1;
   fi
 elif [[ \"\$EPOCH\" != 0 ]]; then
