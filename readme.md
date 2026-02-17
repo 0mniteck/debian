@@ -1,12 +1,13 @@
 # [Debian-Dev Docker Images](https://hub.docker.com/r/0mniteck/)
-Tagged releases of debian-dev docker images for reproducible build environments.
 
-  |     Built     |    |                 Signed                  |    |         Scanned         |
-  | ------------- | -- | --------------------------------------- | -- | ----------------------- |
-  | attestably    |    | cosign  (keyless attestation via OIDC)  |    | scout (slim/base images)|
-  | ephemerally   |    | yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) |    | syft                    |
-  | rootlessly    |    | in-toto (TSA attestation)               |    | grype                   |
-  |               |    | docker provenance (attestation)         |    |                         |
+Snapshot releases of debian-dev docker images for reproducible build environments.
+
+  |     Built     |    |                 Signed                  |    |          Scanned          |
+  | ------------- | -- | --------------------------------------- | -- | ------------------------- |
+  | attestably    |    | cosign  (keyless attestation via OIDC)  |    | scout (slim/base images)  |
+  | ephemerally   |    | yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) |    | syft  (images/OS/firmware)|
+  | rootlessly    |    | in-toto (github release TSA attestation)|    | grype (at buildtime)      |
+  | transparently |    | docker provenance (attestation)         |    |                           |
 
 ## Usage
 
@@ -15,8 +16,8 @@ Tagged releases of debian-dev docker images for reproducible build environments.
  - #### See other examples → [0mniteck](https://github.com/0mniteck)
 ### Fork It!
  - A. Create a Docker Hub
- - B. Fork and edit the `.identity` file
- - C. Bump versions using the `.pinned_ver` file
+ - B. Fork this repo and edit the `.identity` file
+ - C. Manually set versions using the `.pinned_ver` file
 
 ### Build It!
 Requirements:
@@ -24,7 +25,7 @@ Requirements:
  - Yubikey with CCID enabled is required for signing
  - Ubuntu 25.10 (will run on any debian distro with minor changes)
 
-Clone `git clone https://github.com/0mniteck/Debian.git && cd Debian`
+Clone `git clone https://github.com/$REPO/Debian.git && cd Debian`
 
 Build using `pkexec --keep-cwd ./buildscript.sh`
 
