@@ -159,6 +159,7 @@ sys_ctl_common() {
   systemctl --user list-units docker* --all && echo
 }
 
+read -p 'Press enter to start docker login'
 clean_some && docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
 echo && syft login registry-1.docker.io -u \$USERNAME && echo 'Logged in to syft' && echo
@@ -205,7 +206,7 @@ mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-catalogers debian, $3 = Attest Tag
   grype config > $docker_data/.grype.yaml
   if [[ \"\$3\" != \"\" ]]; then
-    read -p 'Continue to attestation...' && echo
+    read -p 'Press enter to start attestation' && echo
     echo 'Starting Syft...'
     TMPDIR=$docker_data/syft syft attest --output spdx-json docker.io/\$REPO/\$1:\$3
     echo
