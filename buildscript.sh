@@ -216,6 +216,7 @@ mkdir -p $docker_data/syft && mkdir -p $docker_data/grype
 scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-catalogers debian, $3 = Attest Tag
   grype config > $docker_data/.grype.yaml
   if [[ \"\$3\" != \"\" ]]; then
+    read -p 'Continue to attestation...' && echo
     echo 'Starting Syft...'
     TMPDIR=$docker_data/syft syft attest --output spdx-json docker.io/\$REPO/\$1:\$3
   else
