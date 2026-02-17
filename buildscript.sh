@@ -262,7 +262,7 @@ systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker.dockerd --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
 
 source $rootless_path/env-rootless.exp
-\$docker info | grep \"rootless\" > $rootless_path/rootless.status
+script -q -c \"\$docker info | grep rootless > $rootless_path/rootless.status\" /dev/null > /dev/null
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
   echo && echo \"Rootless Docker Failed\" && echo
   exit 1
