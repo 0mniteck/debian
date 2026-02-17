@@ -264,10 +264,10 @@ systemctl --user status docker.dockerd --all --no-pager -n 150 > $rootless_path/
 source $rootless_path/env-rootless.exp
 script -q -c \"\$docker info | grep rootless > $rootless_path/rootless.status\" /dev/null > /dev/null
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
-  echo && echo \"Rootless Docker Failed\" && echo
+  echo \"Rootless Docker Failed\" && echo
   exit 1
 else
-  echo && echo \"Rootless Docker Started\" && echo
+  echo \"Rootless Docker Started\" && echo
   echo \"Rootless Docker Started\" > $rootless_path/rootless.status
 fi
 
