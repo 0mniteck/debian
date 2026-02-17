@@ -26,17 +26,17 @@ Requirements:
 
 Build using `pkexec --keep-cwd ./buildscript.sh`
 
-## Push Digests and Grype Status
-https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/image.digests#L3-L4
+## [Push Digests](https://github.com/0mniteck/Debian/blob/builder/Results/image.digests) and Grype Status
+https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/Results/image.digests#L3-L4
 https://github.com/0mniteck/Debian/blob/6ee9b6bc2501e86e2df290e24282a8a7530f77a3/readme.md?plain=1#L1-L3
 
-https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/image.digests#L5-L6
+https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/Results/image.digests#L5-L6
 https://github.com/0mniteck/Debian/blob/16e7b1508378018b8278bc9dc1874aee1b7c4640/readme.md?plain=1#L1-L3
 
-https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/image.digests#L1-L2
+https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/Results/image.digests#L1-L2
 https://github.com/0mniteck/Debian/blob/7ee312f0ccccb9aca63bb8912b258860f9b0646f/readme.md?plain=1#L1-L3
 
-## Currently Tagged Image/Snapshots
+## [Currently Tagged Image/Snapshots](https://github.com/0mniteck/Debian/releases)
 
 `debian:trixie-20260202-slim
 sha256:87e841c117299b7bfba269bd410cd1215f9aac28e8b3bab5d93117542e2636f1`
