@@ -243,6 +243,8 @@ scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-cataloger
   rm -f \$1.grype.status.*
   cp \$1.grype.status readme.md
   sed -i '1,3s/^/#### /g' readme.md
+  echo '## ' >> readme.md
+  echo '```' >> readme.md
 }
 
 sys_ctl_common
@@ -302,8 +304,13 @@ fi
 
 source modules
 
-mkdir -p Results && pushd Results && scan_using_grype ubuntu \"/ --select-catalogers debian\" && popd
-cat ./*/*.digest > Results/image.digests && git status && git add -A && git status && read -p 'Press enter to launch pinentry'
+mkdir -p Results && pushd Results
+  scan_using_grype ubuntu \"/ --select-catalogers debian\"
+  cat ../*/*.digest > image.digests
+  cat image.digests >> readme.md && cat readme.md
+popd
+
+git status && git add -A && git status && read -p 'Press enter to launch pinentry'
 git commit -a -S -m \"Successful Build of Release \$date_rel\" && git push --set-upstream origin builder
 git tag -a \$date_rel -s -m \"Tagged Release \$date_rel\" && git push origin \$date_rel
 
