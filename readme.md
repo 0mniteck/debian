@@ -24,6 +24,8 @@ Requirements:
  - Yubikey with CCID enabled is required for signing
  - Ubuntu 25.10 (will run on any debian distro with minor changes)
 
+Clone `git clone https://github.com/0mniteck/Debian.git && cd Debian`
+
 Build using `pkexec --keep-cwd ./buildscript.sh`
 
 ## [Push Digests](https://github.com/0mniteck/Debian/blob/builder/Results/image.digests) and Grype Status
