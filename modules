@@ -40,7 +40,7 @@ do
     scan_using_grype $module $REPO/$module:$rel_date $rel_date
     echo '# '$REPO/$module:$rel_date > $module.image.digest
     cat $module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> $module.image.digest
-    echo '## ' >> readme.md && echo '```' >> readme.md && cat $module.image.digest >> readme.md && cat readme.md
+    cat $module.image.digest >> readme.md && cat readme.md
     script -q -c "cosign verify-attestation docker.io/$REPO/$module:$rel_date \
     --certificate-oidc-issuer https://github.com/login/oauth \
     --certificate-identity $SIGSTORE_USR \
