@@ -219,6 +219,7 @@ scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-cataloger
     read -p 'Continue to attestation...' && echo
     echo 'Starting Syft...'
     TMPDIR=$docker_data/syft syft attest --output spdx-json docker.io/\$REPO/\$1:\$3
+    echo
   else
     echo 'Starting Syft...'
   fi
