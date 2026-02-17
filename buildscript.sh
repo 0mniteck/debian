@@ -224,15 +224,16 @@ scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-cataloger
     echo 'Starting Syft...'
   fi
   functitup & echo \$! > .pid && pid=\$(<\.pid) && rm -f .pid
-  syft_run=\$(echo \"TMPDIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json\")
-  echo \$syft_run | bash || echo \$syft_run | bash || exit 1 && rm -f -r $docker_data/syft/*
+  TMPDIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json || \
+  TMPDIR=$docker_data/syft syft scan \$2 -o spdx-json=\$1.spdx.json || exit 1
+  rm -f -r $docker_data/syft/*
   trap '[[ \$pid ]] && kill \$pid; exit' EXIT && echo
   echo && echo 'Starting Grype...'
-  functitup & echo \$! > .pid && pid=\$(<\.pid) && rm -f .pid
+  functitup & echo \$! > .pid2 && pid2=\$(<\.pid2) && rm -f .pid2
   script -q -c \"TMPDIR=$docker_data/grype grype sbom:\$1.spdx.json \
   -c $docker_data/.grype.yaml -o json > \$1.grype.json\" \$1.grype.tmp.tmp > \$1.grype.tmp
   rm -f -r $docker_data/grype/*
-  trap '[[ \$pid ]] && kill \$pid; exit' EXIT && echo
+  trap '[[ \$pid2 ]] && kill \$pid2; exit' EXIT && echo
   marker() { # $1 = Name, $2 = Order, $3 = Marker/ID
     unset \"wright\$2\"
     grep \"\$3\" \$1.grype.tmp | tail -n 1 > \$1.grype.status.\$2
