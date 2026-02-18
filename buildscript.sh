@@ -95,7 +95,7 @@ apt-get -qq install -y cosign gnupg2 gpg-agent \
 snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge 2>/dev/null && wait || echo "Failed to remove Docker"
-networkctl delete docker0 2>/dev/null
+quiet networkctl delete docker0
 
 if [[ "$(uname -m)" == "aarch64" ]]; then
   snap install docker --revision=$docker_snap_arm64_ver && wait || echo "Failed to install Docker"
@@ -112,7 +112,7 @@ snap stop docker && wait
 systemctl reset-failed && wait
 systemctl stop snap.docker.* --all && wait
 quiet systemctl mask snap.docker.dockerd --runtime --now
-networkctl delete docker0 2>/dev/null
+quiet networkctl delete docker0
 systemctl daemon-reload
 
 clean_most
@@ -358,7 +358,7 @@ quiet systemctl unmask snap.docker.nvidia-container-toolkit --runtime
 
 snap disable docker
 snap remove docker --purge || echo "Failed to remove Docker"
-networkctl delete docker0 2>/dev/null
+quiet networkctl delete docker0
 snap remove grype --purge
 snap remove syft --purge
 
