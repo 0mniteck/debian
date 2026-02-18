@@ -33,6 +33,8 @@ do
       --metadata-file $module.meta.json \
       --platform linux/arm64,linux/amd64 \
       --attest "type=provenance,mode=max" \
+      --label org.opencontainers.image.vendor=$REPO \
+      --label org.opencontainers.image.licenses=GPL-3.0 \
       --build-arg SOURCE_DATE_EPOCH=$source_date_epoch \
       --build-arg DEBIAN_SECURITY=$debian_security \
       --build-arg DEBIAN=$debian \
