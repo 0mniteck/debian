@@ -230,7 +230,8 @@ scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-cataloger
   if [[ \"\$3\" != \"\" ]]; then
     read -p 'Press enter to start attestation' && echo
     echo 'Starting Syft...'
-    TMPDIR=$docker_data/syft syft attest --output spdx-json docker.io/\$REPO/\$1:\$3
+    TMPDIR=$docker_data/syft syft attest --output spdx-json docker.io/\$REPO/\$1:\$3 || \
+    TMPDIR=$docker_data/syft syft attest --output spdx-json docker.io/\$REPO/\$1:\$3 || exit 1
     echo
   else
     echo 'Starting Syft...'
