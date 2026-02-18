@@ -335,8 +335,10 @@ fi
 
 if [[ \"\$(uname -m)\" == \"aarch64\" ]]; then
   \$docker run --privileged --rm tonistiigi/binfmt:qemu-v10.0.4-59 --install amd64
+  echo
 elif [[ \"\$(uname -m)\" == \"x86_64\" ]]; then
   \$docker run --privileged --rm tonistiigi/binfmt:qemu-v10.0.4-59 --install arm64
+  echo
 else
   echo 'Unknown Architecture '\$(uname -m)
   exit 1
