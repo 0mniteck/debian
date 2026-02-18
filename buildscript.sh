@@ -91,7 +91,16 @@ snap install syft --classic && wait
 snap install grype --classic && wait
 snap remove docker --purge 2>/dev/null && wait || echo "Failed to remove Docker"
 networkctl delete docker0 2>/dev/null
-snap install docker --revision=$docker_snap_ver && wait || echo "Failed to install Docker"
+
+if [[ "$(uname -m)" == "aarch64" ]]; then
+  snap install docker --revision=$docker_snap_arm64_ver && wait || echo "Failed to install Docker"
+  systemctl mask snap.docker.nvidia-container-toolkit --runtime --now && wait
+elif [[ "$(uname -m)" == "x86_64" ]]; then
+  snap install docker --revision=$docker_snap_amd64_ver && wait || echo "Failed to install Docker"
+else
+  echo 'Unknown Architecture '\$(uname -m)'
+  exit 1
+fi
 echo
 
 snap stop docker && wait
@@ -159,7 +168,7 @@ sys_ctl_common() {
   systemctl --user list-units docker* --all && echo
 }
 
-read -p 'Press enter to start docker login'
+echo && read -p 'Press enter to start docker login'
 clean_some && docker login && mkdir -p $docker_data/.docker && wait && \
 ln -s $home/$snap_path/.docker/config.json $docker_data/.docker/config.json || exit 1
 echo && syft login registry-1.docker.io -u \$USERNAME && echo 'Logged in to syft' && echo
@@ -184,6 +193,7 @@ DOCKER_CONFIG=$docker_data/.docker
 DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
+BUILDKIT_PROGRESS=plain
 SOURCE_DATE_EPOCH=\$source_date_epoch
 SYFT_CACHE_DIR=$docker_data/syft
 GRYPE_DB_CACHE_DIR=$docker_data/grype
@@ -300,6 +310,15 @@ elif [[ \"\$sub_ver\" -ge 1 ]]; then
   rel_date=\$(date -d \"\$(date)\" +\"%m-%d-%Y-00\$sub_ver\")
   date_rel=\$(date -d \"\$(date)\" +\"%Y-%m-%d-00\$sub_ver\")
   echo \"Build Subversion: 00\$sub_ver\" && echo 
+fi
+
+if [[ \"\$(uname -m)\" == \"aarch64\" ]]; then
+  \$docker run --privileged --rm tonistiigi/binfmt:qemu-v10.0.4-59 --install amd64
+elif [[ \"\$(uname -m)\" == \"x86_64\" ]]; then
+  \$docker run --privileged --rm tonistiigi/binfmt:qemu-v10.0.4-59 --install arm64
+else
+  echo 'Unknown Architecture '\$(uname -m)
+  exit 1
 fi
 
 source modules
