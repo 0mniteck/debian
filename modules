@@ -1,10 +1,13 @@
 url_deb='https://snapshot.debian.org/archive/debian/?year='$(date +%Y)'&month='$(date +%-m)
 curl_deb=$(curl -s $url_deb | grep '<a href="'$(date +%Y%m) | tail -n 1 - | cut -d'"' -f2 | cut -d'/' -f1)
+
 url_deb_sec='https://snapshot.debian.org/archive/debian-security/?year='$(date +%Y)'&month='$(date +%-m)
 curl_deb_sec=$(curl -s $url_deb_sec | grep '<a href="'$(date +%Y%m) | tail -n 1 - | cut -d'"' -f2 | cut -d'/' -f1)
+
 url_src='https://raw.githubusercontent.com/'$REPO'/'$PROJECT'/refs/heads/builder/.pinned_ver'
 curl_cur_deb=$(curl -s $url_src | grep debian= | cut -d'=' -f2)
 curl_cur_deb_sec=$(curl -s $url_src | grep debian_security= | cut -d'=' -f2)
+
 cur_deb=$(cat .pinned_ver | grep debian= | cut -d'=' -f2)
 cur_deb_sec=$(cat .pinned_ver | grep debian_security= | cut -d'=' -f2)
 
@@ -23,18 +26,18 @@ do
   pushd $module/
     rm -f $module.* readme.md
     $docker buildx create \
-    --name $module-builder --buildkitd-flags "--oci-worker-rootless=true" \
-    --driver docker-container --driver-opt "network=host,default-load=true" --bootstrap --use
+      --name $module-builder --buildkitd-flags "--oci-worker-rootless=true" \
+      --driver docker-container --driver-opt "network=host,default-load=true" --bootstrap --use
     $docker buildx build --push \
-    --tag $REPO/$module:$rel_date \
-    --metadata-file $module.meta.json \
-    --platform linux/arm64,linux/amd64 \
-    --attest "type=provenance,mode=max" \
-    --build-arg SOURCE_DATE_EPOCH=$source_date_epoch \
-    --build-arg DEBIAN_SECURITY=$debian_security \
-    --build-arg DEBIAN=$debian \
-    --build-arg REL_DATE=$rel_date \
-    --build-arg SOURCE="$source" .
+      --tag $REPO/$module:$rel_date \
+      --metadata-file $module.meta.json \
+      --platform linux/arm64,linux/amd64 \
+      --attest "type=provenance,mode=max" \
+      --build-arg SOURCE_DATE_EPOCH=$source_date_epoch \
+      --build-arg DEBIAN_SECURITY=$debian_security \
+      --build-arg DEBIAN=$debian \
+      --build-arg REL_DATE=$rel_date \
+      --build-arg SOURCE="$source" .
     $docker buildx stop $module-builder && wait
     $docker buildx rm -f --all-inactive && wait
     $docker buildx prune -f -a && wait && echo
@@ -43,8 +46,8 @@ do
     cat $module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> $module.image.digest
     cat $module.image.digest >> readme.md && cat readme.md
     cosign_run=$(echo script -q -c "cosign verify-attestation docker.io/$REPO/$module:$rel_date \
---certificate-oidc-issuer https://github.com/login/oauth --certificate-identity $SIGSTORE_USR \
---type spdxjson > $module.image.sig" /dev/null \> $module.image.attested)
+      --certificate-oidc-issuer https://github.com/login/oauth --certificate-identity $SIGSTORE_USR \
+      --type spdxjson > $module.image.sig" /dev/null \> $module.image.attested)
     echo $cosign_run | bash || echo $cosign_run | bash || exit 1
     cat $module.image.attested && echo && git status && git add -A && git status && read -p 'Press enter to launch pinentry'
     git commit -a -S -m "Successful Build of $module:$rel_date" && git push --set-upstream origin HEAD:$module
