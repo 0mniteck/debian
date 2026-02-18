@@ -103,9 +103,9 @@ systemctl daemon-reload
 
 clean_most
 
-groupadd -f docker && wait # Keep docker group for fumctionality, but do not add as system group (-r)
+groupadd -f docker && wait
 usermod -aG docker $run_as && wait
-mkdir -p /home/root && sed -i "s|:/root:|:/home/root:|" /etc/passwd #rootlesskit fakeroot
+mkdir -p /home/root && sed -i "s|:/root:|:/home/root:|" /etc/passwd
 
 mkdir -p /$plugins_path && wait
 ln -s /$snap_path/$plugins_path/docker-buildx /$plugins_path/docker-buildx || exit 1
@@ -244,7 +244,7 @@ scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-cataloger
   cp \$1.grype.status readme.md
   sed -i '1,3s/^/#### /g' readme.md
   echo '## ' >> readme.md
-  echo '```' >> readme.md
+  echo '\`\`\`' >> readme.md
 }
 
 sys_ctl_common
