@@ -14,7 +14,14 @@ if [[ "$run_id" == "" ]]; then
   else
     echo && echo "Pkexec is required for installation steps"
     echo "Using: ~\$ 'pkexec --keep-cwd ./buildscript.sh'" && echo
-    exec pkexec --keep-cwd "$0" "$@"
+    if [[ "$(which asciinema)" == "/usr/bin/asciinema" ]]; then
+      repo=$(cat .identity | grep REPO= | cut -d'=' -f2)
+      project=$(cat .identity | grep PROJECT= | cut -d'=' -f2)
+      rel_date=$(date -d "$(date)" +%m-%d-%Y)
+      exec asciinema rec -t "$repo/$project:$rel_date" -c "pkexec --keep-cwd \"$0\" \"$@\" "
+    else
+      exec pkexec --keep-cwd "$0" "$@"
+    fi
     exit 0
   fi
 fi
@@ -125,24 +132,7 @@ mkdir -p /$plugins_path && wait
 ln -s /$snap_path/$plugins_path/docker-buildx /$plugins_path/docker-buildx > /dev/null || exit 1
 ln -s /$snap_path/$plugins_path/docker-compose /$plugins_path/docker-compose > /dev/null || exit 1
 
-if [[ "$(which asciinema)" == "/usr/bin/asciinema" ]]; then
-  repo=$(cat .identity | grep REPO= | cut -d'=' -f2)
-  project=$(cat .identity | grep PROJECT= | cut -d'=' -f2)
-  rel_date=$(date -d "$(date)" +%m-%d-%Y)
-  ascii_start="asciinema rec -t \"$repo/$project:$rel_date\" -c \""
-  bash_start="bash -c \\\""
-  user_start="machinectl shell $run_as@ /bin/bash -c \\\""
-  user_end='\"'
-  bash_end='\"'
-  ascii_end='"'
-else
-  user_start="machinectl shell $run_as@ /bin/bash -c \""
-  user_end='"'
-fi
-
-$ascii_start
-$bash_start
-$user_start
+machinectl shell $run_as@ /bin/bash -c "
 $debug
 cd $(echo $PWD)
 HOME=$home
@@ -366,10 +356,7 @@ git tag -a \$date_rel -s -m \"Tagged Release \$date_rel\" && git push origin \$d
 
 ssh-add -D && eval \"\$(ssh-agent -k)\"
 clean_some
-sys_ctl_common
-$user_end
-$bash_end
-$ascii_end
+sys_ctl_common"
 
 quiet systemctl unmask snap.docker.dockerd --runtime
 quiet systemctl unmask snap.docker.nvidia-container-toolkit --runtime
