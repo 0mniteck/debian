@@ -1,9 +1,5 @@
 ARG SOURCE=debian-slim:trixie
 FROM $SOURCE AS omniteck-debian-slim
-LABEL org.opencontainers.image.authors="shant@omniteck.com"
-LABEL org.opencontainers.image.vendor="OMNITECK"
-LABEL org.opencontainers.image.licenses="GPL-3.0"
-LABEL org.opencontainers.image.description="Tagged releases of debian-dev docker images for reproducible build environments."
 RUN mkdir /.cache && chmod -R 777 /.cache
 ARG SOURCE_DATE_EPOCH
 ARG DEBIAN_SECURITY
