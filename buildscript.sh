@@ -125,7 +125,23 @@ mkdir -p /$plugins_path && wait
 ln -s /$snap_path/$plugins_path/docker-buildx /$plugins_path/docker-buildx > /dev/null || exit 1
 ln -s /$snap_path/$plugins_path/docker-compose /$plugins_path/docker-compose > /dev/null || exit 1
 
-machinectl shell $run_as@ /bin/bash -c "
+if [[ "$(which asciinema)" == "/usr/bin/asciinema" ]]; then
+  repo=$(cat .identity | grep REPO= | cut -d'=' -f2)
+  project=$(cat .identity | grep PROJECT= | cut -d'=' -f2)
+  rel_date=$(date -d "$(date)" +%m-%d-%Y)
+  ascii_start="asciinema rec -t \"$repo/$project:$rel_date\" -c \""
+  user_start="machinectl shell $run_as@ /bin/bash -c \\\""
+  user_end='\"'
+  ascii_end='"'
+else
+  ascii_start=
+  user_start="machinectl shell $run_as@ /bin/bash -c \""
+  user_end='"'
+  ascii_end=
+fi
+
+$ascii_start
+$user_start
 $debug
 cd $(echo $PWD)
 HOME=$home
@@ -198,7 +214,7 @@ DOCKER_CONFIG=$docker_data/.docker
 DOCKER_HOST=unix:///run/user/$run_id/docker.sock
 BUILDX_METADATA_PROVENANCE=max
 BUILDX_METADATA_WARNINGS=1
-BUILDKIT_PROGRESS=plain
+BUILDKIT_PROGRESS=tty
 SOURCE_DATE_EPOCH=\$source_date_epoch
 SYFT_CACHE_DIR=$docker_data/syft
 GRYPE_DB_CACHE_DIR=$docker_data/grype
@@ -322,8 +338,6 @@ elif [[ \"\$sub_ver\" -ge 1 ]]; then
   echo \"Build Subversion: 00\$sub_ver\" && echo 
 fi
 
-asciinema rec -t \"\$REPO/\$PROJECT:\$rel_date\"
-
 \$docker buildx create \
   --name builder --buildkitd-flags \"--oci-worker-rootless=true\" \
   --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
@@ -351,7 +365,9 @@ git tag -a \$date_rel -s -m \"Tagged Release \$date_rel\" && git push origin \$d
 
 ssh-add -D && eval \"\$(ssh-agent -k)\"
 clean_some
-sys_ctl_common"
+sys_ctl_common
+$user_end
+$ascii_end
 
 quiet systemctl unmask snap.docker.dockerd --runtime
 quiet systemctl unmask snap.docker.nvidia-container-toolkit --runtime
