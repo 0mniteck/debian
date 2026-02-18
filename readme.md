@@ -21,7 +21,6 @@ Snapshot releases of debian-dev docker images for reproducible build environment
 
 ### Build It!
 Requirements:
- - aarch64/armv8/arm64 (rootless builds can't be CC'd)
  - Yubikey with CCID enabled is required for signing
  - Ubuntu 25.10 (will run on any debian distro with minor changes)
 
