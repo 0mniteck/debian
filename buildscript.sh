@@ -130,17 +130,18 @@ if [[ "$(which asciinema)" == "/usr/bin/asciinema" ]]; then
   project=$(cat .identity | grep PROJECT= | cut -d'=' -f2)
   rel_date=$(date -d "$(date)" +%m-%d-%Y)
   ascii_start="asciinema rec -t \"$repo/$project:$rel_date\" -c \""
+  bash_start="bash -c \\\""
   user_start="machinectl shell $run_as@ /bin/bash -c \\\""
   user_end='\"'
+  bash_end='\"'
   ascii_end='"'
 else
-  ascii_start=
   user_start="machinectl shell $run_as@ /bin/bash -c \""
   user_end='"'
-  ascii_end=
 fi
 
 $ascii_start
+$bash_start
 $user_start
 $debug
 cd $(echo $PWD)
@@ -367,6 +368,7 @@ ssh-add -D && eval \"\$(ssh-agent -k)\"
 clean_some
 sys_ctl_common
 $user_end
+$bash_end
 $ascii_end
 
 quiet systemctl unmask snap.docker.dockerd --runtime
