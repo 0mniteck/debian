@@ -312,6 +312,8 @@ elif [[ \"\$sub_ver\" -ge 1 ]]; then
   echo \"Build Subversion: 00\$sub_ver\" && echo 
 fi
 
+asciinema rec -t \"\$REPO/\$PROJECT:\$rel_date\"
+
 \$docker buildx create \
 --name builder --buildkitd-flags \"--oci-worker-rootless=true\" \
 --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
