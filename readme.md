@@ -54,6 +54,7 @@ https://github.com/0mniteck/Debian/blob/6435dc9aee2029f66bf6f96f44ab8b4415651295
 ## [Currently Tagged Image/Snapshots](https://github.com/0mniteck/Debian/releases)
 
  - [Low-to-No CVE's for current tag 2026-02-18](https://github.com/0mniteck/Debian/releases/tag/2026-02-18)
+   - [Immutable Release](https://github.com/0mniteck/Debian/attestations/19247048/download)
 
 `debian:trixie-20260202-slim
 sha256:f6e2cfac5cf956ea044b4bd75e6397b4372ad88fe00908045e9a0d21712ae3ba`
