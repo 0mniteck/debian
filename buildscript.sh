@@ -312,6 +312,10 @@ elif [[ \"\$sub_ver\" -ge 1 ]]; then
   echo \"Build Subversion: 00\$sub_ver\" && echo 
 fi
 
+\$docker buildx create \
+--name builder --buildkitd-flags \"--oci-worker-rootless=true\" \
+--driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
+
 if [[ \"\$(uname -m)\" == \"aarch64\" ]]; then
   \$docker run --privileged --rm tonistiigi/binfmt:qemu-v10.0.4-59 --install amd64
 elif [[ \"\$(uname -m)\" == \"x86_64\" ]]; then
@@ -338,6 +342,7 @@ clean_some
 sys_ctl_common"
 
 systemctl unmask snap.docker.dockerd --runtime
+systemctl unmask snap.docker.nvidia-container-toolkit --runtime
 snap disable docker
 snap remove docker --purge || echo "Failed to remove Docker"
 networkctl delete docker0 2>/dev/null
