@@ -329,10 +329,6 @@ elif [[ \"\$sub_ver\" -ge 1 ]]; then
   echo \"Build Subversion: 00\$sub_ver\" && echo 
 fi
 
-\$docker buildx create \
-  --name builder --buildkitd-flags \"--oci-worker-rootless=true\" \
-  --driver docker-container --driver-opt \"network=host,default-load=true\" --bootstrap --use
-
 if [[ \"\$(uname -m)\" == \"aarch64\" ]]; then
   \$docker run --privileged --rm tonistiigi/binfmt:qemu-v10.0.4-59 --install amd64
   echo
