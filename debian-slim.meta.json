@@ -1,10 +1,10 @@
 {
-  "buildx.build.ref": "debian-slim-builder/debian-slim-builder0/xnjoii921ocolgr8iacolfr2s",
+  "buildx.build.ref": "debian-slim-builder/debian-slim-builder0/gwpfbgbqxxznm45ngcywc8f3d",
   "containerimage.descriptor": {
     "mediaType": "application/vnd.oci.image.index.v1+json",
-    "digest": "sha256:f8672834fb3b5c1b7eed0903868537d45ff4816e5e63355767ecac68b16e80b2",
+    "digest": "sha256:13b15f452474e3f662cb3c2c76d2b480f90c2e6318f3905ae9b4711fd6c7b10b",
     "size": 1609
   },
-  "containerimage.digest": "sha256:f8672834fb3b5c1b7eed0903868537d45ff4816e5e63355767ecac68b16e80b2",
+  "containerimage.digest": "sha256:13b15f452474e3f662cb3c2c76d2b480f90c2e6318f3905ae9b4711fd6c7b10b",
   "image.name": "0mniteck/debian-slim:02-18-2026"
 }
