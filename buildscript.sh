@@ -55,6 +55,11 @@ Slice=docker.slice\\
 _EOF__
 )
 
+quiet() {
+  echt="$@"
+  script -q -c "$echt" /dev/null > /dev/null
+}
+
 clean_most() {
   rm -r -f /home/root/*
   rm -r -f /root/snap/docker/
@@ -94,7 +99,7 @@ networkctl delete docker0 2>/dev/null
 
 if [[ "$(uname -m)" == "aarch64" ]]; then
   snap install docker --revision=$docker_snap_arm64_ver && wait || echo "Failed to install Docker"
-  systemctl mask snap.docker.nvidia-container-toolkit --runtime --now && wait
+  quiet systemctl mask snap.docker.nvidia-container-toolkit --runtime --now
 elif [[ "$(uname -m)" == "x86_64" ]]; then
   snap install docker --revision=$docker_snap_amd64_ver && wait || echo "Failed to install Docker"
 else
@@ -106,7 +111,7 @@ echo
 snap stop docker && wait
 systemctl reset-failed && wait
 systemctl stop snap.docker.* --all && wait
-systemctl mask snap.docker.dockerd --runtime --now && wait
+quiet systemctl mask snap.docker.dockerd --runtime --now
 networkctl delete docker0 2>/dev/null
 systemctl daemon-reload
 
@@ -257,12 +262,17 @@ scan_using_grype() { # $1 = Name, $2 = Repo/Name:tag or /Path --select-cataloger
   echo '\`\`\`' >> readme.md
 }
 
+quiet() {
+  echt=\"\$@\"
+  script -q -c \"\$echt\" /dev/null > /dev/null
+}
+
 sys_ctl_common
 systemctl --user start docker.dockerd && sleep 10
 systemctl --user status docker.dockerd --all --no-pager -n 150 > $rootless_path/rootless.ctl.log
 
 source $rootless_path/env-rootless.exp
-script -q -c \"\$docker info | grep rootless > $rootless_path/rootless.status\" /dev/null > /dev/null
+quiet \"\$docker info | grep rootless > $rootless_path/rootless.status\"
 if [[ \"\$(grep root $rootless_path/rootless.status)\" != *rootless* ]]; then
   echo \"Rootless Docker Failed\" && echo
   exit 1
