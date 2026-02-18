@@ -1,4 +1,5 @@
-export -- docker_snap_ver=3380
+export -- docker_snap_arm64_ver=3380
+export -- docker_snap_amd64_ver=3377
 export -- debian_security=20260216T100331Z
 export -- debian=20260216T082402Z
 export -- source=debian:trixie-20260202-slim@sha256:f6e2cfac5cf956ea044b4bd75e6397b4372ad88fe00908045e9a0d21712ae3ba
