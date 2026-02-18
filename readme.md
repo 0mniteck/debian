@@ -1,7 +1,7 @@
-#### ✔ Scanned for vulnerabilities [778 vulnerability matches] 
-#### ├── by severity: 1 critical, 64 high, 220 medium, 47 low, 591 negligible (107 unknown)
-#### └── by status: 25 fixed, 1005 not-fixed, 252 ignored 
+#### ✔ Scanned for vulnerabilities [756 vulnerability matches] 
+#### ├── by severity: 0 critical, 53 high, 210 medium, 47 low, 591 negligible (107 unknown)
+#### └── by status: 4 fixed, 1004 not-fixed, 252 ignored 
 ## 
 ```
 # 0mniteck/debian-slim:02-18-2026
-sha256:c909b0651b24275091cee9d49082f20a8a61b12d424849f933e15b8aeb4b143c
+sha256:f8672834fb3b5c1b7eed0903868537d45ff4816e5e63355767ecac68b16e80b2
