@@ -98,7 +98,7 @@ if [[ "$(uname -m)" == "aarch64" ]]; then
 elif [[ "$(uname -m)" == "x86_64" ]]; then
   snap install docker --revision=$docker_snap_amd64_ver && wait || echo "Failed to install Docker"
 else
-  echo 'Unknown Architecture '\$(uname -m)'
+  echo 'Unknown Architecture '$(uname -m)
   exit 1
 fi
 echo
