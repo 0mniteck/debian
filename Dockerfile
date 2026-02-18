@@ -14,4 +14,4 @@ RUN echo 'APT::Immediate-Configure "false";' >> /etc/apt/apt.conf.d/secure_apt
 RUN apt update && apt install -y ca-certificates
 RUN sed -i "s,http://snapshot.debian.org/archive/debian-security/$DEBIAN_SECURITY,https://snapshot.debian.org/archive/debian-security/$DEBIAN_SECURITY,g" /etc/apt/sources.list.d/debian.sources
 RUN sed -i "s,http://snapshot.debian.org/archive/debian/$DEBIAN,https://snapshot.debian.org/archive/debian/$DEBIAN,g" /etc/apt/sources.list.d/debian.sources
-RUN apt update && apt upgrade -y && apt install -y build-essential curl git git-lfs libasound2-dev libgtk-3-dev libnss3-dev libpulse-dev lsb-release rubygems wget xauth xvfb
+RUN apt update && apt upgrade -y && apt install -y build-essential curl git libasound2-dev libgtk-3-dev libnss3-dev libpulse-dev lsb-release rubygems wget xauth xvfb
