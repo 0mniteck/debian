@@ -26,7 +26,7 @@ Requirements:
 
 Clone `git clone https://github.com/$REPO/Debian.git && cd Debian`
 
-Build using `./buildscript.sh` as standard user
+Build using `./buildscript.sh` as a standard user
 
 ## [Push Digests](https://github.com/0mniteck/Debian/blob/builder/Results/image.digests) and Grype Status
 https://github.com/0mniteck/Debian/blob/ff892f79bcf28bc56c503a0a8f19c39eabb76dfe/Results/image.digests#L3-L4
