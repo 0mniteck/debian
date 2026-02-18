@@ -117,8 +117,8 @@ usermod -aG docker $run_as && wait
 mkdir -p /home/root && sed -i "s|:/root:|:/home/root:|" /etc/passwd
 
 mkdir -p /$plugins_path && wait
-ln -s /$snap_path/$plugins_path/docker-buildx /$plugins_path/docker-buildx || exit 1
-ln -s /$snap_path/$plugins_path/docker-compose /$plugins_path/docker-compose || exit 1
+ln -s /$snap_path/$plugins_path/docker-buildx /$plugins_path/docker-buildx > /dev/null || exit 1
+ln -s /$snap_path/$plugins_path/docker-compose /$plugins_path/docker-compose > /dev/null || exit 1
 
 machinectl shell $run_as@ /bin/bash -c "
 $debug
@@ -343,8 +343,9 @@ ssh-add -D && eval \"\$(ssh-agent -k)\"
 clean_some
 sys_ctl_common"
 
-systemctl unmask snap.docker.dockerd --runtime
-systemctl unmask snap.docker.nvidia-container-toolkit --runtime
+systemctl unmask snap.docker.dockerd --runtime > /dev/null
+systemctl unmask snap.docker.nvidia-container-toolkit --runtime > /dev/null
+
 snap disable docker
 snap remove docker --purge || echo "Failed to remove Docker"
 networkctl delete docker0 2>/dev/null
