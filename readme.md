@@ -4,10 +4,10 @@ Snapshot releases of debian-dev docker images for reproducible build environment
 
   |     Built     |    |                 Signed                  |    |            Scanned            |
   | ------------- | -- | --------------------------------------- | -- | ----------------------------- |
-  | attestably    |    | cosign  (keyless attestation via OIDC)  |    | scout (slim/base images)      |
-  | ephemerally   |    | yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) |    | syft  (images/OS/firmware)    |
-  | rootlessly    |    | in-toto (github release TSA attestation)|    | grype (at buildtime)          |
-  | immutably     |    | docker provenance (attestation)         |    | (low-to-no CVE's at buildtime)|
+  | attestably    |    | cosign  (keyless attestation via OIDC)  |    | (low-to-no CVE's at buildtime)|
+  | ephemerally   |    | docker provenance (attestation)         |    | grype (at buildtime)          |
+  | immutably     |    | in-toto (github release TSA attestation)|    | syft  (images/OS/firmware)    |
+  | rootlessly    |    | yubikey (openpgp-rsa-2048/ssh-ecdsa-sk) |    | scout (slim/base images)      |
 
 ## Usage
 
