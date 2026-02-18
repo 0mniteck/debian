@@ -42,7 +42,9 @@ do
     echo '# '$REPO/$module:$rel_date > $module.image.digest
     cat $module.meta.json | jq .[] | tail -n 2 | grep sha256 | sed 's/\"//g' >> $module.image.digest
     cat $module.image.digest >> readme.md && cat readme.md
-    cosign_run=$(echo script -q -c "cosign verify-attestation docker.io/$REPO/$module:$rel_date --certificate-oidc-issuer https://github.com/login/oauth --certificate-identity $SIGSTORE_USR --type spdxjson > $module.image.sig" /dev/null > $module.image.attested)
+    cosign_run=$(echo script -q -c "cosign verify-attestation docker.io/$REPO/$module:$rel_date \
+--certificate-oidc-issuer https://github.com/login/oauth --certificate-identity $SIGSTORE_USR \
+--type spdxjson > $module.image.sig" /dev/null \> $module.image.attested)
     echo $cosign_run | bash || echo $cosign_run | bash || exit 1
     cat $module.image.attested && echo && git status && git add -A && git status && read -p 'Press enter to launch pinentry'
     git commit -a -S -m "Successful Build of $module:$rel_date" && git push --set-upstream origin HEAD:$module
