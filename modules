@@ -28,6 +28,7 @@ do
     $docker buildx build --push \
     --tag $REPO/$module:$rel_date \
     --metadata-file $module.meta.json \
+    --platform linux/arm64,linux/amd64 \
     --attest "type=provenance,mode=max" \
     --build-arg SOURCE_DATE_EPOCH=$source_date_epoch \
     --build-arg DEBIAN_SECURITY=$debian_security \
