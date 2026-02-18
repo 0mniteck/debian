@@ -353,8 +353,8 @@ ssh-add -D && eval \"\$(ssh-agent -k)\"
 clean_some
 sys_ctl_common"
 
-systemctl unmask snap.docker.dockerd --runtime > /dev/null
-systemctl unmask snap.docker.nvidia-container-toolkit --runtime > /dev/null
+quiet systemctl unmask snap.docker.dockerd --runtime
+quiet systemctl unmask snap.docker.nvidia-container-toolkit --runtime
 
 snap disable docker
 snap remove docker --purge || echo "Failed to remove Docker"
