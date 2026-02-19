@@ -43,6 +43,7 @@ set_facl=$(echo "setfacl -m u:$run_as:rw /dev/bus/usb/$BUS/$DEVICE")
 echo $set_facl | bash || echo $set_facl | bash || exit 1
 
 home=/home/$run_as
+run_dir=/run/user/$run_id
 data_dir=$home/.local/share
 sysusr_path=$data_dir/systemd/user
 rootless_path=$data_dir/rootless
@@ -76,18 +77,19 @@ clean_most() {
   rm -r -f /run/runc/
   rm -r -f /usr/libexec/docker/
   rm -r -f /var/lib/snapd/cache/*
-  rm -r -f /run/user/$run_id/containerd/
-  rm -r -f /run/user/$run_id/docker*
-  rm -r -f /run/user/$run_id/runc/
-  rm -r -f /home/$run_as/.local/share/docker/
+  rm -r -f $run_dir/containerd/
+  rm -r -f $run_dir/docker*
+  rm -r -f $run_dir/runc/
+  rm -r -f $docker_data/*
+  rm -r -f $docker_data/ 
 }
 
 clean_all() {
   rm -r -f /var/snap/docker/
-  rm -r -f /home/$run_as/snap/docker/
-  rm -r -f /home/$run_as/.docker/
-  rm -r -f /home/$run_as/.local/share/rootless*
-  rm -r -f /home/$run_as/.local/share/systemd/
+  rm -r -f $home/snap/docker/
+  rm -r -f $home/.docker/
+  rm -r -f $data_dir/rootless*
+  rm -r -f $data_dir/systemd/
   clean_most
 }
 
