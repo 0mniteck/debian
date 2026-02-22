@@ -10,3 +10,7 @@
 	path = debian-extra
 	url = git@Debian:0mniteck/Debian.git
 	branch = debian-extra
+[submodule ".pki"]
+	path = .pki
+	url = git@.pki:0mniteck/.pki.git
+	branch = main
